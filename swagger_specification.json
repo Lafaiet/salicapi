@@ -1,21 +1,17 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "** This is an api for accesing data from the SALIC portal.**
-           \n\nSALIC is a system for gathering data regarding cultural projetcs 
-           proposals\nto be financed by the Brazilian Culture Ministry through the
-            Law of Incentive\nfor Culture (**Rouanet Law**).\n
-            Find more info [here](http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-)",
+        "description": "** This is an api for accesing data from the SALIC portal.** \n\nSALIC is a system for gathering data regarding cultural projetcs  proposals\nto be financed by the Brazilian Culture Ministry through the Law of Incentive\nfor Culture (**Rouanet Law**).\n Find more info [here](http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-)",
         "version": "0.0.1",
         "title": "SALIC API",
         "termsOfService": "http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-",
         "contact": {
             "name": "Lafaiet Castro e Silva",
-            "email" : "lafaietsilva@gmail.com"
+            "email": "lafaietsilva@gmail.com"
         },
         "license": {
             "name": "Apache 2.0",
-            "url" : "http://www.apache.org/licenses/LICENSE-2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0"
         }
     },
     "host": "10.0.1.168:8000",
@@ -379,7 +375,7 @@
                 }
             }
         },
-         "/proponentes/": {
+        "/proponentes/": {
             "get": {
                 "tags": [
                     "proponentes : Proponents related data"
@@ -399,13 +395,11 @@
                         "type": "string"
                     },
                     {
-                        
                         "in": "query",
                         "name": "cgccpf",
                         "description": "Cgc/Cpf of the proposer",
                         "required": false,
                         "type": "string"
-                        
                     },
                     {
                         "in": "query",
@@ -420,7 +414,7 @@
                         "description": "state of origin",
                         "required": false,
                         "type": "string"
-                    },
+                    }
                 ],
                 "responses": {
                     "200": {
@@ -452,7 +446,7 @@
                     }
                 }
             }
-        },
+        }
     },
     "definitions": {
         "Projeto": {
@@ -524,7 +518,7 @@
                 "nome": {
                     "type": "string"
                 },
-                 "responsavel": {
+                "responsavel": {
                     "type": "string"
                 },
                 "tipo_pessoa": {
@@ -535,7 +529,7 @@
                 },
                 "municipio": {
                     "type": "string"
-                },
+                }
             }
         },
         "Resumo": {
