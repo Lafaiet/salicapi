@@ -1,0 +1,588 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "** This is an api for accesing data from the SALIC portal.**
+           \n\nSALIC is a system for gathering data regarding cultural projetcs 
+           proposals\nto be financed by the Brazilian Culture Ministry through the
+            Law of Incentive\nfor Culture (**Rouanet Law**).\n
+            Find more info [here](http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-)",
+        "version": "0.0.1",
+        "title": "SALIC API",
+        "termsOfService": "http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-",
+        "contact": {
+            "name": "Lafaiet Castro e Silva",
+            "email" : "lafaietsilva@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url" : "http://www.apache.org/licenses/LICENSE-2.0",
+        }
+    },
+    "host": "10.0.1.168:8000",
+    "basePath": "/alpha",
+    "schemes": [
+        "http"
+    ],
+    "paths": {
+        "/projetos/{pronac}": {
+            "get": {
+                "tags": [
+                    "projetos : Projects related data"
+                ],
+                "summary": "Finds project by Pronac number",
+                "operationId": "pronac_number",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "pronac",
+                        "description": "PRONAC value to be used to filter the query",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Projeto"
+                        }
+                    },
+                    "400": {
+                        "description": "Project with supplied PRONAC not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid PRONAC supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/{pronac}/resumo": {
+            "get": {
+                "tags": [
+                    "projetos : Projects related data"
+                ],
+                "summary": "Given a project's pronac number, returns its description",
+                "operationId": "projet_description",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "pronac",
+                        "description": "PRONAC value to be used to filter the query",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Resumo"
+                        }
+                    },
+                    "400": {
+                        "description": "Project with supplied PRONAC not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid PRONAC supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/{pronac}/providencia": {
+            "get": {
+                "tags": [
+                    "projetos : Projects related data"
+                ],
+                "summary": "Given a project's pronac number, returns the course of action that was taken",
+                "operationId": "projet_providence",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "pronac",
+                        "description": "PRONAC value to be used to filter the query",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Providencia"
+                        }
+                    },
+                    "400": {
+                        "description": "Project with supplied PRONAC not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid PRONAC supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/": {
+            "get": {
+                "tags": [
+                    "projetos : Projects related data"
+                ],
+                "summary": "Finds projects given a combination of field values",
+                "operationId": "project_list",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "number of projects to return",
+                        "required": false,
+                        "type": "integer",
+                        "default": 20,
+                        "minimum": 1,
+                        "maximum": 100
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "paging number of results",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0,
+                        "minimum": 0
+                    },
+                    {
+                        "in": "query",
+                        "name": "pronac",
+                        "description": "PRONAC value to be used to filter the query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "proponente",
+                        "description": "who's proposing the project",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "cgccpf",
+                        "description": "Cgc/Cpf of the proposer",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "nome",
+                        "description": "project name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "area",
+                        "description": "project area",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "segmento",
+                        "description": "project segment",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "municipio",
+                        "description": "city of origin",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "UF",
+                        "description": "state of origin",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_inicio",
+                        "description": "Begining date",
+                        "required": false,
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_termino",
+                        "description": "Ending date",
+                        "required": false,
+                        "type": "string",
+                        "format": "date"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Projeto"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Projects with supplied parameters not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid parameter(s) supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/areas": {
+            "get": {
+                "tags": [
+                    "projetos : Projects related data"
+                ],
+                "summary": "Returns all project areas available in the database",
+                "operationId": "projet_areas",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Area"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "No project area available",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/segmentos": {
+            "get": {
+                "tags": [
+                    "projetos : Projects related data"
+                ],
+                "summary": "Returns all project segments available in the database",
+                "operationId": "projet_segments",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Segmento"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "No project segment available",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+         "/proponentes/": {
+            "get": {
+                "tags": [
+                    "proponentes : Proponents related data"
+                ],
+                "summary": "Finds a proposer given a combination of field values",
+                "operationId": "proponente",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "nome",
+                        "description": "name os the proposer",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        
+                        "in": "query",
+                        "name": "cgccpf",
+                        "description": "Cgc/Cpf of the proposer",
+                        "required": false,
+                        "type": "string"
+                        
+                    },
+                    {
+                        "in": "query",
+                        "name": "municipio",
+                        "description": "city of origin",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "UF",
+                        "description": "state of origin",
+                        "required": false,
+                        "type": "string"
+                    },
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Proponente"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Project with supplied PRONAC not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid PRONAC supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+    },
+    "definitions": {
+        "Projeto": {
+            "type": "object",
+            "properties": {
+                "PRONAC": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "cgccpf": {
+                    "type": "string"
+                },
+                "proponente": {
+                    "type": "string"
+                },
+                "segmento": {
+                    "type": "string"
+                },
+                "area": {
+                    "type": "string"
+                },
+                "UF": {
+                    "type": "string"
+                },
+                "municipio": {
+                    "type": "string"
+                },
+                "data_inicio": {
+                    "type": "string"
+                },
+                "data_termino": {
+                    "type": "string"
+                },
+                "situacao": {
+                    "type": "string"
+                },
+                "SolicitadoReal": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "SolicitadoUfir": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "solicitadoCusteioUfir": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "solicitadoCusteioReal": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "solicitadoCapitalUfir": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "solicitadoCapitalReal": {
+                    "type": "number",
+                    "format": "double"
+                }
+            }
+        },
+        "Proponente": {
+            "type": "object",
+            "properties": {
+                "nome": {
+                    "type": "string"
+                },
+                 "responsavel": {
+                    "type": "string"
+                },
+                "tipo_pessoa": {
+                    "type": "string"
+                },
+                "UF": {
+                    "type": "string"
+                },
+                "municipio": {
+                    "type": "string"
+                },
+            }
+        },
+        "Resumo": {
+            "type": "object",
+            "properties": {
+                "resumo": {
+                    "type": "string"
+                }
+            }
+        },
+        "Providencia": {
+            "type": "object",
+            "properties": {
+                "providencia": {
+                    "type": "string"
+                }
+            }
+        },
+        "Area": {
+            "type": "object",
+            "properties": {
+                "area": {
+                    "type": "string"
+                }
+            }
+        },
+        "Segmento": {
+            "type": "object",
+            "properties": {
+                "segmento": {
+                    "type": "string"
+                }
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "more_info": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
