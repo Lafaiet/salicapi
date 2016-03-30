@@ -118,6 +118,153 @@
                 }
             }
         },
+        "/projetos/{pronac}/acessibilidade": {
+            "get": {
+                "tags": [
+                    "projetos : Projects related data"
+                ],
+                "summary": "Given a project's pronac number, returns info related to Accessibility",
+                "operationId": "projet_acessibility",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "pronac",
+                        "description": "PRONAC value to be used to filter the query",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Acessibilidade"
+                        }
+                    },
+                    "400": {
+                        "description": "Project with supplied PRONAC not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid PRONAC supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/{pronac}/democratizacao": {
+            "get": {
+                "tags": [
+                    "projetos : Projects related data"
+                ],
+                "summary": "Given a project's pronac number, returns info related to Democratization",
+                "operationId": "projet_democratization",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "pronac",
+                        "description": "PRONAC value to be used to filter the query",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Democratizacao"
+                        }
+                    },
+                    "400": {
+                        "description": "Project with supplied PRONAC not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid PRONAC supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/{pronac}/fichatecnica": {
+            "get": {
+                "tags": [
+                    "projetos : Projects related data"
+                ],
+                "summary": "Given a project's pronac number, returns technical information",
+                "operationId": "projet_technical",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "pronac",
+                        "description": "PRONAC value to be used to filter the query",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/FichaTecnica"
+                        }
+                    },
+                    "400": {
+                        "description": "Project with supplied PRONAC not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid PRONAC supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/projetos/{pronac}/providencia": {
             "get": {
                 "tags": [
@@ -144,6 +291,153 @@
                         "description": "successful operation",
                         "schema": {
                             "$ref": "#/definitions/Providencia"
+                        }
+                    },
+                    "400": {
+                        "description": "Project with supplied PRONAC not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid PRONAC supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/{pronac}/objetivos": {
+            "get": {
+                "tags": [
+                    "projetos : Projects related data"
+                ],
+                "summary": "Given a project's pronac number, returns info related to its objectives",
+                "operationId": "projet_objectives",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "pronac",
+                        "description": "PRONAC value to be used to filter the query",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Objetivos"
+                        }
+                    },
+                    "400": {
+                        "description": "Project with supplied PRONAC not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid PRONAC supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/{pronac}/etapa": {
+            "get": {
+                "tags": [
+                    "projetos : Projects related data"
+                ],
+                "summary": "Given a project's pronac number, returns info depicting the current stage of development",
+                "operationId": "projet_jstage",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "pronac",
+                        "description": "PRONAC value to be used to filter the query",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Etapa"
+                        }
+                    },
+                    "400": {
+                        "description": "Project with supplied PRONAC not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid PRONAC supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/{pronac}/justificativa": {
+            "get": {
+                "tags": [
+                    "projetos : Projects related data"
+                ],
+                "summary": "Given a project's pronac number, returns info related to its justification",
+                "operationId": "projet_justification",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "pronac",
+                        "description": "PRONAC value to be used to filter the query",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Justificativa"
                         }
                     },
                     "400": {
@@ -238,13 +532,6 @@
                         "in": "query",
                         "name": "segmento",
                         "description": "project segment",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "municipio",
-                        "description": "city of origin",
                         "required": false,
                         "type": "string"
                     },
@@ -474,9 +761,6 @@
                 "UF": {
                     "type": "string"
                 },
-                "municipio": {
-                    "type": "string"
-                },
                 "data_inicio": {
                     "type": "string"
                 },
@@ -484,6 +768,9 @@
                     "type": "string"
                 },
                 "situacao": {
+                    "type": "string"
+                },
+                "mecanismo": {
                     "type": "string"
                 },
                 "SolicitadoReal": {
@@ -537,6 +824,59 @@
             "properties": {
                 "resumo": {
                     "type": "string"
+                }
+            }
+        },
+        "Acessibilidade": {
+            "type": "object",
+            "properties": {
+                "acessibilidade": {
+                    "type": "string",
+                    "description": "Text in html format"
+                }
+            }
+        },
+        "Democratizacao": {
+            "type": "object",
+            "properties": {
+                "democratizacao": {
+                    "type": "string",
+                    "description": "Text in html format"
+                }
+            }
+        },
+        "FichaTecnica": {
+            "type": "object",
+            "properties": {
+                "ficha_tecnica": {
+                    "type": "string",
+                    "description": "Text in html format"
+                }
+            }
+        },
+        "Objetivos": {
+            "type": "object",
+            "properties": {
+                "objetivos": {
+                    "type": "string"
+                }
+            }
+        },
+        "Etapa": {
+            "type": "object",
+            "properties": {
+                "etapa": {
+                    "type": "string",
+                    "description": "Text in html format"
+                }
+            }
+        },
+        "Justificativa": {
+            "type": "object",
+            "properties": {
+                "justificativa": {
+                    "type": "string",
+                    "description": "Text in html format"
                 }
             }
         },
