@@ -792,10 +792,12 @@
                     "type": "string"
                 },
                 "data_inicio": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "date"
                 },
                 "data_termino": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "date"
                 },
                 "situacao": {
                     "type": "string"
@@ -803,27 +805,30 @@
                 "mecanismo": {
                     "type": "string"
                 },
-                "SolicitadoReal": {
+                "enquadramento": {
+                    "type": "string"
+                },
+                "valor_projeto": {
                     "type": "number",
                     "format": "double"
                 },
-                "SolicitadoUfir": {
+                "outras_fontes": {
                     "type": "number",
                     "format": "double"
                 },
-                "solicitadoCusteioUfir": {
+                "valor_captado": {
                     "type": "number",
                     "format": "double"
                 },
-                "solicitadoCusteioReal": {
+                "valor_proposta": {
                     "type": "number",
                     "format": "double"
                 },
-                "solicitadoCapitalUfir": {
+                "valor_solicitado": {
                     "type": "number",
                     "format": "double"
                 },
-                "solicitadoCapitalReal": {
+                "valor_aprovado": {
                     "type": "number",
                     "format": "double"
                 }
