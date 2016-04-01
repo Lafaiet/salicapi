@@ -153,7 +153,7 @@
                     {
                         "in": "query",
                         "name": "data_inicio",
-                        "description": "Begining date",
+                        "description": "Begining date in format yyyy-mm-dd",
                         "required": false,
                         "type": "string",
                         "format": "date"
@@ -161,7 +161,7 @@
                     {
                         "in": "query",
                         "name": "data_termino",
-                        "description": "Ending date",
+                        "description": "Ending date in format yyyy-mm-dd",
                         "required": false,
                         "type": "string",
                         "format": "date"
