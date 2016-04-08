@@ -666,10 +666,10 @@
         "/incentivadores/": {
             "get": {
                 "tags": [
-                    "incentivavores : Donators related data"
+                    "Donators : Donators related data"
                 ],
                 "summary": "Finds a donator given a combination of field values",
-                "operationId": "incentivador",
+                "operationId": "Donators related data",
                 "produces": [
                     "application/json",
                     "application/xml"
@@ -769,7 +769,7 @@
         "/incentivadores/{cgccpf}/doacoes": {
             "get": {
                 "tags": [
-                    "doacoes : Donations made"
+                    "Donators : Donators related data"
                 ],
                 "summary": "Given a donator's CGC or CPF, returns all of his donations made",
                 "operationId": "donator_donations",
