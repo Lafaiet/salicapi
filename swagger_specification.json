@@ -120,7 +120,8 @@
                         "name": "cgccpf",
                         "description": "Cgc/Cpf of the proposer",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
@@ -662,6 +663,161 @@
                 }
             }
         },
+        "/incentivadores/": {
+            "get": {
+                "tags": [
+                    "incentivavores : Donators related data"
+                ],
+                "summary": "Finds a donator given a combination of field values",
+                "operationId": "incentivador",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "number of donators to return",
+                        "required": false,
+                        "type": "integer",
+                        "default": 20,
+                        "minimum": 1,
+                        "maximum": 20
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "paging number of results",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0,
+                        "minimum": 0
+                    },
+                    {
+                        "in": "query",
+                        "name": "nome",
+                        "description": "donator's name",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "cgccpf",
+                        "description": "Cgc/Cpf of the donator",
+                        "required": false,
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "municipio",
+                        "description": "city of origin",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "UF",
+                        "description": "state of origin",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "tipo_pessoa",
+                        "description": "state of origin",
+                        "enum": [
+                            "fisica",
+                            "juridica"
+                        ],
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Incentivador"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "No donator was found with your criteria",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid PRONAC supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/incentivadores/{cgccpf}/doacoes": {
+            "get": {
+                "tags": [
+                    "doacoes : Donations made"
+                ],
+                "summary": "Given a donator's CGC or CPF, returns all of his donations made",
+                "operationId": "donator_donations",
+                "produces": [
+                    "application/json",
+                    "application/xml"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "cgccpf",
+                        "description": "Donator's CGC or CPF",
+                        "required": true,
+                        "type": "string",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Doacao"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Project with supplied PRONAC not found",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid PRONAC supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Internal Error",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/proponentes/": {
             "get": {
                 "tags": [
@@ -705,7 +861,8 @@
                         "name": "cgccpf",
                         "description": "Cgc/Cpf of the proposer",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
@@ -777,7 +934,8 @@
                     "type": "string"
                 },
                 "cgccpf": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "int64"
                 },
                 "proponente": {
                     "type": "string"
@@ -851,6 +1009,30 @@
                 },
                 "municipio": {
                     "type": "string"
+                }
+            }
+        },
+        "Incentivador": {
+            "type": "object",
+            "properties": {
+                "nome": {
+                    "type": "string"
+                },
+                "responsavel": {
+                    "type": "string"
+                },
+                "tipo_pessoa": {
+                    "type": "string"
+                },
+                "UF": {
+                    "type": "string"
+                },
+                "municipio": {
+                    "type": "string"
+                },
+                "total_doado": {
+                    "type": "number",
+                    "format": "double"
                 }
             }
         },
@@ -935,6 +1117,26 @@
             "type": "object",
             "properties": {
                 "segmento": {
+                    "type": "string"
+                }
+            }
+        },
+        "Doacao": {
+            "type": "object",
+            "properties": {
+                "PRONAC": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "valor_doacao": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "data": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "nome_projeto": {
                     "type": "string"
                 }
             }
