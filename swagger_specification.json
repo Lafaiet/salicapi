@@ -224,12 +224,12 @@
                                 "description": "The number of seconds left in the current period",
                                 "type": "integer"
                             },
-                            "X-Total-Count": {
-                                "description": "Total number of objects attending your criteria",
-                                "type": "integer"
-                            },
                             "Retry-After": {
                                 "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Total number of objects attending your criteria",
                                 "type": "integer"
                             }
                         }
@@ -293,10 +293,6 @@
                             },
                             "X-Rate-Limit-Reset": {
                                 "description": "The number of seconds left in the current period",
-                                "type": "integer"
-                            },
-                            "X-Total-Count": {
-                                "description": "Total number of objects attending your criteria",
                                 "type": "integer"
                             },
                             "Retry-After": {
@@ -366,10 +362,6 @@
                                 "description": "The number of seconds left in the current period",
                                 "type": "integer"
                             },
-                            "X-Total-Count": {
-                                "description": "Total number of objects attending your criteria",
-                                "type": "integer"
-                            },
                             "Retry-After": {
                                 "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
                                 "type": "integer"
@@ -435,10 +427,6 @@
                             },
                             "X-Rate-Limit-Reset": {
                                 "description": "The number of seconds left in the current period",
-                                "type": "integer"
-                            },
-                            "X-Total-Count": {
-                                "description": "Total number of objects attending your criteria",
                                 "type": "integer"
                             },
                             "Retry-After": {
@@ -508,10 +496,6 @@
                                 "description": "The number of seconds left in the current period",
                                 "type": "integer"
                             },
-                            "X-Total-Count": {
-                                "description": "Total number of objects attending your criteria",
-                                "type": "integer"
-                            },
                             "Retry-After": {
                                 "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
                                 "type": "integer"
@@ -577,10 +561,6 @@
                             },
                             "X-Rate-Limit-Reset": {
                                 "description": "The number of seconds left in the current period",
-                                "type": "integer"
-                            },
-                            "X-Total-Count": {
-                                "description": "Total number of objects attending your criteria",
                                 "type": "integer"
                             },
                             "Retry-After": {
@@ -650,10 +630,6 @@
                                 "description": "The number of seconds left in the current period",
                                 "type": "integer"
                             },
-                            "X-Total-Count": {
-                                "description": "Total number of objects attending your criteria",
-                                "type": "integer"
-                            },
                             "Retry-After": {
                                 "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
                                 "type": "integer"
@@ -719,10 +695,6 @@
                             },
                             "X-Rate-Limit-Reset": {
                                 "description": "The number of seconds left in the current period",
-                                "type": "integer"
-                            },
-                            "X-Total-Count": {
-                                "description": "Total number of objects attending your criteria",
                                 "type": "integer"
                             },
                             "Retry-After": {
@@ -792,10 +764,6 @@
                                 "description": "The number of seconds left in the current period",
                                 "type": "integer"
                             },
-                            "X-Total-Count": {
-                                "description": "Total number of objects attending your criteria",
-                                "type": "integer"
-                            },
                             "Retry-After": {
                                 "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
                                 "type": "integer"
@@ -856,10 +824,6 @@
                                 "description": "The number of seconds left in the current period",
                                 "type": "integer"
                             },
-                            "X-Total-Count": {
-                                "description": "Total number of objects attending your criteria",
-                                "type": "integer"
-                            },
                             "Retry-After": {
                                 "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
                                 "type": "integer"
@@ -912,10 +876,6 @@
                             },
                             "X-Rate-Limit-Reset": {
                                 "description": "The number of seconds left in the current period",
-                                "type": "integer"
-                            },
-                            "X-Total-Count": {
-                                "description": "Total number of objects attending your criteria",
                                 "type": "integer"
                             },
                             "Retry-After": {
@@ -1033,6 +993,10 @@
                                 "description": "The number of seconds left in the current period",
                                 "type": "integer"
                             },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
+                            },
                             "X-Total-Count": {
                                 "description": "Total number of objects attending your criteria",
                                 "type": "integer"
@@ -1120,10 +1084,6 @@
                             },
                             "X-Rate-Limit-Reset": {
                                 "description": "The number of seconds left in the current period",
-                                "type": "integer"
-                            },
-                            "X-Total-Count": {
-                                "description": "Total number of objects attending your criteria",
                                 "type": "integer"
                             },
                             "Retry-After": {
@@ -1245,6 +1205,10 @@
                             },
                             "X-Rate-Limit-Reset": {
                                 "description": "The number of seconds left in the current period",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
                                 "type": "integer"
                             },
                             "X-Total-Count": {
