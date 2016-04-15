@@ -223,6 +223,10 @@
                             "X-Total-Count": {
                                 "description": "Total number of objects attending your criteria",
                                 "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
                             }
                         }
                     },
@@ -273,6 +277,28 @@
                         "description": "successful operation",
                         "schema": {
                             "$ref": "#/definitions/Resumo"
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "The number of allowed requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "The number of remaining requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "The number of seconds left in the current period",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Total number of objects attending your criteria",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
+                            }
                         }
                     },
                     "400": {
@@ -322,6 +348,28 @@
                         "description": "successful operation",
                         "schema": {
                             "$ref": "#/definitions/Providencia"
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "The number of allowed requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "The number of remaining requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "The number of seconds left in the current period",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Total number of objects attending your criteria",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
+                            }
                         }
                     },
                     "400": {
@@ -371,6 +419,28 @@
                         "description": "successful operation",
                         "schema": {
                             "$ref": "#/definitions/Acessibilidade"
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "The number of allowed requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "The number of remaining requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "The number of seconds left in the current period",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Total number of objects attending your criteria",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
+                            }
                         }
                     },
                     "400": {
@@ -420,6 +490,28 @@
                         "description": "successful operation",
                         "schema": {
                             "$ref": "#/definitions/Democratizacao"
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "The number of allowed requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "The number of remaining requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "The number of seconds left in the current period",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Total number of objects attending your criteria",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
+                            }
                         }
                     },
                     "400": {
@@ -469,6 +561,28 @@
                         "description": "successful operation",
                         "schema": {
                             "$ref": "#/definitions/FichaTecnica"
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "The number of allowed requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "The number of remaining requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "The number of seconds left in the current period",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Total number of objects attending your criteria",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
+                            }
                         }
                     },
                     "400": {
@@ -518,6 +632,28 @@
                         "description": "successful operation",
                         "schema": {
                             "$ref": "#/definitions/Objetivos"
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "The number of allowed requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "The number of remaining requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "The number of seconds left in the current period",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Total number of objects attending your criteria",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
+                            }
                         }
                     },
                     "400": {
@@ -567,6 +703,28 @@
                         "description": "successful operation",
                         "schema": {
                             "$ref": "#/definitions/Etapa"
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "The number of allowed requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "The number of remaining requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "The number of seconds left in the current period",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Total number of objects attending your criteria",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
+                            }
                         }
                     },
                     "400": {
@@ -616,6 +774,28 @@
                         "description": "successful operation",
                         "schema": {
                             "$ref": "#/definitions/Justificativa"
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "The number of allowed requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "The number of remaining requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "The number of seconds left in the current period",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Total number of objects attending your criteria",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
+                            }
                         }
                     },
                     "400": {
@@ -658,6 +838,28 @@
                             "items": {
                                 "$ref": "#/definitions/Area"
                             }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "The number of allowed requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "The number of remaining requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "The number of seconds left in the current period",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Total number of objects attending your criteria",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
+                            }
                         }
                     },
                     "400": {
@@ -693,6 +895,28 @@
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/Segmento"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "The number of allowed requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "The number of remaining requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "The number of seconds left in the current period",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Total number of objects attending your criteria",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
                             }
                         }
                     },
@@ -879,6 +1103,28 @@
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/Doacao"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "The number of allowed requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "The number of remaining requests in the current period",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "The number of seconds left in the current period",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Total number of objects attending your criteria",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Seconds to retry after or the http date when the Rate Limit will be reset.",
+                                "type": "integer"
                             }
                         }
                     },
