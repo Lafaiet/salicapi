@@ -16,10 +16,10 @@ schemes:
   - http
 consumes:
   - application/json
-  - text/xml
+  - application/xml
 produces:
   - application/json
-  - text/html
+  - application/xml
 paths:
   '/projetos/{pronac}':
     get:
