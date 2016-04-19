@@ -14,6 +14,12 @@ host: '10.0.1.168:8000'
 basePath: /alpha
 schemes:
   - http
+consumes:
+  - application/json
+  - text/xml
+produces:
+  - application/json
+  - text/html
 paths:
   '/projetos/{pronac}':
     get:
@@ -21,9 +27,6 @@ paths:
         - 'projetos : Projects related data'
       summary: Finds project by Pronac number
       operationId: pronac_number
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: path
           name: pronac
@@ -73,9 +76,6 @@ paths:
         - 'projetos : Projects related data'
       summary: Finds projects given a combination of field values
       operationId: project_list
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: query
           name: limit
@@ -188,9 +188,6 @@ paths:
         - 'projetos : Projects related data'
       summary: "Given a project's pronac number, returns its description"
       operationId: projet_description
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: path
           name: pronac
@@ -234,9 +231,6 @@ paths:
         - 'projetos : Projects related data'
       summary: "Given a project's pronac number, returns the course of action that was taken"
       operationId: projet_providence
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: path
           name: pronac
@@ -280,9 +274,6 @@ paths:
         - 'projetos : Projects related data'
       summary: "Given a project's pronac number, returns info related to Accessibility"
       operationId: projet_acessibility
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: path
           name: pronac
@@ -326,9 +317,6 @@ paths:
         - 'projetos : Projects related data'
       summary: "Given a project's pronac number, returns info related to Democratization"
       operationId: projet_democratization
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: path
           name: pronac
@@ -372,9 +360,6 @@ paths:
         - 'projetos : Projects related data'
       summary: "Given a project's pronac number, returns technical information"
       operationId: projet_technical
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: path
           name: pronac
@@ -418,9 +403,6 @@ paths:
         - 'projetos : Projects related data'
       summary: "Given a project's pronac number, returns info related to its objectives"
       operationId: projet_objectives
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: path
           name: pronac
@@ -464,9 +446,6 @@ paths:
         - 'projetos : Projects related data'
       summary: "Given a project's pronac number, returns info depicting the current stage of development"
       operationId: projet_jstage
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: path
           name: pronac
@@ -510,9 +489,6 @@ paths:
         - 'projetos : Projects related data'
       summary: "Given a project's pronac number, returns info related to its justification"
       operationId: projet_justification
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: path
           name: pronac
@@ -556,9 +532,6 @@ paths:
         - 'projetos : Projects related data'
       summary: Returns all project areas available in the database
       operationId: projet_areas
-      produces:
-        - application/json
-        - application/xml
       responses:
         '200':
           description: successful operation
@@ -593,9 +566,6 @@ paths:
         - 'projetos : Projects related data'
       summary: Returns all project segments available in the database
       operationId: projet_segments
-      produces:
-        - application/json
-        - application/xml
       responses:
         '200':
           description: successful operation
@@ -630,9 +600,6 @@ paths:
         - 'incentivadores : Donators related data'
       summary: Finds a donator given a combination of field values
       operationId: Donators related data
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: query
           name: limit
@@ -719,9 +686,6 @@ paths:
         - 'incentivadores : Donators related data'
       summary: "Given a donator's CGC or CPF, returns all of his donations made"
       operationId: donator_donations
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: query
           name: limit
@@ -782,9 +746,6 @@ paths:
         - 'proponentes : Proponents related data'
       summary: Finds a proposer given a combination of field values
       operationId: proponente
-      produces:
-        - application/json
-        - application/xml
       parameters:
         - in: query
           name: limit
