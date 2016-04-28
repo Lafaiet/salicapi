@@ -22,7 +22,7 @@ produces:
   - application/xml
 
 paths:
-  '/projetos/{pronac}':
+  '/projetos/{PRONAC}':
     get:
       tags:
         - 'projetos : Projects related data'
@@ -30,7 +30,7 @@ paths:
       operationId: pronac_number
       parameters:
         - in: path
-          name: pronac
+          name: PRONAC
           description: PRONAC value to be used to filter the query
           required: true
           type: integer
@@ -94,7 +94,7 @@ paths:
           default: 0
           minimum: 0
         - in: query
-          name: pronac
+          name: PRONAC
           description: PRONAC value to be used to filter the query
           required: false
           type: integer
@@ -183,7 +183,7 @@ paths:
           description: Internal Error
           schema:
             $ref: '#/definitions/Error'
-  '/projetos/{pronac}/resumo':
+  '/projetos/{PRONAC}/resumo':
     get:
       tags:
         - 'projetos : Projects related data'
@@ -191,7 +191,7 @@ paths:
       operationId: projet_description
       parameters:
         - in: path
-          name: pronac
+          name: PRONAC
           description: PRONAC value to be used to filter the query
           required: true
           type: integer
@@ -226,7 +226,7 @@ paths:
           description: Internal Error
           schema:
             $ref: '#/definitions/Error'
-  '/projetos/{pronac}/providencia':
+  '/projetos/{PRONAC}/providencia':
     get:
       tags:
         - 'projetos : Projects related data'
@@ -234,7 +234,7 @@ paths:
       operationId: projet_providence
       parameters:
         - in: path
-          name: pronac
+          name: PRONAC
           description: PRONAC value to be used to filter the query
           required: true
           type: integer
@@ -269,7 +269,7 @@ paths:
           description: Internal Error
           schema:
             $ref: '#/definitions/Error'
-  '/projetos/{pronac}/acessibilidade':
+  '/projetos/{PRONAC}/acessibilidade':
     get:
       tags:
         - 'projetos : Projects related data'
@@ -277,7 +277,7 @@ paths:
       operationId: projet_acessibility
       parameters:
         - in: path
-          name: pronac
+          name: PRONAC
           description: PRONAC value to be used to filter the query
           required: true
           type: integer
@@ -312,7 +312,7 @@ paths:
           description: Internal Error
           schema:
             $ref: '#/definitions/Error'
-  '/projetos/{pronac}/democratizacao':
+  '/projetos/{PRONAC}/democratizacao':
     get:
       tags:
         - 'projetos : Projects related data'
@@ -320,7 +320,7 @@ paths:
       operationId: projet_democratization
       parameters:
         - in: path
-          name: pronac
+          name: PRONAC
           description: PRONAC value to be used to filter the query
           required: true
           type: integer
@@ -355,7 +355,7 @@ paths:
           description: Internal Error
           schema:
             $ref: '#/definitions/Error'
-  '/projetos/{pronac}/fichatecnica':
+  '/projetos/{PRONAC}/fichatecnica':
     get:
       tags:
         - 'projetos : Projects related data'
@@ -363,7 +363,7 @@ paths:
       operationId: projet_technical
       parameters:
         - in: path
-          name: pronac
+          name: PRONAC
           description: PRONAC value to be used to filter the query
           required: true
           type: integer
@@ -398,7 +398,7 @@ paths:
           description: Internal Error
           schema:
             $ref: '#/definitions/Error'
-  '/projetos/{pronac}/objetivos':
+  '/projetos/{PRONAC}/objetivos':
     get:
       tags:
         - 'projetos : Projects related data'
@@ -406,7 +406,7 @@ paths:
       operationId: projet_objectives
       parameters:
         - in: path
-          name: pronac
+          name: PRONAC
           description: PRONAC value to be used to filter the query
           required: true
           type: integer
@@ -441,7 +441,7 @@ paths:
           description: Internal Error
           schema:
             $ref: '#/definitions/Error'
-  '/projetos/{pronac}/etapa':
+  '/projetos/{PRONAC}/etapa':
     get:
       tags:
         - 'projetos : Projects related data'
@@ -449,7 +449,7 @@ paths:
       operationId: projet_jstage
       parameters:
         - in: path
-          name: pronac
+          name: PRONAC
           description: PRONAC value to be used to filter the query
           required: true
           type: integer
@@ -484,7 +484,7 @@ paths:
           description: Internal Error
           schema:
             $ref: '#/definitions/Error'
-  '/projetos/{pronac}/justificativa':
+  '/projetos/{PRONAC}/justificativa':
     get:
       tags:
         - 'projetos : Projects related data'
@@ -492,7 +492,7 @@ paths:
       operationId: projet_justification
       parameters:
         - in: path
-          name: pronac
+          name: PRONAC
           description: PRONAC value to be used to filter the query
           required: true
           type: integer
@@ -882,6 +882,9 @@ definitions:
     properties:
       nome:
         type: string
+      cgccpf:
+        type: string
+        format: int64
       responsavel:
         type: string
       tipo_pessoa:
@@ -897,6 +900,9 @@ definitions:
         type: string
       responsavel:
         type: string
+      cgccpf:
+        type: string
+        format: int64
       tipo_pessoa:
         type: string
       UF:
