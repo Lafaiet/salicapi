@@ -10,7 +10,7 @@ info:
   license:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0'
-host: '10.0.1.168:8000'
+host: '10.0.1.250:8000'
 basePath: /alpha
 schemes:
   - http
