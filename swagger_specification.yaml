@@ -144,7 +144,7 @@ paths:
           format: date
         - in: query
           name: extra_fields
-          description: 'If true, returns additional fields: providencia, acessibilidade, democratizacao, objetivos, etapa, justificativa '
+          description: 'If true, returns additional fields: providencia, acessibilidade, democratizacao, objetivos, etapa, ficha_tecnica, justificativa, sinopse, impacto_ambiental, especificacao_tecnica, estrategia_execucao '
           required: false
           type: boolean
           default: false
