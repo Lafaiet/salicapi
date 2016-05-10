@@ -14,12 +14,10 @@ host: '10.0.1.250:8000'
 basePath: /alpha
 schemes:
   - http
-consumes:
-  - application/json
-  - application/xml
 produces:
   - application/json
   - application/xml
+  - text/csv
 
 paths:
   '/projetos/{PRONAC}':
