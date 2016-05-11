@@ -5,11 +5,11 @@ info:
   title: SALIC API
   termsOfService: 'http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-'
   contact:
-    name: Lafaiet Castro e Silva
-    email: lafaietsilva@gmail.com
+    name: Laboratório de Dados Abertos do curso de Gestão da Informação da Universidade Federal de Goiás
+    email: ldaufg@gmail.com
   license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0'
+    name: ODbL 1.0
+    url: 'http://opendatacommons.org/licenses/odbl/summary/'
 host: '10.0.1.250:8000'
 basePath: /alpha
 schemes:
@@ -24,18 +24,18 @@ paths:
     get:
       tags:
         - 'projetos : Projects related data'
-      summary: Finds project by Pronac number
+      summary: Busca um projeto por meio de seu número PRONAC
       operationId: pronac_number
       parameters:
         - in: path
           name: PRONAC
-          description: PRONAC value to be used to filter the query
+          description: Número do PRONAC
           required: true
           type: integer
           format: int64
         - in: query
           name: extra_fields
-          description: 'If true, returns additional fields: providencia, acessibilidade, democratizacao, objetivos, etapa, ficha_tecnica, justificativa, sinopse, impacto_ambiental, especificacao_tecnica, estrategia_execucao '
+          description: 'Se true, Retorna campos adicionais: providencia, acessibilidade, democratizacao, objetivos, etapa, ficha_tecnica, justificativa, sinopse, impacto_ambiental, especificacao_tecnica, estrategia_execucao '
           required: false
           type: boolean
           default: false
@@ -73,12 +73,12 @@ paths:
     get:
       tags:
         - 'projetos : Projects related data'
-      summary: Finds projects given a combination of field values
+      summary: Busca projetos dado uma combinação de valores diversos de pesquisa
       operationId: project_list
       parameters:
         - in: query
           name: limit
-          description: number of projects to return
+          description: Número de projetos a serem retornados
           required: false
           type: integer
           default: 10
@@ -86,63 +86,63 @@ paths:
           maximum: 100
         - in: query
           name: offset
-          description: paging number of results
+          description: Número de paginação de resultados
           required: false
           type: integer
           default: 0
           minimum: 0
         - in: query
           name: PRONAC
-          description: PRONAC value to be used to filter the query
+          description: Número do PRONAC
           required: false
           type: integer
           format: int64
         - in: query
           name: proponente
-          description: "who's proposing the project"
+          description: Proponente do projeto
           required: false
           type: string
         - in: query
           name: cgccpf
-          description: Cgc/Cpf of the proposer
+          description: Cgc/Cpf do proponente
           required: false
           type: string
           format: int64
         - in: query
           name: nome
-          description: project name
+          description: Nome do projeto
           required: false
           type: string
         - in: query
           name: area
-          description: project area
+          description: Área do projeto
           required: false
           type: string
         - in: query
           name: segmento
-          description: project segment
+          description: Segmento do projeto
           required: false
           type: string
         - in: query
           name: UF
-          description: state of origin
+          description: Estado de origem
           required: false
           type: string
         - in: query
           name: data_inicio
-          description: Begining date in format yyyy-mm-dd
+          description: Data de início no formato aaaa-mm-dd
           required: false
           type: string
           format: date
         - in: query
           name: data_termino
-          description: Ending date in format yyyy-mm-dd
+          description: Data de finalização no formato aaaa-mm-dd
           required: false
           type: string
           format: date
         - in: query
           name: extra_fields
-          description: 'If true, returns additional fields: providencia, acessibilidade, democratizacao, objetivos, etapa, ficha_tecnica, justificativa, sinopse, impacto_ambiental, especificacao_tecnica, estrategia_execucao '
+          description: 'Se true, Retorna campos adicionais: providencia, acessibilidade, democratizacao, objetivos, etapa, ficha_tecnica, justificativa, sinopse, impacto_ambiental, especificacao_tecnica, estrategia_execucao '
           required: false
           type: boolean
           default: false
@@ -185,12 +185,12 @@ paths:
     get:
       tags:
         - 'projetos : Projects related data'
-      summary: "Given a project's pronac number, returns its description"
+      summary: "Dado o número de PRONAC de um projeto, retorna seu resumo"
       operationId: projet_description
       parameters:
         - in: path
           name: PRONAC
-          description: PRONAC value to be used to filter the query
+          description: Número do PRONAC
           required: true
           type: integer
           format: int64
@@ -228,12 +228,12 @@ paths:
     get:
       tags:
         - 'projetos : Projects related data'
-      summary: "Given a project's pronac number, returns the course of action that was taken"
+      summary: "Dado o número de PRONAC de um projeto, retorna a descrição da providência tomada"
       operationId: projet_providence
       parameters:
         - in: path
           name: PRONAC
-          description: PRONAC value to be used to filter the query
+          description: Número do PRONAC
           required: true
           type: integer
           format: int64
@@ -271,12 +271,12 @@ paths:
     get:
       tags:
         - 'projetos : Projects related data'
-      summary: "Given a project's pronac number, returns info related to Accessibility"
+      summary: "Dado o número de PRONAC de um projeto, retorna informações relativas a Acessibilidade"
       operationId: projet_acessibility
       parameters:
         - in: path
           name: PRONAC
-          description: PRONAC value to be used to filter the query
+          description: Número do PRONAC
           required: true
           type: integer
           format: int64
@@ -314,12 +314,12 @@ paths:
     get:
       tags:
         - 'projetos : Projects related data'
-      summary: "Given a project's pronac number, returns info related to Democratization"
+      summary: "Dado o número de PRONAC de um projeto, retorna informações relativas a Democratização"
       operationId: projet_democratization
       parameters:
         - in: path
           name: PRONAC
-          description: PRONAC value to be used to filter the query
+          description: Número do PRONAC
           required: true
           type: integer
           format: int64
@@ -357,12 +357,12 @@ paths:
     get:
       tags:
         - 'projetos : Projects related data'
-      summary: "Given a project's pronac number, returns technical information"
+      summary: "Dado o número de PRONAC de um projeto, retorna sua ficha técnica"
       operationId: projet_technical
       parameters:
         - in: path
           name: PRONAC
-          description: PRONAC value to be used to filter the query
+          description: Número do PRONAC
           required: true
           type: integer
           format: int64
@@ -400,12 +400,12 @@ paths:
     get:
       tags:
         - 'projetos : Projects related data'
-      summary: "Given a project's pronac number, returns info related to its objectives"
+      summary: "Dado o número de PRONAC de um projeto, retorna informações relativas ao seu Objetivo"
       operationId: projet_objectives
       parameters:
         - in: path
           name: PRONAC
-          description: PRONAC value to be used to filter the query
+          description: Número do PRONAC
           required: true
           type: integer
           format: int64
@@ -443,12 +443,12 @@ paths:
     get:
       tags:
         - 'projetos : Projects related data'
-      summary: "Given a project's pronac number, returns info depicting the current stage of development"
+      summary: "Dado o número de PRONAC de um projeto, retorna informações relativas a Etapa de desenvolvimento"
       operationId: projet_jstage
       parameters:
         - in: path
           name: PRONAC
-          description: PRONAC value to be used to filter the query
+          description: Número do PRONAC
           required: true
           type: integer
           format: int64
@@ -486,12 +486,12 @@ paths:
     get:
       tags:
         - 'projetos : Projects related data'
-      summary: "Given a project's pronac number, returns info related to its justification"
+      summary: "Dado o número de PRONAC de um projeto, retorna informações relativas a sua Justificativa"
       operationId: projet_justification
       parameters:
         - in: path
           name: PRONAC
-          description: PRONAC value to be used to filter the query
+          description: Número do PRONAC
           required: true
           type: integer
           format: int64
@@ -530,7 +530,7 @@ paths:
     get:
       tags:
         - 'projetos : Projects related data'
-      summary: "Given a project's PRONAC, returns the amount received by each donator"
+      summary: "Dado o número de PRONAC de um projeto, retorna informações relativas as captações obtidas"
       operationId: projetos_donation
       parameters:
         - in: query
@@ -550,7 +550,7 @@ paths:
           minimum: 0
         - in: path
           name: PRONAC
-          description: PRONAC value to be used to filter the query
+          description: Número do PRONAC
           required: true
           type: integer
           format: int64
@@ -591,7 +591,7 @@ paths:
     get:
       tags:
         - 'projetos : Projects related data'
-      summary: Returns all project areas available in the database
+      summary: Retorna todas as áreas disponíveis
       operationId: projet_areas
       responses:
         '200':
@@ -625,7 +625,7 @@ paths:
     get:
       tags:
         - 'projetos : Projects related data'
-      summary: Returns all project segments available in the database
+      summary: Retorna todos os segmentos disponíveis
       operationId: projet_segments
       responses:
         '200':
@@ -659,12 +659,12 @@ paths:
     get:
       tags:
         - 'preprojetos : Pre Projects related data'
-      summary: Finds pre projects given a combination of field values
+      summary: Busca preprojetos dado uma combinação de valores diversos de pesquisa
       operationId: preproject_list
       parameters:
         - in: query
           name: limit
-          description: number of projects to return
+          description: Número de projetos a serem retornados
           required: false
           type: integer
           default: 10
@@ -672,31 +672,31 @@ paths:
           maximum: 100
         - in: query
           name: offset
-          description: paging number of results
+          description: Número de paginação de resultados
           required: false
           type: integer
           default: 0
           minimum: 0
         - in: query
           name: nome
-          description: preproject name
+          description: Nome do projeto
           required: false
           type: string
         - in: query
           name: data_inicio
-          description: Begining date in format yyyy-mm-dd
+          description: Data de início no formato aaaa-mm-dd
           required: false
           type: string
           format: date
         - in: query
           name: data_termino
-          description: Ending date in format yyyy-mm-dd
+          description: Data de finalização no formato aaaa-mm-dd
           required: false
           type: string
           format: date
         - in: query
           name: extra_fields
-          description: 'If true, returns additional fields: resumo, acessibilidade, democratizacao, etapa, objetivos, justificativa, sinopse, impacto_ambiental, especificacao_tecnica, estrategia_execucao, ficha_tecnica' 
+          description: 'Se true, Retorna campos adicionais:  resumo, acessibilidade, democratizacao, etapa, objetivos, justificativa, sinopse, impacto_ambiental, especificacao_tecnica, estrategia_execucao, ficha_tecnica' 
           required: false
           type: boolean
           default: false
@@ -739,12 +739,12 @@ paths:
     get:
       tags:
         - 'incentivadores : Donators related data'
-      summary: Finds a donator given a combination of field values
+      summary: Busca incentivadores dado uma combinação de valores diversos de pesquisa
       operationId: Donators related data
       parameters:
         - in: query
           name: limit
-          description: number of donators to return
+          description: Número de incentivadores a serem retornados
           required: false
           type: integer
           default: 10
@@ -752,35 +752,35 @@ paths:
           maximum: 100
         - in: query
           name: offset
-          description: paging number of results
+          description: Número de paginação de resultados
           required: false
           type: integer
           default: 0
           minimum: 0
         - in: query
           name: nome
-          description: "donator's name"
+          description: Nome do incentivador
           required: false
           type: string
         - in: query
           name: cgccpf
-          description: Cgc/Cpf of the donator
+          description: Cgc/Cpf do incentivador
           required: false
           type: string
           format: int64
         - in: query
           name: municipio
-          description: city of origin
+          description: Cidade
           required: false
           type: string
         - in: query
           name: UF
-          description: state of origin
+          description: Estado
           required: false
           type: string
         - in: query
           name: tipo_pessoa
-          description: state of origin
+          description: Tipo de pessoa
           enum:
             - fisica
             - juridica
@@ -825,27 +825,12 @@ paths:
     get:
       tags:
         - 'incentivadores : Donators related data'
-      summary: "Given a donator's CGC or CPF, returns all of his donations made"
+      summary: "Dado o CGC ou CPF de um doador, retorna informações relativas a todas as doações feitas"
       operationId: donator_donations
       parameters:
-        - in: query
-          name: limit
-          description: number of proponents to return
-          required: false
-          type: integer
-          default: 10
-          minimum: 1
-          maximum: 100
-        - in: query
-          name: offset
-          description: paging number of results
-          required: false
-          type: integer
-          default: 0
-          minimum: 0
         - in: path
           name: cgccpf
-          description: "Donator's CGC or CPF"
+          description: Cgc/Cpf do incentivador
           required: true
           type: string
           format: int64
@@ -885,12 +870,12 @@ paths:
     get:
       tags:
         - 'proponentes : Proponents related data'
-      summary: Finds a proposer given a combination of field values
+      summary: Busca proponentes dado uma combinação de valores diversos de pesquisa
       operationId: proponente
       parameters:
         - in: query
           name: limit
-          description: number of proponents to return
+          description: Número de proponentes a serem retornados
           required: false
           type: integer
           default: 10
@@ -898,35 +883,35 @@ paths:
           maximum: 100
         - in: query
           name: offset
-          description: paging number of results
+          description: Número de paginação de resultados
           required: false
           type: integer
           default: 0
           minimum: 0
         - in: query
           name: nome
-          description: name os the proposer
+          description: Nome do proponente
           required: false
           type: string
         - in: query
           name: cgccpf
-          description: Cgc/Cpf of the proposer
+          description: Cgc/Cpf do proponente
           required: false
           type: string
           format: int64
         - in: query
           name: municipio
-          description: city of origin
+          description: Cidade
           required: false
           type: string
         - in: query
           name: UF
-          description: state of origin
+          description: Estado
           required: false
           type: string
         - in: query
           name: tipo_pessoa
-          description: state of origin
+          description: Tipo de pessoa
           enum:
             - fisica
             - juridica
