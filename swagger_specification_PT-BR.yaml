@@ -23,7 +23,7 @@ paths:
   '/projetos/{PRONAC}':
     get:
       tags:
-        - 'projetos : Projects related data'
+        - 'projetos : Dados relativos a Projetos'
       summary: Busca um projeto por meio de seu número PRONAC
       operationId: pronac_number
       parameters:
@@ -72,7 +72,7 @@ paths:
   /projetos/:
     get:
       tags:
-        - 'projetos : Projects related data'
+        - 'projetos : Dados relativos a Projetos'
       summary: Busca projetos dado uma combinação de valores diversos de pesquisa
       operationId: project_list
       parameters:
@@ -184,7 +184,7 @@ paths:
   '/projetos/{PRONAC}/resumo':
     get:
       tags:
-        - 'projetos : Projects related data'
+        - 'projetos : Dados relativos a Projetos'
       summary: "Dado o número de PRONAC de um projeto, retorna seu resumo"
       operationId: projet_description
       parameters:
@@ -227,7 +227,7 @@ paths:
   '/projetos/{PRONAC}/providencia':
     get:
       tags:
-        - 'projetos : Projects related data'
+        - 'projetos : Dados relativos a Projetos'
       summary: "Dado o número de PRONAC de um projeto, retorna a descrição da providência tomada"
       operationId: projet_providence
       parameters:
@@ -270,7 +270,7 @@ paths:
   '/projetos/{PRONAC}/acessibilidade':
     get:
       tags:
-        - 'projetos : Projects related data'
+        - 'projetos : Dados relativos a Projetos'
       summary: "Dado o número de PRONAC de um projeto, retorna informações relativas a Acessibilidade"
       operationId: projet_acessibility
       parameters:
@@ -313,7 +313,7 @@ paths:
   '/projetos/{PRONAC}/democratizacao':
     get:
       tags:
-        - 'projetos : Projects related data'
+        - 'projetos : Dados relativos a Projetos'
       summary: "Dado o número de PRONAC de um projeto, retorna informações relativas a Democratização"
       operationId: projet_democratization
       parameters:
@@ -356,7 +356,7 @@ paths:
   '/projetos/{PRONAC}/fichatecnica':
     get:
       tags:
-        - 'projetos : Projects related data'
+        - 'projetos : Dados relativos a Projetos'
       summary: "Dado o número de PRONAC de um projeto, retorna sua ficha técnica"
       operationId: projet_technical
       parameters:
@@ -399,7 +399,7 @@ paths:
   '/projetos/{PRONAC}/objetivos':
     get:
       tags:
-        - 'projetos : Projects related data'
+        - 'projetos : Dados relativos a Projetos'
       summary: "Dado o número de PRONAC de um projeto, retorna informações relativas ao seu Objetivo"
       operationId: projet_objectives
       parameters:
@@ -442,7 +442,7 @@ paths:
   '/projetos/{PRONAC}/etapa':
     get:
       tags:
-        - 'projetos : Projects related data'
+        - 'projetos : Dados relativos a Projetos'
       summary: "Dado o número de PRONAC de um projeto, retorna informações relativas a Etapa de desenvolvimento"
       operationId: projet_jstage
       parameters:
@@ -485,7 +485,7 @@ paths:
   '/projetos/{PRONAC}/justificativa':
     get:
       tags:
-        - 'projetos : Projects related data'
+        - 'projetos : Dados relativos a Projetos'
       summary: "Dado o número de PRONAC de um projeto, retorna informações relativas a sua Justificativa"
       operationId: projet_justification
       parameters:
@@ -529,7 +529,7 @@ paths:
   '/projetos/{PRONAC}/captacoes':
     get:
       tags:
-        - 'projetos : Projects related data'
+        - 'projetos : Dados relativos a Projetos'
       summary: "Dado o número de PRONAC de um projeto, retorna informações relativas as captações obtidas"
       operationId: projetos_donation
       parameters:
@@ -590,7 +590,7 @@ paths:
   /projetos/areas:
     get:
       tags:
-        - 'projetos : Projects related data'
+        - 'projetos : Dados relativos a Projetos'
       summary: Retorna todas as áreas disponíveis
       operationId: projet_areas
       responses:
@@ -624,7 +624,7 @@ paths:
   /projetos/segmentos:
     get:
       tags:
-        - 'projetos : Projects related data'
+        - 'projetos : Dados relativos a Projetos'
       summary: Retorna todos os segmentos disponíveis
       operationId: projet_segments
       responses:
@@ -658,7 +658,7 @@ paths:
   /preprojetos/:
     get:
       tags:
-        - 'preprojetos : Pre Projects related data'
+        - 'preprojetos : Dados relativos a Pré Projetos'
       summary: Busca preprojetos dado uma combinação de valores diversos de pesquisa
       operationId: preproject_list
       parameters:
@@ -738,7 +738,7 @@ paths:
   /incentivadores/:
     get:
       tags:
-        - 'incentivadores : Donators related data'
+        - 'incentivadores : Dados relativos a Incentivadores'
       summary: Busca incentivadores dado uma combinação de valores diversos de pesquisa
       operationId: Donators related data
       parameters:
@@ -824,7 +824,7 @@ paths:
   '/incentivadores/{cgccpf}/doacoes':
     get:
       tags:
-        - 'incentivadores : Donators related data'
+        - 'incentivadores : Dados relativos a Incentivadores'
       summary: "Dado o CGC ou CPF de um doador, retorna informações relativas a todas as doações feitas"
       operationId: donator_donations
       parameters:
@@ -869,7 +869,7 @@ paths:
   /proponentes/:
     get:
       tags:
-        - 'proponentes : Proponents related data'
+        - 'proponentes : Dados relativos a Proponentes'
       summary: Busca proponentes dado uma combinação de valores diversos de pesquisa
       operationId: proponente
       parameters:
