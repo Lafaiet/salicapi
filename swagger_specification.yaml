@@ -1,15 +1,15 @@
 swagger: '2.0'
 info:
   description: "** This is an api for accesing data from the SALIC portal.** \n\nSALIC is a system for gathering data regarding cultural projetcs proposals\nto be financed by the Brazilian Culture Ministry through the Law of Incentive\nfor Culture (**Rouanet Law**).\n Find more info [here](http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-)\n\n\n\n\n# **Rate Limiting** \n\nFor requests using Basic Authentication, you can make up to  **1000 requests per day**. Unauthenticated requests are associated with your IP address, and not the user making requests. \n\nThe headers tell you everything you need to know about your current rate limit status:\n<table> <tr> <td>**Header Name**</td> <td>**Description**</td> </tr>\n<tr> <td>X-RateLimit-Limit</td> <td>The maximum number of requests that the consumer is permitted to make per day.</td> </tr>\n<tr> <td>X-RateLimit-Remaining</td> <td>The number of requests remaining in the current rate limit window.</td> </tr>\n<tr> <td>X-RateLimit-Reset</td> <td>The time at which the current rate limit window resets in UTC epoch seconds.</td> </tr>\n<tr> <td>Retry-After</td> <td>Seconds to retry after or the http date when the Rate Limit will be reset. </td> </tr>\n</table>\n\n\n # **Pagination** \n\n For endpoints that might return a large number of results, the API provides a pagination system. Just use <code>limit</code> **[1-100]** and <code>offset</code> **[0-Total-Count]** to traverse through the results. A header field named <code>X-Total-Count</code> will be sent, denoting the total number of entries at the database."
-  version: 0.0.1
+  version: 0.0.2
   title: SALIC API
   termsOfService: 'http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-'
   contact:
-    name: Lafaiet Castro e Silva
-    email: lafaietsilva@gmail.com
+    name: Laboratório de Dados Abertos do curso de Gestão da Informação da Universidade Federal de Goiás
+    email: ldaufg@gmail.com
   license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0'
+    name: ODbL 1.0
+    url: 'http://opendatacommons.org/licenses/odbl/summary/'
 host: '10.0.1.250:8000'
 basePath: /alpha
 schemes:
