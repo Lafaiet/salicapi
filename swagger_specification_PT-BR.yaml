@@ -167,7 +167,7 @@ paths:
               description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
             X-Total-Count:
-              description: Total number of objects attending your criteria
+              description: Número total de objetos que atendem seu critério de busca
               type: integer
         '404':
           description: Projetos com esses parâmetros não encontrados
@@ -721,7 +721,7 @@ paths:
               description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
             X-Total-Count:
-              description: Total number of objects attending your criteria
+              description: Número total de objetos que atendem seu critério de busca
               type: integer
         '404':
           description: Projetos com esses parâmetros não encontrados
@@ -807,7 +807,7 @@ paths:
               description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
             X-Total-Count:
-              description: Total number of objects attending your criteria
+              description: Número total de objetos que atendem seu critério de busca
               type: integer
         '404':
           description: No donator was found with your criteria
@@ -938,7 +938,7 @@ paths:
               description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
             X-Total-Count:
-              description: Total number of objects attending your criteria
+              description: Número total de objetos que atendem seu critério de busca
               type: integer
         '404':
           description: Projeto com PRONAC fornecido não encontrado
