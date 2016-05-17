@@ -613,7 +613,7 @@ paths:
             Retry-After:
               description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '404'':
+        '404':
           description: No project area available
           schema:
             $ref: '#/definitions/Error'
