@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  description: "**[English version](http://lafa.mine.nu/salicapi/doc/en/)** \n\n ** Essa é uma API aberta para acesso aos dados do portal SALIC.** \n\nSALIC é um sistema que reúne dados a respeito de propostas de projetos culturais a serem incentivados pelo Ministério da Cultura (**MINC**) por meio da lei Rouanet. Veja mais informações [aqui](http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-).\n\n\n\n\n# **Formatos de Exportação** \n\n Atualmente a API suporta exportação dos dados nos formatos * <code>JSON</code>(padrão) * * <code>XML</code> e * <code>CSV</code>. A escolha do formato deve ser definido a cada chamada, por meio do campo de cabeçalho <code>Accept</code>. \n\n # **Limitação de uso** \n\nPara requisições sem autenticação, você pode fazer até **2000 requisições diárias**. Requisições não autenticadas estão ligadas ao endereço IP de origem, não ao usuário fazendo a requisição. \n\nO cabeçalho da resposta lhe diz tudo o que você precisa saber sobre o seu limite de uso atualmente:\n<table> <tr> <td>**Campo do Cabeçalho**</td> <td>**Descrição**</td> </tr>\n<tr> <td>X-RateLimit-Limit</td> <td>Número máximo de requisições que o usuário pode executar ao dia.</td> </tr>\n<tr> <td>X-RateLimit-Remaining</td> <td>Número de requisições restantes na janela de limite atual.</td> </tr>\n<tr> <td>X-RateLimit-Reset</td> <td>Tempo para que a janela de limite resete em segundos UTC epoch.</td> </tr>\n<tr> <td>Retry-After</td> <td>Segundos para tentar novamente ou a data http quando a janela de limite será resetada.</td> </tr>\n</table>\n\n\n # **Paginação** \n\n Para alguns recursos que possam gerar um grande volume de resultados, a API provê um sistema de  paginação. Ao fazer sua requisição, basta fazer uso dos campos <code>limit</code> **[1-100]** e <code>offset</code> **[0-Total-Count]** para navegar pelos resultados. Um campo de cabeçalho chamado <code>X-Total-Count</code> será enviado junto às respostas, denotando o total de entradas contidas na base de dados que atendam ao seu critério de busca."
+  description: "**[English version](http://lafa.mine.nu/salicapi/doc/en/)** \n\n ** Essa é uma API aberta para acesso aos dados do portal SALIC.** \n\nSALIC é um sistema que reúne dados a respeito de propostas de projetos culturais a serem incentivados pelo Ministério da Cultura (**MINC**) por meio da lei Rouanet. Veja mais informações [aqui](http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-).\n\n\n\n\n# **Formatos de Exportação** \n\n Atualmente a API suporta exportação dos dados nos formatos * <code>JSON</code>(padrão) * * <code>XML</code> e * <code>CSV</code>. A escolha do formato deve ser definido a cada chamada, por meio do campo de cabeçalho <code>Accept</code>. \n\n # **Limitação de uso** \n\nPara requisições sem autenticação, você pode fazer até **2000 requisições diárias**. Requisições não autenticadas estão ligadas ao endereço IP de origem, não ao usuário fazendo a requisição. \n\nO cabeçalho da resposta lhe diz tudo o que você precisa saber sobre o seu limite de uso atualmente:\n<table> <tr> <td>**Campo do Cabeçalho**</td> <td>**Descrição**</td> </tr>\n<tr> <td>X-RateLimit-Limit</td> <td>Número de requisições permitidas no período.</td> </tr>\n<tr> <td>X-RateLimit-Remaining</td> <td>Número de requisições restantes na janela de limite atual.</td> </tr>\n<tr> <td>X-RateLimit-Reset</td> <td>Tempo para que a janela de limite resete em segundos UTC epoch.</td> </tr>\n<tr> <td>Retry-After</td> <td>Segundos para tentar novamente ou a data http quando a janela de limite será resetada.</td> </tr>\n</table>\n\n\n # **Paginação** \n\n Para alguns recursos que possam gerar um grande volume de resultados, a API provê um sistema de  paginação. Ao fazer sua requisição, basta fazer uso dos campos <code>limit</code> **[1-100]** e <code>offset</code> **[0-Total-Count]** para navegar pelos resultados. Um campo de cabeçalho chamado <code>X-Total-Count</code> será enviado junto às respostas, denotando o total de entradas contidas na base de dados que atendam ao seu critério de busca."
   version: 0.0.2
   title: SALIC API
   termsOfService: 'http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-'
@@ -41,32 +41,32 @@ paths:
           default: false
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             $ref: '#/definitions/Projeto'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '400':
-          description: Project with supplied PRONAC not found
+        '404':
+          description: Projeto com PRONAC fornecido não encontrado
           schema:
             $ref: '#/definitions/Error'
         '405':
-          description: Invalid PRONAC supplied
+          description: PRONAC inválido
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   /projetos/:
@@ -148,29 +148,29 @@ paths:
           default: false
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             type: array
             items:
               $ref: '#/definitions/Projeto'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
             X-Total-Count:
               description: Total number of objects attending your criteria
               type: integer
-        '400':
-          description: Projects with supplied parameters not found
+        '404':
+          description: Projetos com esses parâmetros não encontrados
           schema:
             $ref: '#/definitions/Error'
         '405':
@@ -178,7 +178,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   '/projetos/{PRONAC}/resumo':
@@ -196,32 +196,32 @@ paths:
           format: int64
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             $ref: '#/definitions/Resumo'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '400':
-          description: Project with supplied PRONAC not found
+        '404':
+          description: Projeto com PRONAC fornecido não encontrado
           schema:
             $ref: '#/definitions/Error'
         '405':
-          description: Invalid PRONAC supplied
+          description: PRONAC inválido
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   '/projetos/{PRONAC}/providencia':
@@ -239,32 +239,32 @@ paths:
           format: int64
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             $ref: '#/definitions/Providencia'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '400':
-          description: Project with supplied PRONAC not found
+        '404':
+          description: Projeto com PRONAC fornecido não encontrado
           schema:
             $ref: '#/definitions/Error'
         '405':
-          description: Invalid PRONAC supplied
+          description: PRONAC inválido
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   '/projetos/{PRONAC}/acessibilidade':
@@ -282,32 +282,32 @@ paths:
           format: int64
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             $ref: '#/definitions/Acessibilidade'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '400':
-          description: Project with supplied PRONAC not found
+        '404':
+          description: Projeto com PRONAC fornecido não encontrado
           schema:
             $ref: '#/definitions/Error'
         '405':
-          description: Invalid PRONAC supplied
+          description: PRONAC inválido
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   '/projetos/{PRONAC}/democratizacao':
@@ -325,32 +325,32 @@ paths:
           format: int64
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             $ref: '#/definitions/Democratizacao'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '400':
-          description: Project with supplied PRONAC not found
+        '404':
+          description: Projeto com PRONAC fornecido não encontrado
           schema:
             $ref: '#/definitions/Error'
         '405':
-          description: Invalid PRONAC supplied
+          description: PRONAC inválido
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   '/projetos/{PRONAC}/fichatecnica':
@@ -368,32 +368,32 @@ paths:
           format: int64
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             $ref: '#/definitions/FichaTecnica'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '400':
-          description: Project with supplied PRONAC not found
+        '404':
+          description: Projeto com PRONAC fornecido não encontrado
           schema:
             $ref: '#/definitions/Error'
         '405':
-          description: Invalid PRONAC supplied
+          description: PRONAC inválido
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   '/projetos/{PRONAC}/objetivos':
@@ -411,32 +411,32 @@ paths:
           format: int64
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             $ref: '#/definitions/Objetivos'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '400':
-          description: Project with supplied PRONAC not found
+        '404':
+          description: Projeto com PRONAC fornecido não encontrado
           schema:
             $ref: '#/definitions/Error'
         '405':
-          description: Invalid PRONAC supplied
+          description: PRONAC inválido
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   '/projetos/{PRONAC}/etapa':
@@ -454,32 +454,32 @@ paths:
           format: int64
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             $ref: '#/definitions/Etapa'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '400':
-          description: Project with supplied PRONAC not found
+        '404':
+          description: Projeto com PRONAC fornecido não encontrado
           schema:
             $ref: '#/definitions/Error'
         '405':
-          description: Invalid PRONAC supplied
+          description: PRONAC inválido
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   '/projetos/{PRONAC}/justificativa':
@@ -497,32 +497,32 @@ paths:
           format: int64
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             $ref: '#/definitions/Justificativa'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '400':
-          description: Project with supplied PRONAC not found
+        '404':
+          description: Projeto com PRONAC fornecido não encontrado
           schema:
             $ref: '#/definitions/Error'
         '405':
-          description: Invalid PRONAC supplied
+          description: PRONAC inválido
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
 
@@ -556,34 +556,34 @@ paths:
           format: int64
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             type: array
             items:
               $ref: '#/definitions/Captacao'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '400':
-          description: Project with supplied PRONAC not found
+        '404':
+          description: Projeto com PRONAC fornecido não encontrado
           schema:
             $ref: '#/definitions/Error'
         '405':
-          description: Invalid PRONAC supplied
+          description: PRONAC inválido
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
               
@@ -595,30 +595,30 @@ paths:
       operationId: projet_areas
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             type: array
             items:
               $ref: '#/definitions/Area'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '400':
+        '404'':
           description: No project area available
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   /projetos/segmentos:
@@ -629,30 +629,30 @@ paths:
       operationId: projet_segments
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             type: array
             items:
               $ref: '#/definitions/Segmento'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '400':
+        '404':
           description: No project segment available
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   /preprojetos/:
@@ -702,29 +702,29 @@ paths:
           default: false
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             type: array
             items:
               $ref: '#/definitions/PreProjeto'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
             X-Total-Count:
               description: Total number of objects attending your criteria
               type: integer
-        '400':
-          description: Projects with supplied parameters not found
+        '404':
+          description: Projetos com esses parâmetros não encontrados
           schema:
             $ref: '#/definitions/Error'
         '405':
@@ -732,7 +732,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   /incentivadores/:
@@ -788,37 +788,37 @@ paths:
           type: string
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             type: array
             items:
               $ref: '#/definitions/Incentivador'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
             X-Total-Count:
               description: Total number of objects attending your criteria
               type: integer
-        '400':
+        '404':
           description: No donator was found with your criteria
           schema:
             $ref: '#/definitions/Error'
         '405':
-          description: Invalid PRONAC supplied
+          description: PRONAC inválido
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   '/incentivadores/{cgccpf}/doacoes':
@@ -836,34 +836,34 @@ paths:
           format: int64
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             type: array
             items:
               $ref: '#/definitions/Doacao'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
-        '400':
-          description: Project with supplied PRONAC not found
+        '404':
+          description: Projeto com PRONAC fornecido não encontrado
           schema:
             $ref: '#/definitions/Error'
         '405':
-          description: Invalid PRONAC supplied
+          description: PRONAC inválido
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
   /proponentes/:
@@ -919,37 +919,37 @@ paths:
           type: string
       responses:
         '200':
-          description: successful operation
+          description: Operação bem-sucedida
           schema:
             type: array
             items:
               $ref: '#/definitions/Proponente'
           headers:
             X-Rate-Limit-Limit:
-              description: The number of allowed requests in the current period
+              description: Número de requisições permitidas no período
               type: integer
             X-Rate-Limit-Remaining:
-              description: The number of remaining requests in the current period
+              description: Número de requisições restantes na janela de limite atual
               type: integer
             X-Rate-Limit-Reset:
-              description: The number of seconds left in the current period
+              description: Tempo para que a janela de limite resete em segundos UTC epoch
               type: integer
             Retry-After:
-              description: Seconds to retry after or the http date when the Rate Limit will be reset.
+              description: Segundos para tentar novamente ou a data http quando a janela de limite será resetada
               type: integer
             X-Total-Count:
               description: Total number of objects attending your criteria
               type: integer
-        '400':
-          description: Project with supplied PRONAC not found
+        '404':
+          description: Projeto com PRONAC fornecido não encontrado
           schema:
             $ref: '#/definitions/Error'
         '405':
-          description: Invalid PRONAC supplied
+          description: PRONAC inválido
           schema:
             $ref: '#/definitions/Error'
         '503':
-          description: Internal Error
+          description: Erro interno
           schema:
             $ref: '#/definitions/Error'
 definitions:
@@ -1069,19 +1069,19 @@ definitions:
     properties:
       acessibilidade:
         type: string
-        description: Text in html format
+        description: Texto em formato HTML
   Democratizacao:
     type: object
     properties:
       democratizacao:
         type: string
-        description: Text in html format
+        description: Texto em formato HTML
   FichaTecnica:
     type: object
     properties:
       ficha_tecnica:
         type: string
-        description: Text in html format
+        description: Texto em formato HTML
   Objetivos:
     type: object
     properties:
@@ -1092,13 +1092,13 @@ definitions:
     properties:
       etapa:
         type: string
-        description: Text in html format
+        description: Texto em formato HTML
   Justificativa:
     type: object
     properties:
       justificativa:
         type: string
-        description: Text in html format
+        description: Texto em formato HTML
   Providencia:
     type: object
     properties:
