@@ -3,6 +3,18 @@
 API aberta para o portal NOVO SALIC. Tem por objetivo expor os dados de projetos da lei Rouanet.
 
 
+## Requisitos
+
+A aplicação foi testada em ambientes LINUX com distribuições Debian e Ubuntu.
+
+Os requisitos mínimos de hardware recomendados podem variar muito dependendo do ambiente
+onde será implantada e ainda não foram oficializados. O seguinte, contudo, deve oferecer um desempenho
+satisfatório:
+
+-	Processador Dual Core 2 GHz
+-	2 GB de RAM
+-	2 GB livres em disco
+
 ## Instalação Automatizada
 
 Execute como root o script **install.sh**
