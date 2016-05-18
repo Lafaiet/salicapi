@@ -7,7 +7,7 @@ from ..ResourceBase import *
 class EtapaDeTrabalho(ResourceBase):
     
     def __init__(self):
-        pass
+        super (EtapaDeTrabalho,self).__init__()
         
     
     def get(self, PRONAC):

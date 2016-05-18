@@ -36,7 +36,6 @@ limiter.header_mapping = {
 
 class ResourceBase(Resource):
     
-    query_handler = QueryHandler()
     if RATE_LIMITING_ACTIVE:
         Log.info('Rate limiting active : %s'%(GLOBAL_RATE_LIMITS))
         decorators = [shared_limiter]
@@ -44,7 +43,7 @@ class ResourceBase(Resource):
         Log.info('Rate limiting is turned off')
     
     def __init__(self):
-        pass
+        self.query_handler = QueryHandler()
     
       
     def result_return(self, data, headers =  {}, status_code  = 200):

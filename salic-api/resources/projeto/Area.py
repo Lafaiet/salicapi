@@ -7,7 +7,7 @@ from ..ResourceBase import *
 class Area(ResourceBase):
     
     def __init__(self):
-       pass
+       super (Area,self).__init__()
         
     
     def get(self):

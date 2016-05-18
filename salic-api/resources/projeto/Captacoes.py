@@ -7,7 +7,7 @@ from ..ResourceBase import *
 class Captacoes(ResourceBase):
     
     def __init__(self):
-       pass
+       super (Captacoes,self).__init__()
         
     
     def get(self, PRONAC):

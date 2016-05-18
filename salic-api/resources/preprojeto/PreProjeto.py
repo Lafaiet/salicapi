@@ -7,7 +7,7 @@ from ..ResourceBase import *
 class PreProjetoList(ResourceBase):
     
      def __init__(self):
-        pass
+        super (PreProjetoList,self).__init__()
     
      def get(self):
         

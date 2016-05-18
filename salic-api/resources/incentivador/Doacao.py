@@ -12,7 +12,7 @@ import pymssql, json
 class Doacao(ResourceBase):
     
      def __init__(self):
-        pass
+        super (Doacao,self).__init__()
         
     
      def get(self, cgccpf):

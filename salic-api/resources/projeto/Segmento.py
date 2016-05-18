@@ -7,7 +7,7 @@ from ..ResourceBase import *
 class Segmento(ResourceBase):
     
     def __init__(self):
-        pass
+        super (Segmento,self).__init__()
         
     
     def get(self):

@@ -7,7 +7,7 @@ from ..ResourceBase import *
 class DemocratizacaoDeAcesso(ResourceBase):
     
     def __init__(self):
-        pass
+        super (DemocratizacaoDeAcesso,self).__init__()
         
     
     def get(self, PRONAC):

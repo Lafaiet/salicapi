@@ -7,7 +7,7 @@ from ..ResourceBase import *
 class Projeto(ResourceBase):
     
     def __init__(self):
-        pass
+        super (Projeto,self).__init__()
         
     
     def get(self, PRONAC):   

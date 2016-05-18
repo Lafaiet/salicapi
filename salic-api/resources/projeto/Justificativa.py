@@ -7,7 +7,7 @@ from ..ResourceBase import *
 class Justificativa(ResourceBase):
     
     def __init__(self):
-        pass
+        super (Justificativa,self).__init__()
         
     
     def get(self, PRONAC):

@@ -3,7 +3,7 @@ from ..ResourceBase import *
 class Acessibilidade(ResourceBase):
     
     def __init__(self):
-        pass
+        super (Acessibilidade,self).__init__()
     
     def get(self, PRONAC):
         result = self.query_handler.get_acessibilidade(PRONAC)

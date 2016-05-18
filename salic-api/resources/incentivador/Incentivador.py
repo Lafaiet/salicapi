@@ -13,6 +13,7 @@ class Incentivador(ResourceBase):
     
      def __init__(self):
         self.tipos_pessoa = {'1' : 'fisica', '2' : 'juridica'}
+        super (Incentivador,self).__init__()
         
     
      def get(self):

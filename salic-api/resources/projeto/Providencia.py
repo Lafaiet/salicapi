@@ -9,7 +9,7 @@ from ..ResourceBase import *
 class Providencia(ResourceBase):
     
     def __init__(self):
-        pass
+        super (Providencia,self).__init__()
         
     
     def get(self, PRONAC):

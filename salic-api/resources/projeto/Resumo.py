@@ -8,7 +8,7 @@ from ..ResourceBase import *
 class Resumo(ResourceBase):
     
     def __init__(self):
-        pass
+        super (Resumo,self).__init__()
         
     
     def get(self, PRONAC):

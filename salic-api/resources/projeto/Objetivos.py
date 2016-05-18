@@ -3,7 +3,7 @@ from ..ResourceBase import *
 class Objetivos(ResourceBase):
     
     def __init__(self):
-        pass
+        super (Objetivos,self).__init__()
         
     
     def get(self, PRONAC):
