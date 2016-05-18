@@ -49,3 +49,19 @@ Ao executar
 `/etc/init.d/salic-api`
 
 Você pode conferir os demais comandos
+
+## Teste
+
+Para verificar se a API está de fato executando corretamente, faça uma para a URL
+
+[http://localhost:8000/test](http://localhost:8000/test)
+
+Se tudo estiver correto, você deve obter uma resposta com conteúdo:
+
+`{"content": "API is up and running :D"}`
+
+## License
+
+Copyright (c) 2016 - 2016 LABICOM/LDA UFG
+
+Licensed under the [GPL License](http://www.gnu.org/licenses/gpl.html).
