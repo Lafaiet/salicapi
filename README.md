@@ -7,9 +7,13 @@ API aberta para o portal NOVO SALIC. Tem por objetivo expor os dados de projetos
 
 Execute como root o script **install.sh**
 
-`chmod +x install.sh`
+```bash
+$ chmod +x install.sh
+```
 
-`./install.sh`
+```bash
+$ sudo ./install.sh
+```
 
 Se tudo ocorrer bem, a aplicação deve estar instalada em **/opt/salic/salic-api/**, pronta para uso, bastando apenas configurar alguns parâmetros
 
@@ -25,7 +29,9 @@ Se tudo ocorrer bem, a aplicação deve estar instalada em **/opt/salic/salic-ap
 
 Basta executar 
 
-`pip install -r requirements.txt`
+```bash
+$ sudo pip install -r requirements.txt
+```
 
 ## Configuração
 
@@ -37,7 +43,9 @@ Por padrão a aplicação executa com o web server **Tornado**
 
 O executável é o arquivo  **run.py**
 
-`python run.py`
+```bash
+$ python run.py
+```
 
 Caso tenha optado pela instalação automatizada, basta executar
 
@@ -46,7 +54,9 @@ Caso tenha optado pela instalação automatizada, basta executar
 
 Ao executar
 
-`/etc/init.d/salic-api`
+```bash
+$ /etc/init.d/salic-api
+```
 
 Você pode conferir os demais comandos
 
@@ -58,7 +68,9 @@ Para verificar se a API está de fato executando corretamente, faça uma para a 
 
 Se tudo estiver correto, você deve obter uma resposta com conteúdo:
 
-`{"content": "API is up and running :D"}`
+```json
+{"content": "API is up and running :D"}
+```
 
 ## License
 
