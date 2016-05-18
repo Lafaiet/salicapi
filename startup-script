@@ -1,0 +1,102 @@
+#!/bin/bash
+#/etc/init.d/salic-api
+
+if [ "$#" -eq 2 ]
+	then
+	notDaemonize=$2
+	else
+	notDaemonize="False"
+fi
+
+do_start() {
+	PID=$(pgrep -f /opt/salic/salic-api/run.py)
+
+	if [ "$PID" != "" ]
+	then
+		echo "Salic API is already running"
+	else
+		if [ $notDaemonize == "-i" ];
+		then
+			echo "Starting in interactive mode"
+			python /opt/salic/salic-api/run.py
+		else
+			nohup python /opt/salic/salic-api/run.py > /dev/null &
+		fi
+		
+		sleep 2
+		PID=$(pgrep -f /opt/salic/salic-api/run.py)
+		echo "Salic API started with Process id: ${PID}..."
+	fi
+}
+
+do_stop() {
+	PID=$(pgrep -f /opt/salic/salic-api/run.py)
+
+	if [ "$PID" != "" ]
+	then
+		do_force_stop
+	else
+		echo "Salic API already stoped"
+	fi
+}
+
+do_force_stop() {
+	PID=$(pgrep -f /opt/salic/salic-api/run.py)
+
+	kill -9 $PID
+
+	sleep 2
+	echo "RACE Daemon stoped..."
+}
+
+do_restart() {
+	PID=$(pgrep -f /opt/salic/salic-api/run.py)
+
+	if [ "$PID" != "" ]
+	then
+		do_force_stop
+		do_start
+	else
+		do_start
+	fi
+}
+
+do_force_restart() {
+	do_force_stop
+	do_start
+}
+
+do_status() {
+	PID=$(pgrep -f /opt/salic/salic-api/run.py)
+
+	if [ "$PID" != "" ]
+	then
+		echo "Salic API is running... Process id: $PID"
+	else
+		echo "Salic API is not running"
+	fi
+}
+
+case "$1" in
+	start)
+		do_start
+		;;
+	stop)
+		do_stop
+		;;
+	force-stop)
+		do_force_stop
+		;;
+	restart)
+		do_restart
+		;;
+	force-restart)
+		do_force_restart
+		;;
+	status)
+		do_status
+		;;
+	*)
+		echo "*Usage: /etc/init.d/race_daemon (start|stop|force-stop|restart|force-restart|status)"
+		;;
+esac
