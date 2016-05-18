@@ -88,6 +88,4 @@ Se tudo estiver correto, você deve obter uma resposta com conteúdo:
 
 ## License
 
-Copyright (c) 2016 - 2016 LABICOM/LDA UFG
-
 Licensed under the [GPL License](http://www.gnu.org/licenses/gpl.html).
