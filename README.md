@@ -61,7 +61,9 @@ $ python run.py
 
 Caso tenha optado pela instalação automatizada, basta executar
 
-`/etc/init.d/salic-api start`
+```bash
+$ /etc/init.d/salic-api start
+```
 
 
 Ao executar
@@ -70,11 +72,11 @@ Ao executar
 $ /etc/init.d/salic-api
 ```
 
-Você pode conferir os demais comandos
+Você pode conferir os demais comandos disponíveis
 
 ## Teste
 
-Para verificar se a API está de fato executando corretamente, faça uma para a URL
+Para verificar se a API está de fato executando corretamente, faça uma requisição para a URL
 
 [http://localhost:8000/test](http://localhost:8000/test)
 
