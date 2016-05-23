@@ -381,9 +381,9 @@ class QueryHandler():
                                                #ProjetoDb.PRONAC.label('projeto_PRONAC'),
                                                ProjetoDb.NomeProjeto.label('nome_projeto'),
                                                InteressadoDb.Nome.label('nome_doador'),
-                                               InteressadoDb.CgcCpf.label('cgccpf'),
+                                               CaptacaoDb.CgcCpfMecena.label('cgccpf'),
                                               ).join(ProjetoDb, CaptacaoDb.PRONAC==ProjetoDb.PRONAC)\
-                                                .join(InteressadoDb)\
+                                                .join(InteressadoDb, CaptacaoDb.CgcCpfMecena==InteressadoDb.CgcCpf)\
                                                 
                                               
 
