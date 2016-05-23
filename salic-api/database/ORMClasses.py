@@ -157,4 +157,7 @@ class CaptacaoDb(Base):
     
     CgcCpfMecena = Column(String, ForeignKey('Interessado.CgcCpf'))
     interessado_related = relationship('InteressadoDb', foreign_keys=[CgcCpfMecena])
+
+    projeto_related = relationship('ProjetoDb', foreign_keys=[PRONAC])
+
         

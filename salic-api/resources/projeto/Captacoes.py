@@ -13,7 +13,7 @@ class Captacoes(ResourceBase):
     def get(self, PRONAC):
         
         try:
-            results = self.query_handler.get_captacoes(PRONAC)
+            results = self.query_handler.get_doacoes(PRONAC = PRONAC)
         except Exception as e:
             Log.error( str(e))
             result = {'message' : 'internal error',

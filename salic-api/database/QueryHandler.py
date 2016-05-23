@@ -187,26 +187,6 @@ class QueryHandler():
         return res.all(), total_records
       
       
-    def get_doacoes(self, cgccpf, limit, offset):
-        
-        start_row = offset
-        end_row = offset+limit
-        
-        res= self.sql_connector.session.query( 
-                                              CaptacaoDb.PRONAC,
-                                              CaptacaoDb.CaptacaoReal.label('valor'),
-                                              CaptacaoDb.DtRecibo.label('data_recibo'),
-                                              ProjetoDb.NomeProjeto.label('nome_projeto'),
-                                              ) .join(ProjetoDb, CaptacaoDb.PRONAC==ProjetoDb.PRONAC)\
-                                                .filter(CaptacaoDb.CgcCpfMecena == cgccpf)
-                        
-        total_records = res.count()
-        
-        #res = res.slice(start_row, end_row)
-        
-        return res.all(), total_records
-      
-      
     def get_projeto_list(self, limit, offset, PRONAC = None, nome = None, proponente = None,
                           cgccpf = None, area = None, segmento = None,
                           UF = None, municipio = None, data_inicio = None, data_termino = None, extra_fields = False,
@@ -392,16 +372,45 @@ class QueryHandler():
           return res.all(), total_records
 
 
-    def get_captacoes(self, PRONAC):
+    def get_doacoes(self, PRONAC = None, cgccpf = None):
         
         res = self.sql_connector.session.query(
+                                               CaptacaoDb.PRONAC,
                                                CaptacaoDb.CaptacaoReal.label('valor'), 
-                                               InteressadoDb.Nome.label('nome'),
-                                               InteressadoDb.CgcCpf.label('cgccpf'),
                                                CaptacaoDb.DtRecibo.label('data_recibo'),
-    
+                                               InteressadoDb.Nome.label('nome_doador'),
+                                               InteressadoDb.CgcCpf.label('cgccpf'),
+                                               ProjetoDb.NomeProjeto.label('nome_projeto'),
                                               ).join(InteressadoDb)\
-                                              .filter(CaptacaoDb.PRONAC == PRONAC)
+                                                .join(ProjetoDb)\
+                                              
+
+
+        if PRONAC is not None:
+            res = res.filter(ProjetoDb.PRONAC == PRONAC)   
+        
+        if cgccpf is not None:
+            res = res.filter(InteressadoDb.CgcCpf.like('%' + cgccpf + '%') )              
 
         return res.all()
+
+
+    # def get_doacoes(self, cgccpf, limit, offset):
+        
+    #     start_row = offset
+    #     end_row = offset+limit
+        
+    #     res= self.sql_connector.session.query( 
+    #                                           CaptacaoDb.PRONAC,
+    #                                           CaptacaoDb.CaptacaoReal.label('valor'),
+    #                                           CaptacaoDb.DtRecibo.label('data_recibo'),
+    #                                           ProjetoDb.NomeProjeto.label('nome_projeto'),
+    #                                           ) .join(ProjetoDb, CaptacaoDb.PRONAC==ProjetoDb.PRONAC)\
+    #                                             .filter(CaptacaoDb.CgcCpfMecena == cgccpf)
+                        
+    #     total_records = res.count()
+        
+    #     #res = res.slice(start_row, end_row)
+        
+    #     return res.all(), total_records
         
