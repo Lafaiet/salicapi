@@ -60,7 +60,7 @@ class Proponente(ResourceBase):
             return self.result_return(result, status_code = 503)   
          
         if n_records == 0:
-            result =  { 'message' : 'No proponent with PRONAC %s was found'%(PRONAC),
+            result =  { 'message' : 'No proponent was found with your criteria',
                         'message_code' : 11
                         }
             return self.result_return(result, status_code = 404)

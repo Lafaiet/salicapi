@@ -2,6 +2,12 @@ from connectors.mssql_connector import MSSql_connector
 from sqlalchemy import case, func
 from ORMClasses import *
 from sqlalchemy.orm.util import outerjoin
+import sys
+sys.path.append('../')
+from utils.Timer import Timer
+from utils.Log import Log
+
+import time
 
 # import logging
 # logging.basicConfig()
@@ -12,6 +18,15 @@ class QueryHandler():
     
     def __init__(self):
         self.sql_connector = MSSql_connector()
+
+
+    def query_wrapper(self, params = None ):
+      return self.sql_connector.session.query(params)
+
+    def get_count(self, q):
+      count_q = q.statement.with_only_columns([func.count()]).order_by(None)
+      count = q.session.execute(count_q).scalar()
+      return count
         
     def get_by_PRONAC(self, PRONAC, extra_fields):
         res, dummy = self.get_projeto_list(limit=1, offset=0, PRONAC = PRONAC, extra_fields = extra_fields)
@@ -19,8 +34,13 @@ class QueryHandler():
         return res[0] if res else None    
     
     def get_area(self):
-        res  = self.sql_connector.session.query(AreaDb.Descricao.label('area'))
-        return res.all()
+        try:
+          with Timer(action = 'Database query for get_area method', verbose = True):
+            res  = self.sql_connector.session.query(AreaDb.Descricao.label('area'))
+          return res.all()
+        except Exception as e:
+          Log.error("Database connection error : " + str(e))
+          raise e
     
     def get_segmento(self):
         res  = self.sql_connector.session.query(SegmentoDb.Descricao.label('segmento'))
@@ -67,7 +87,7 @@ class QueryHandler():
         
         tipo_pessoa_case = case([(InteressadoDb.tipoPessoa=='1', 'fisica'),],
         else_ = 'juridica')
-        
+
         res= self.sql_connector.session.query( 
                                                InteressadoDb.Nome.label('nome'),
                                                InteressadoDb.Cidade.label('municipio'),
@@ -75,7 +95,17 @@ class QueryHandler():
                                                InteressadoDb.Responsavel.label('responsavel'),
                                                InteressadoDb.CgcCpf.label('cgccpf'),
                                                tipo_pessoa_case.label('tipo_pessoa'),
-                                               ).order_by(InteressadoDb.CgcCpf)
+                                               func.count(ProjetoDb.PRONAC).label('quantidade_projetos'),
+                                               ).join(ProjetoDb)\
+                                                .group_by(InteressadoDb.Nome,
+                                                          InteressadoDb.Cidade,
+                                                          InteressadoDb.Uf,
+                                                          InteressadoDb.Responsavel,
+                                                          InteressadoDb.CgcCpf,
+                                                          tipo_pessoa_case,
+                                                  )\
+                                                .order_by(InteressadoDb.CgcCpf)
+
         
         if cgccpf is not None:
             res = res.filter(InteressadoDb.CgcCpf.like('%' + cgccpf + '%'))
@@ -165,10 +195,9 @@ class QueryHandler():
         res= self.sql_connector.session.query( 
                                               CaptacaoDb.PRONAC,
                                               CaptacaoDb.CaptacaoReal.label('valor'),
-                                              CaptacaoDb.DtRecibo.label('data'),
+                                              CaptacaoDb.DtRecibo.label('data_recibo'),
                                               ProjetoDb.NomeProjeto.label('nome_projeto'),
                                               ) .join(ProjetoDb, CaptacaoDb.PRONAC==ProjetoDb.PRONAC)\
-                                                .order_by(CaptacaoDb.Idcaptacao)\
                                                 .filter(CaptacaoDb.CgcCpfMecena == cgccpf)
                         
         total_records = res.count()
@@ -180,7 +209,8 @@ class QueryHandler():
       
     def get_projeto_list(self, limit, offset, PRONAC = None, nome = None, proponente = None,
                           cgccpf = None, area = None, segmento = None,
-                          UF = None, data_inicio = None, data_termino = None, extra_fields = False):
+                          UF = None, municipio = None, data_inicio = None, data_termino = None, extra_fields = False,
+                          ano_projeto = None):
         
         start_row = offset
         end_row = offset+limit
@@ -208,9 +238,9 @@ class QueryHandler():
         valor_proposta_case = case([(ProjetoDb.IdPRONAC != None, func.sac.dbo.fnValorDaProposta(ProjetoDb.IdPRONAC)),],
         else_ = func.sac.dbo.fnValorSolicitado(ProjetoDb.AnoProjeto, ProjetoDb.Sequencial))
         
-        valor_aprovado_case = case([(ProjetoDb.Mecanismo =='2' or ProjetoDb.Mecanismo =='6', func.sac.dbo.fnValorAprovadoConvenio(ProjetoDb.AnoProjeto,ProjetoDb.Sequencial)),],
+        valor_aprovado_case = case([(ProjetoDb.Mecanismo == '2' or ProjetoDb.Mecanismo == '6', func.sac.dbo.fnValorAprovadoConvenio(ProjetoDb.AnoProjeto,ProjetoDb.Sequencial)),],
         else_ = func.sac.dbo.fnValorAprovado(ProjetoDb.AnoProjeto,ProjetoDb.Sequencial))
-        
+
         valor_projeto_case = case([(ProjetoDb.Mecanismo =='2' or ProjetoDb.Mecanismo =='6', func.sac.dbo.fnValorAprovadoConvenio(ProjetoDb.AnoProjeto,ProjetoDb.Sequencial)),],
         else_ = func.sac.dbo.fnValorAprovado(ProjetoDb.AnoProjeto,ProjetoDb.Sequencial) + func.sac.dbo.fnOutrasFontes(ProjetoDb.IdPRONAC))
         
@@ -218,40 +248,46 @@ class QueryHandler():
                                    (EnquadramentoDb.Enquadramento == '2', 'Artigo 18')
                                    ],
         else_ = 'Nao enquadrado')
+
+        ano_case = case([(ProjetoDb.Mecanismo =='2' or ProjetoDb.Mecanismo =='6', func.sac.dbo.fnValorAprovadoConvenio(ProjetoDb.AnoProjeto,ProjetoDb.Sequencial)),],
+        else_ = func.sac.dbo.fnValorAprovado(ProjetoDb.AnoProjeto,ProjetoDb.Sequencial))
         
-        res= self.sql_connector.session.query( 
-                                                ProjetoDb.NomeProjeto.label('nome'),
-                                                ProjetoDb.PRONAC,
-                                                ProjetoDb.UfProjeto.label('UF'),
-                                                ProjetoDb.DtInicioExecucao.label('data_inicio'),
-                                                ProjetoDb.DtFimExecucao.label('data_termino'),
-                                
-                                                AreaDb.Descricao.label('area'),
-                                                SegmentoDb.Descricao.label('segmento'),
-                                                SituacaoDb.Descricao.label('situacao'),
-                                                InteressadoDb.Nome.label('proponente'),
-                                                InteressadoDb.CgcCpf.label('cgccpf'),
-                                                MecanismoDb.Descricao.label('mecanismo'),
-                                                
-                                                func.sac.dbo.fnValorSolicitado(ProjetoDb.AnoProjeto, ProjetoDb.Sequencial).label('valor_solicitado'),
-                                                func.sac.dbo.fnOutrasFontes(ProjetoDb.IdPRONAC).label('outras_fontes'),
-                                                func.sac.dbo.fnCustoProjeto (ProjetoDb.AnoProjeto, ProjetoDb.Sequencial).label('valor_captado'),
-                                                valor_proposta_case.label('valor_proposta'),
-                                                valor_aprovado_case.label('valor_aprovado'),
-                                                valor_projeto_case.label('valor_projeto'),
-                                                
-                                                enquadramento_case.label('enquadramento'),
-                                                
-                                                *additional_fields
-                                                
-                                                ).join(AreaDb)\
-                                                .join(SegmentoDb)\
-                                                .join(SituacaoDb)\
-                                                .join(InteressadoDb)\
-                                                .join(PreProjetoDb)\
-                                                .join(MecanismoDb)\
-                                                .outerjoin(EnquadramentoDb, EnquadramentoDb.IdPRONAC ==  ProjetoDb.IdPRONAC)\
-                                                .order_by(ProjetoDb.IdPRONAC)
+        with Timer(action = 'Database query for get_projeto_list method', verbose = True):
+          res= self.sql_connector.session.query( 
+                                                  ProjetoDb.NomeProjeto.label('nome'),
+                                                  ProjetoDb.PRONAC,
+                                                  ProjetoDb.AnoProjeto.label('ano_projeto'),
+                                                  ProjetoDb.UfProjeto.label('UF'),
+                                                  InteressadoDb.Cidade.label('municipio'),
+                                                  ProjetoDb.DtInicioExecucao.label('data_inicio'),
+                                                  ProjetoDb.DtFimExecucao.label('data_termino'),
+                                  
+                                                  AreaDb.Descricao.label('area'),
+                                                  SegmentoDb.Descricao.label('segmento'),
+                                                  SituacaoDb.Descricao.label('situacao'),
+                                                  InteressadoDb.Nome.label('proponente'),
+                                                  InteressadoDb.CgcCpf.label('cgccpf'),
+                                                  MecanismoDb.Descricao.label('mecanismo'),
+                                                  
+                                                  func.sac.dbo.fnValorSolicitado(ProjetoDb.AnoProjeto, ProjetoDb.Sequencial).label('valor_solicitado'),
+                                                  func.sac.dbo.fnOutrasFontes(ProjetoDb.IdPRONAC).label('outras_fontes'),
+                                                  func.sac.dbo.fnCustoProjeto (ProjetoDb.AnoProjeto, ProjetoDb.Sequencial).label('valor_captado'),
+                                                  valor_proposta_case.label('valor_proposta'),
+                                                  valor_aprovado_case.label('valor_aprovado'),
+                                                  valor_projeto_case.label('valor_projeto'),
+                                                  
+                                                  enquadramento_case.label('enquadramento'),
+                                                  
+                                                  *additional_fields
+                                                  
+                                                  ).join(AreaDb)\
+                                                  .join(SegmentoDb)\
+                                                  .join(SituacaoDb)\
+                                                  .join(InteressadoDb)\
+                                                  .join(PreProjetoDb)\
+                                                  .join(MecanismoDb)\
+                                                  .outerjoin(EnquadramentoDb, EnquadramentoDb.IdPRONAC ==  ProjetoDb.IdPRONAC)\
+                                                  .order_by(ProjetoDb.IdPRONAC)
                                                 
         if PRONAC is not None:
             res = res.filter(ProjetoDb.PRONAC == PRONAC)
@@ -273,16 +309,28 @@ class QueryHandler():
             
         if UF is not None:
             res = res.filter(InteressadoDb.Uf == UF)
+
+        if municipio is not None:
+            res = res.filter(InteressadoDb.Cidade == municipio)
         
         if data_inicio is not None:
             res = res.filter(ProjetoDb.DtInicioExecucao == data_inicio)
             
         if data_termino is not None:
             res = res.filter(ProjetoDb.DtFimExecucao == data_termino)
-        
-        total_records = res.count()
-        
-        res = res.slice(start_row, end_row)
+
+        if ano_projeto is not None:
+            res = res.filter(ProjetoDb.AnoProjeto == ano_projeto)
+
+        with Timer(action = 'Projects count() fast ', verbose = True):
+          total_records = self.get_count(res)
+
+        # with Timer(action = 'Projects count() slow ', verbose = True):
+        #   total_records = res.count()
+        #   #Log.debug("total : "+str(total_records))
+
+        with Timer(action = 'Projects slice()', verbose = True):
+          res = res.slice(start_row, end_row)
         
         return res.all(), total_records
     
@@ -336,8 +384,9 @@ class QueryHandler():
           if data_termino is not None:
               res = res.filter(PreProjetoDb.DtFinalDeExecucao == data_termino)
           
-          total_records = res.count()
-          
+          #total_records = res.count()
+          total_records = self.get_count(res)
+
           res = res.slice(start_row, end_row)
           
           return res.all(), total_records
@@ -346,15 +395,13 @@ class QueryHandler():
     def get_captacoes(self, PRONAC):
         
         res = self.sql_connector.session.query(
-                                               func.sum(CaptacaoDb.CaptacaoReal).label('valor_total'), 
-                                               InteressadoDb.Nome,
-                                               InteressadoDb.CgcCpf,
+                                               CaptacaoDb.CaptacaoReal.label('valor'), 
+                                               InteressadoDb.Nome.label('nome'),
+                                               InteressadoDb.CgcCpf.label('cgccpf'),
+                                               CaptacaoDb.DtRecibo.label('data_recibo'),
     
                                               ).join(InteressadoDb)\
-                                              .filter(CaptacaoDb.PRONAC == PRONAC)\
-                                              .group_by(InteressadoDb.Nome, InteressadoDb.CgcCpf)
-        
-        total_records = res.count()
-        
-        return res.all(), total_records
+                                              .filter(CaptacaoDb.PRONAC == PRONAC)
+
+        return res.all()
         

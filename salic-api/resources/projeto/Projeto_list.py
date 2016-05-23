@@ -36,8 +36,10 @@ class ProjetoList(ResourceBase):
         area = None
         segmento = None
         UF = None
+        municipio = None
         data_inicio = None
         data_termino = None
+        ano_projeto = None
         extra_fields = False
         
         if request.args.get('limit') is not None:
@@ -69,16 +71,22 @@ class ProjetoList(ResourceBase):
             
         if request.args.get('UF') is not None:
             UF = request.args.get('UF')  
+
+        if request.args.get('municipio') is not None:
+            municipio = request.args.get('municipio')
         
         if request.args.get('data_inicio') is not None:
             data_inicio = request.args.get('data_inicio')
         
         if request.args.get('data_termino') is not None:
-            data_termino = request.args.get('data_termino')    
+            data_termino = request.args.get('data_termino')
         
         if request.args.get('extra_fields') == 'true':
             extra_fields = True
-            
+        
+        if request.args.get('ano_projeto') is not None:
+            ano_projeto = request.args.get('ano_projeto') 
+
         #return_fields = request.values.getlist('fields')
         #print return_fields
                  
@@ -86,7 +94,7 @@ class ProjetoList(ResourceBase):
             Log.debug('Starting database call')
             results, n_records = self.query_handler.get_projeto_list(limit, offset, PRONAC, nome,
                               proponente, cgccpf, area, segmento,
-                              UF, data_inicio, data_termino, extra_fields)
+                              UF, municipio, data_inicio, data_termino, extra_fields, ano_projeto)
             Log.debug('Database call was successful')
         
         except Exception as e:

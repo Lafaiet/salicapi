@@ -140,6 +140,7 @@ class InteressadoDb(Base):
     tipoPessoa = Column(String)
     
     captacao_related = relationship('CaptacaoDb', primaryjoin='Interessado.CgcCpf==CaptacaoDb.CgcCpfMecena')
+    projeto_related = relationship('ProjetoDb', primaryjoin='Interessado.CgcCpf==ProjetoDb.CgcCpf')
     
     def __init__(self):
         pass
@@ -156,5 +157,4 @@ class CaptacaoDb(Base):
     
     CgcCpfMecena = Column(String, ForeignKey('Interessado.CgcCpf'))
     interessado_related = relationship('InteressadoDb', foreign_keys=[CgcCpfMecena])
-    #projeto_related = relationship('ProjetoDb', primaryjoin='ProjetoDb.PRONAC==CaptacaoDb.PRONAC')
         

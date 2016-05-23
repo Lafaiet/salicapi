@@ -4,9 +4,6 @@ from sqlalchemy import func, distinct
 from PreProjetoORM import *
 
 import datetime
-        
-    
-engine = create_engine('sqlite:///sqlalchemy_example.db')
 
 
 # create a Session

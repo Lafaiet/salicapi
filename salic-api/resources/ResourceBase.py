@@ -4,7 +4,9 @@ from flask import Response
 from flask_restful import Resource
 from database.QueryHandler import QueryHandler
 from APIError import APIError
-from Log import Log
+import sys
+sys.path.append('../')
+from utils.Log import Log
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 from config import GLOBAL_RATE_LIMITS, RATE_LIMITING_ACTIVE
@@ -15,7 +17,6 @@ from flask.ext.limiter import HEADERS
 
 
 app = Flask(__name__)
-
 
 
 limiter = Limiter(

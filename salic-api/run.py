@@ -8,7 +8,7 @@ from resources.resourse_manager import *
 import argparse
 from config import WEBSERVER_PORT, WEBSERVER_ADDR, SUBPROCESS_NUMBER
 import logging
-from Log import Log
+from utils.Log import Log
 
 parser = argparse.ArgumentParser()
 
