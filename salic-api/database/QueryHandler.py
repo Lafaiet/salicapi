@@ -378,16 +378,18 @@ class QueryHandler():
                                                CaptacaoDb.PRONAC,
                                                CaptacaoDb.CaptacaoReal.label('valor'), 
                                                CaptacaoDb.DtRecibo.label('data_recibo'),
+                                               #ProjetoDb.PRONAC.label('projeto_PRONAC'),
+                                               ProjetoDb.NomeProjeto.label('nome_projeto'),
                                                InteressadoDb.Nome.label('nome_doador'),
                                                InteressadoDb.CgcCpf.label('cgccpf'),
-                                               ProjetoDb.NomeProjeto.label('nome_projeto'),
-                                              ).join(InteressadoDb)\
-                                                .join(ProjetoDb)\
+                                              ).join(ProjetoDb, CaptacaoDb.PRONAC==ProjetoDb.PRONAC)\
+                                                .join(InteressadoDb)\
+                                                
                                               
 
 
         if PRONAC is not None:
-            res = res.filter(ProjetoDb.PRONAC == PRONAC)   
+            res = res.filter(CaptacaoDb.PRONAC == PRONAC)   
         
         if cgccpf is not None:
             res = res.filter(InteressadoDb.CgcCpf.like('%' + cgccpf + '%') )              
