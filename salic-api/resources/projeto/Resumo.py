@@ -17,5 +17,5 @@ class Resumo(ResourceBase):
             raise APIException('No project with PRONAC %s was found'%(PRONAC),
                                 status_code = 404,
                                  message_code = 11)
-        return self.result_return(result)
+        return self.render(result)
             

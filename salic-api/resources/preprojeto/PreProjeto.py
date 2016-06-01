@@ -20,7 +20,7 @@ class PreProjetoList(ResourceBase):
                 results = {'message' : 'Max limit paging exceeded',
                         'message_code' : 7
                     }
-                return self.result_return(results, status_code = 405)
+                return self.render(results, status_code = 405)
                 
         else:
             limit = LIMIT_PAGING
@@ -72,15 +72,15 @@ class PreProjetoList(ResourceBase):
                       'message_code' :  13,
                       'more' : 'something is broken'
                       }
-            return self.result_return(result, status_code = 503)
+            return self.render(result, status_code = 503)
         
         if n_records == 0:
             results = {'message' : 'No pre project was found with your criteria',
                         'message_code' : 11
                         }
-            return self.result_return(results, status_code = 404)
+            return self.render(results, status_code = 404)
         
         else : 
             headers = {'X-Total-Count' : n_records}
             
-        return self.result_return(results, headers)
+        return self.render(results, headers)

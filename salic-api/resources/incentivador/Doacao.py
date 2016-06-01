@@ -25,12 +25,12 @@ class Doacao(ResourceBase):
                       'message_code' :  13,
                       'more' : 'something is broken'
                       }
-            return self.result_return(result, status_code = 503)   
+            return self.render(result, status_code = 503)   
          
         if len(results) == 0:
             result = {'message' : 'No funding info was found with your criteria',
                                  'message_code' : 11}
             
-            return self.result_return(result, status_code = 404)
+            return self.render(result, status_code = 404)
         
-        return self.result_return(results)
+        return self.render(results)

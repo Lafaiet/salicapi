@@ -18,7 +18,7 @@ class Projeto(ResourceBase):
             result = {'message' : 'PRONAC must be an integer',
                       'message_code' : 10
                       }
-            return self.result_return(result, status_code = 405)
+            return self.render(result, status_code = 405)
         
         extra_fields = False
          
@@ -35,13 +35,13 @@ class Projeto(ResourceBase):
                       'message_code' :  13,
                       'more' : 'something is broken'
                       }
-            return self.result_return(result, status_code = 503)
+            return self.render(result, status_code = 503)
         
         if result is None:
              result = {'message' : 'No project with PRONAC %s'%(PRONAC),
                         'message_code' : 11
                         }
-             return self.result_return(result, status_code = 404)
+             return self.render(result, status_code = 404)
             
         
-        return self.result_return(result)
+        return self.render(result)

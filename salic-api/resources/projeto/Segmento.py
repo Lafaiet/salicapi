@@ -18,7 +18,7 @@ class Segmento(ResourceBase):
             result =  { 'message' : 'internal error',
                         'message_code' : 13
                         }
-            return self.result_return(result, status_code = 503)
+            return self.render(result, status_code = 503)
         
-        return self.result_return(result)
+        return self.render(result)
     

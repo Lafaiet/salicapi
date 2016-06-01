@@ -57,14 +57,14 @@ class Incentivador(ResourceBase):
                       'message_code' :  13,
                       'more' : 'something is broken'
                       }
-            return self.result_return(result, status_code = 503)   
+            return self.render(result, status_code = 503)   
          
         if n_records == 0:
             
             result = {'message' : 'No donator was found with your criteria',
                                  'message_code' : 11}
             
-            return self.result_return(result, status_code = 404)
+            return self.render(result, status_code = 404)
         
         headers = {'X-Total-Count' : n_records}
-        return self.result_return(results, headers)
+        return self.render(results, headers)

@@ -47,7 +47,7 @@ class ResourceBase(Resource):
         self.query_handler = QueryHandler()
     
       
-    def result_return(self, data, headers =  {}, status_code  = 200):
+    def render(self, data, headers =  {}, status_code  = 200):
         
         if request.headers['Accept'] == 'application/xml':
             response = Response(get_formated(data, 'xml'), content_type='application/xml; charset=utf-8')
@@ -98,7 +98,7 @@ def request_start():
     #                 'message_code' : 8
     #             }
     #     return {'error' : 'content-type'}
-    #     return self.result_return(results, status_code = 405)
+    #     return self.render(results, status_code = 405)
         
     def test_resource():
         app = Flask(__name__)

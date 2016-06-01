@@ -16,7 +16,7 @@ class FichaTecnica(ResourceBase):
             result =  { 'message' : 'No project with PRONAC %s was found'%(PRONAC),
                         'message_code' : 11
                         }
-            return self.result_return(result, status_code = 404)
+            return self.render(result, status_code = 404)
         
-        return self.result_return(result)
+        return self.render(result)
             

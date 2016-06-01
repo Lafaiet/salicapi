@@ -18,7 +18,7 @@ class Justificativa(ResourceBase):
                         'message_code' : 11
                         }
             
-            return self.result_return(result, status_code = 404)
+            return self.render(result, status_code = 404)
         
-        return self.result_return(result)
+        return self.render(result)
             
