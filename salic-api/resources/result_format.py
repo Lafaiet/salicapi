@@ -57,17 +57,17 @@ def to_csv(data):
                 uni_data = str(item).decode('utf8')
             else:
                 uni_data = u'\"'+item+u'\"'
-            
+
             csv_data+=',%s'%(uni_data)
 
         csv_data+=u"\n"
-   
+
     return csv_data
 
 
 def list_serializable(l):
     l_serializable = []
-    
+
     for e in l:
         if isinstance(e, decimal.Decimal):
                 l_serializable.append(float(e))
@@ -75,43 +75,46 @@ def list_serializable(l):
                  l_serializable.append(str(e))
         else:
             l_serializable.append(e)
-    
+
     return l_serializable
 
 def listsTodict(keys, values):
-    
+
     values_list = []
-    
+
     for value in values:
         values_list.append(value)
-    
+
     "Getting rid of spaces"
     if 'cgccpf' in keys:
         cgccpf_index = keys.index('cgccpf')
         values_list[cgccpf_index]  = str(values_list[cgccpf_index]).split()[0]
-    
+
     return dict(zip(keys, list_serializable(values_list)))
 
 def get_formated(data, out_format):
-    
+
+    if isinstance(data, str):
+        return data
+
     if data == None:
         formated_data = {}
-        
+
     elif isinstance(data, list):
         formated_data = []
-        
+
         for d in data:
             formated_data.append(listsTodict(d.keys(), d))
-    
+
     elif isinstance(data, dict):
         formated_data = data
-        
+
     else:
         formated_data = listsTodict(data.keys(), data)
-    
+
     if out_format == 'xml':
         return to_xml(formated_data)
-    
+
     elif out_format == 'json':
         return to_json(formated_data)
 

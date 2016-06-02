@@ -1,0 +1,1072 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "Essa é uma API aberta para acesso aos dados do portal [**SALIC.**](http://novosalic.cultura.gov.br/cidadao/consultar) \n\nSALIC é um sistema que reúne dados a respeito de propostas de projetos culturais a serem incentivados pelo Ministério da Cultura (**MINC**) por meio da lei Rouanet. Veja mais informações [aqui](http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-).\n\n\n\n\n# **Formatos de Exportação** \n\n Atualmente a API suporta exportação dos dados nos formatos * <code>JSON</code>(padrão) * * <code>XML</code> e * <code>CSV</code>. A escolha do formato deve ser definido a cada chamada, por meio do campo de cabeçalho <code>Accept</code>. \n\n # **Limitação de uso** \n\nPara requisições sem autenticação, você pode fazer até **2000 requisições diárias**. Requisições não autenticadas estão ligadas ao endereço IP de origem, não ao usuário fazendo a requisição. \n\nO cabeçalho da resposta lhe diz tudo o que você precisa saber sobre o seu limite de uso atualmente:\n<table> <tr> <td>**Campo do Cabeçalho**</td> <td>**Descrição**</td> </tr>\n<tr> <td>X-RateLimit-Limit</td> <td>Número de requisições permitidas no período.</td> </tr>\n<tr> <td>X-RateLimit-Remaining</td> <td>Número de requisições restantes na janela de limite atual.</td> </tr>\n<tr> <td>X-RateLimit-Reset</td> <td>Tempo para que a janela de limite resete em segundos UTC epoch.</td> </tr>\n<tr> <td>Retry-After</td> <td>Segundos para tentar novamente ou a data http quando a janela de limite será resetada.</td> </tr>\n</table>\n\n\n # **Paginação** \n\n Para alguns recursos que possam gerar um grande volume de resultados, a API provê um sistema de  paginação. Ao fazer sua requisição, basta fazer uso dos campos <code>limit</code> **[1-100]** e <code>offset</code> **[0-Total-Count]** para navegar pelos resultados. Um campo de cabeçalho chamado <code>X-Total-Count</code> será enviado junto às respostas, denotando o total de entradas contidas na base de dados que atendam ao seu critério de busca.",
+        "version": "0.0.2",
+        "title": "SALIC API",
+        "termsOfService": "http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-",
+        "contact": {
+            "name": "Laboratório de Dados Abertos do curso de Gestão da Informação da Universidade Federal de Goiás (http://www.gi.fic.ufg.br/lda/#)",
+            "email": "ldaufg@gmail.com"
+        },
+        "license": {
+            "name": "ODbL 1.0",
+            "url": "http://opendatacommons.org/licenses/odbl/summary/"
+        }
+    },
+    "host": "hmg.api.salic.cultura.gov.br",
+    "basePath": "/alpha",
+    "schemes": [
+        "http"
+    ],
+    "produces": [
+        "application/json",
+        "application/xml",
+        "text/csv"
+    ],
+    "paths": {
+        "/projetos/{PRONAC}": {
+            "get": {
+                "tags": [
+                    "projetos : Dados relativos a Projetos"
+                ],
+                "summary": "Busca um projeto por meio de seu número PRONAC",
+                "operationId": "pronac_number",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "PRONAC",
+                        "description": "Número do PRONAC",
+                        "required": true,
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "extra_fields",
+                        "description": "Se true, Retorna campos adicionais: providencia, acessibilidade, democratizacao, objetivos, etapa, ficha_tecnica, justificativa, sinopse, impacto_ambiental, especificacao_tecnica, estrategia_execucao ",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "$ref": "#/definitions/Projeto"
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Projeto com PRONAC fornecido não encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "PRONAC inválido",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/": {
+            "get": {
+                "tags": [
+                    "projetos : Dados relativos a Projetos"
+                ],
+                "summary": "Busca projetos dado uma combinação de valores diversos de pesquisa",
+                "operationId": "project_list",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Número de projetos a serem retornados",
+                        "required": false,
+                        "type": "integer",
+                        "default": 10,
+                        "minimum": 1,
+                        "maximum": 100
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Número de paginação de resultados",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0,
+                        "minimum": 0
+                    },
+                    {
+                        "in": "query",
+                        "name": "PRONAC",
+                        "description": "Número do PRONAC",
+                        "required": false,
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "proponente",
+                        "description": "Proponente do projeto",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "cgccpf",
+                        "description": "Cgc/Cpf do proponente",
+                        "required": false,
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "nome",
+                        "description": "Nome do projeto",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "area",
+                        "description": "Área do projeto",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "segmento",
+                        "description": "Segmento do projeto",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "UF",
+                        "description": "Estado de origem",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_inicio",
+                        "description": "Data de início no formato aaaa-mm-dd",
+                        "required": false,
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_termino",
+                        "description": "Data de finalização no formato aaaa-mm-dd",
+                        "required": false,
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "in": "query",
+                        "name": "extra_fields",
+                        "description": "Se true, Retorna campos adicionais: providencia, acessibilidade, democratizacao, objetivos, etapa, ficha_tecnica, justificativa, sinopse, impacto_ambiental, especificacao_tecnica, estrategia_execucao ",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Projeto"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Número total de objetos que atendem seu critério de busca",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Projetos com esses parâmetros não encontrados",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid parameter(s) supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/{PRONAC}/captacoes": {
+            "get": {
+                "tags": [
+                    "projetos : Dados relativos a Projetos"
+                ],
+                "summary": "Dado o número de PRONAC de um projeto, retorna informações relativas as captações obtidas",
+                "operationId": "projetos_donation",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "number of proponents to return",
+                        "required": false,
+                        "type": "integer",
+                        "default": 10,
+                        "minimum": 1,
+                        "maximum": 100
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "paging number of results",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0,
+                        "minimum": 0
+                    },
+                    {
+                        "in": "path",
+                        "name": "PRONAC",
+                        "description": "Número do PRONAC",
+                        "required": true,
+                        "type": "string",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Doacao"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Projeto com PRONAC fornecido não encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "PRONAC inválido",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/areas": {
+            "get": {
+                "tags": [
+                    "projetos : Dados relativos a Projetos"
+                ],
+                "summary": "Retorna todas as áreas disponíveis",
+                "operationId": "projet_areas",
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Area"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No project area available",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/projetos/segmentos": {
+            "get": {
+                "tags": [
+                    "projetos : Dados relativos a Projetos"
+                ],
+                "summary": "Retorna todos os segmentos disponíveis",
+                "operationId": "projet_segments",
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Segmento"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No project segment available",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/preprojetos/": {
+            "get": {
+                "tags": [
+                    "preprojetos : Dados relativos a Pré Projetos"
+                ],
+                "summary": "Busca preprojetos dado uma combinação de valores diversos de pesquisa",
+                "operationId": "preproject_list",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Número de projetos a serem retornados",
+                        "required": false,
+                        "type": "integer",
+                        "default": 10,
+                        "minimum": 1,
+                        "maximum": 100
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Número de paginação de resultados",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0,
+                        "minimum": 0
+                    },
+                    {
+                        "in": "query",
+                        "name": "nome",
+                        "description": "Nome do projeto",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_inicio",
+                        "description": "Data de início no formato aaaa-mm-dd",
+                        "required": false,
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_termino",
+                        "description": "Data de finalização no formato aaaa-mm-dd",
+                        "required": false,
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "in": "query",
+                        "name": "extra_fields",
+                        "description": "Se true, Retorna campos adicionais:  resumo, acessibilidade, democratizacao, etapa, objetivos, justificativa, sinopse, impacto_ambiental, especificacao_tecnica, estrategia_execucao, ficha_tecnica",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/PreProjeto"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Número total de objetos que atendem seu critério de busca",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Projetos com esses parâmetros não encontrados",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid parameter(s) supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/incentivadores/": {
+            "get": {
+                "tags": [
+                    "incentivadores : Dados relativos a Incentivadores"
+                ],
+                "summary": "Busca incentivadores dado uma combinação de valores diversos de pesquisa",
+                "operationId": "Donators related data",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Número de incentivadores a serem retornados",
+                        "required": false,
+                        "type": "integer",
+                        "default": 10,
+                        "minimum": 1,
+                        "maximum": 100
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Número de paginação de resultados",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0,
+                        "minimum": 0
+                    },
+                    {
+                        "in": "query",
+                        "name": "nome",
+                        "description": "Nome do incentivador",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "cgccpf",
+                        "description": "Cgc/Cpf do incentivador",
+                        "required": false,
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "municipio",
+                        "description": "Cidade",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "UF",
+                        "description": "Estado",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "tipo_pessoa",
+                        "description": "Tipo de pessoa",
+                        "enum": [
+                            "fisica",
+                            "juridica"
+                        ],
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Incentivador"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Número total de objetos que atendem seu critério de busca",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No donator was found with your criteria",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "PRONAC inválido",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/incentivadores/{cgccpf}/doacoes": {
+            "get": {
+                "tags": [
+                    "incentivadores : Dados relativos a Incentivadores"
+                ],
+                "summary": "Dado o CGC ou CPF de um doador, retorna informações relativas a todas as doações feitas",
+                "operationId": "donator_donations",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "cgccpf",
+                        "description": "Cgc/Cpf do incentivador",
+                        "required": true,
+                        "type": "string",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Doacao"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Projeto com PRONAC fornecido não encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "PRONAC inválido",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/proponentes/": {
+            "get": {
+                "tags": [
+                    "proponentes : Dados relativos a Proponentes"
+                ],
+                "summary": "Busca proponentes dado uma combinação de valores diversos de pesquisa",
+                "operationId": "proponente",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Número de proponentes a serem retornados",
+                        "required": false,
+                        "type": "integer",
+                        "default": 10,
+                        "minimum": 1,
+                        "maximum": 100
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Número de paginação de resultados",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0,
+                        "minimum": 0
+                    },
+                    {
+                        "in": "query",
+                        "name": "nome",
+                        "description": "Nome do proponente",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "cgccpf",
+                        "description": "Cgc/Cpf do proponente",
+                        "required": false,
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "municipio",
+                        "description": "Cidade",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "UF",
+                        "description": "Estado",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "tipo_pessoa",
+                        "description": "Tipo de pessoa",
+                        "enum": [
+                            "fisica",
+                            "juridica"
+                        ],
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Proponente"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Número total de objetos que atendem seu critério de busca",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Projeto com PRONAC fornecido não encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "PRONAC inválido",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Projeto": {
+            "type": "object",
+            "properties": {
+                "PRONAC": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "cgccpf": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "proponente": {
+                    "type": "string"
+                },
+                "segmento": {
+                    "type": "string"
+                },
+                "area": {
+                    "type": "string"
+                },
+                "UF": {
+                    "type": "string"
+                },
+                "data_inicio": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "data_termino": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "situacao": {
+                    "type": "string"
+                },
+                "mecanismo": {
+                    "type": "string"
+                },
+                "enquadramento": {
+                    "type": "string"
+                },
+                "valor_projeto": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "outras_fontes": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "valor_captado": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "valor_proposta": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "valor_solicitado": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "valor_aprovado": {
+                    "type": "number",
+                    "format": "double"
+                }
+            }
+        },
+        "PreProjeto": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "mecanismo": {
+                    "type": "string"
+                },
+                "data_aceite": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "data_inicio": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "data_termino": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "data_arquivamento": {
+                    "type": "string",
+                    "format": "date"
+                }
+            }
+        },
+        "Proponente": {
+            "type": "object",
+            "properties": {
+                "nome": {
+                    "type": "string"
+                },
+                "cgccpf": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "responsavel": {
+                    "type": "string"
+                },
+                "tipo_pessoa": {
+                    "type": "string"
+                },
+                "UF": {
+                    "type": "string"
+                },
+                "municipio": {
+                    "type": "string"
+                }
+            }
+        },
+        "Incentivador": {
+            "type": "object",
+            "properties": {
+                "nome": {
+                    "type": "string"
+                },
+                "responsavel": {
+                    "type": "string"
+                },
+                "cgccpf": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "tipo_pessoa": {
+                    "type": "string"
+                },
+                "UF": {
+                    "type": "string"
+                },
+                "municipio": {
+                    "type": "string"
+                },
+                "total_doado": {
+                    "type": "number",
+                    "format": "double"
+                }
+            }
+        },
+        "Area": {
+            "type": "object",
+            "properties": {
+                "area": {
+                    "type": "string"
+                }
+            }
+        },
+        "Segmento": {
+            "type": "object",
+            "properties": {
+                "segmento": {
+                    "type": "string"
+                }
+            }
+        },
+        "Doacao": {
+            "type": "object",
+            "properties": {
+                "PRONAC": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "valor": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "data_recibo": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "nome_projeto": {
+                    "type": "string"
+                },
+                "nome_doador": {
+                    "type": "string"
+                },
+                "cgccpf": {
+                    "type": "string",
+                    "format": "int64"
+                }
+            }
+        },
+        "Error": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "more_info": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
