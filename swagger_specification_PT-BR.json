@@ -133,6 +133,13 @@
                     },
                     {
                         "in": "query",
+                        "name": "ano_projeto",
+                        "description": "Ano em que o projeto foi apresentado em dois dígitos. Formato AA",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
                         "name": "proponente",
                         "description": "Proponente do projeto",
                         "required": false,
@@ -177,7 +184,7 @@
                     {
                         "in": "query",
                         "name": "data_inicio",
-                        "description": "Data de início no formato aaaa-mm-dd",
+                        "description": "Data de início no formato AAAA-MM-DD",
                         "required": false,
                         "type": "string",
                         "format": "date"
@@ -185,7 +192,7 @@
                     {
                         "in": "query",
                         "name": "data_termino",
-                        "description": "Data de finalização no formato aaaa-mm-dd",
+                        "description": "Data de finalização no formato AAAA-MM-DD",
                         "required": false,
                         "type": "string",
                         "format": "date"
@@ -865,6 +872,9 @@
                 "PRONAC": {
                     "type": "string",
                     "format": "int64"
+                },
+                "ano_projeto": {
+                    "type": "string"
                 },
                 "nome": {
                     "type": "string"
