@@ -4,7 +4,7 @@ import tornado
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
-from resources.resourse_manager import *
+from urls import *
 import argparse
 from config import WEBSERVER_PORT, WEBSERVER_ADDR, SUBPROCESS_NUMBER
 import logging
@@ -15,10 +15,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--dev', action="store_true", default=False)
 
 app.config['PROPAGATE_EXCEPTIONS'] = True
- 
+
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
-                  
+
 if __name__ == '__main__':
     arguments = parser.parse_args()
     if arguments.dev:
