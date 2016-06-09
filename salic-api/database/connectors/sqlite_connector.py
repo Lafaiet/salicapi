@@ -10,7 +10,7 @@ import datetime
 Session = sessionmaker(bind=engine)
 session = Session()
 
-res = session.query(func.count(distinct(PreProjetoDb.NomeProjeto)))
+res = session.query(func.count(distinct(PreProjetoModel.NomeProjeto)))
 
 for r in res:
     print r

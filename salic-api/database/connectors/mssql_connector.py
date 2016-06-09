@@ -29,15 +29,15 @@ class MSSql_connector(SQL_connector):
 def test():
     print 'Testing class...'
     sys.path.append('..')
-    from ORMClasses import *
+    from models import *
     session = MSSql_connector().session
-    #res  = session.query(ProjetoDb).order_by(ProjetoDb.IdPRONAC).slice(1,2)
+    #res  = session.query(ProjetoModel).order_by(ProjetoModel.IdPRONAC).slice(1,2)
     
     try:
-        #res  = session.query(func.sac.dbo.fnValorDaProposta(ProjetoDb.idProjeto)).order_by(ProjetoDb.IdPRONAC).slice(1,10)
+        #res  = session.query(func.sac.Modelo.fnValorDaProposta(ProjetoModel.idProjeto)).order_by(ProjetoModel.IdPRONAC).slice(1,10)
         res = session.query(
-                            InteressadoDb.Nome
-                            ).join(CaptacaoDb).filter(InteressadoDb.Uf=='go')
+                            InteressadoModel.Nome
+                            ).join(CaptacaoModel).filter(InteressadoModel.Uf=='go')
         for r in res:
             print r
      #      print json.dumps(r.to_dict())
@@ -45,8 +45,8 @@ def test():
     except Exception as e:
         print 'Error occured : '+str(e)
     
-    #res  = session.query(ProjetoDb).filter(ProjetoDb.IdPRONAC == 1).all()
-    #res = session.query(func.count(distinct(ProjetoDb.NomeProjeto)))
+    #res  = session.query(ProjetoModel).filter(ProjetoModel.IdPRONAC == 1).all()
+    #res = session.query(func.count(distinct(ProjetoModel.NomeProjeto)))
                              
     #data_dict = row2dict(res)
     #print data_dict

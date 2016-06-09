@@ -11,7 +11,7 @@
         },
         "license": {
             "name": "ODbL 1.0",
-            "url": "http://opendatacommons.org/licenses/odbl/summary/"
+            "url": "http://opendatacommons.org/licenses/oDbl/summary/"
         }
     },
     "host": "10.0.1.250:8000",
