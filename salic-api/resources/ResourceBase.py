@@ -2,7 +2,6 @@ from result_format import get_formated
 from flask import Flask, request, make_response, send_file
 from flask import Response
 from flask_restful import Resource
-from database.QueryHandler import QueryHandler
 from APIError import APIError
 from rate_limiting import shared_limiter, GLOBAL_RATE_LIMITS, RATE_LIMITING_ACTIVE
 import sys
@@ -21,7 +20,7 @@ class ResourceBase(Resource):
         Log.info('Rate limiting is turned off')
 
     def __init__(self):
-        self.query_handler = QueryHandler()
+        pass
 
 
     def render(self, data, headers =  {}, status_code  = 200):

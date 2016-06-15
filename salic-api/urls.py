@@ -8,10 +8,10 @@ from flask_restful import Api
 
 from resources.TestResource import TestResource
 
-from resources.projeto.Projeto import Projeto
+from resources.projeto.Projeto_detail import ProjetoDetail
 from resources.projeto.Projeto_list import ProjetoList
 from resources.proponente.Proponente import Proponente
-from resources.projeto.Captacoes import Captacoes
+from resources.projeto.Captacao import Captacao
 
 from resources.projeto.Area import Area
 from resources.projeto.Segmento import Segmento
@@ -31,10 +31,10 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 api.add_resource(TestResource, '/test', '/test/')
 
-api.add_resource(Projeto, '/%s/projetos/<string:PRONAC>/'%(BASE_VERSION))
+api.add_resource(ProjetoDetail, '/%s/projetos/<string:PRONAC>/'%(BASE_VERSION))
 api.add_resource(ProjetoList, '/%s/projetos/'%(BASE_VERSION))
 api.add_resource(Proponente, '/%s/proponentes/'%(BASE_VERSION))
-api.add_resource(Captacoes, '/%s/projetos/<string:PRONAC>/captacoes/'%(BASE_VERSION))
+api.add_resource(Captacao, '/%s/projetos/<string:PRONAC>/captacoes/'%(BASE_VERSION))
 
 api.add_resource(Area, '/%s/projetos/areas/'%(BASE_VERSION))
 api.add_resource(Segmento, '/%s/projetos/segmentos/'%(BASE_VERSION))
