@@ -1,8 +1,8 @@
-from ..result_format import get_formated, to_json
 from flask_restful import Api
 from flask import Response
 from ..ResourceBase import *
 from models import ProjetoModelObject
+from ..serialization import listify_queryset
 
 
 
@@ -29,7 +29,7 @@ class ProjetoDetail(ResourceBase):
 
         try:
             Log.debug('Starting database call')
-            result, dummy = ProjetoModelObject().all(limit=1, offset=0, PRONAC = PRONAC, extra_fields = extra_fields)
+            result, n_records = ProjetoModelObject().all(limit=1, offset=0, PRONAC = PRONAC, extra_fields = extra_fields)
             Log.debug('Database call was successful')
         except Exception as e:
             Log.error( str(e))
@@ -39,13 +39,12 @@ class ProjetoDetail(ResourceBase):
                       }
             return self.render(result, status_code = 503)
 
-        result = result[0] if result else None
-
-        if result is None:
+        if n_records == 0:
              result = {'message' : 'No project with PRONAC %s'%(PRONAC),
                         'message_code' : 11
                         }
              return self.render(result, status_code = 404)
 
+        data = listify_queryset(result)[0]
 
-        return self.render(result)
+        return self.render(data)

@@ -5,6 +5,7 @@ sys.path.append('../../')
 from config import LIMIT_PAGING, OFFSET_PAGING
 from ..ResourceBase import *
 from models import IncentivadorModelObject
+from ..serialization import listify_queryset
 
 import pymssql, json
 
@@ -67,4 +68,7 @@ class Incentivador(ResourceBase):
             return self.render(result, status_code = 404)
 
         headers = {'X-Total-Count' : n_records}
-        return self.render(results, headers)
+
+        data = listify_queryset(results)
+
+        return self.render(data, headers)

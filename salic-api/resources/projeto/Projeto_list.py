@@ -2,6 +2,7 @@ import sys
 sys.path.append('../../')
 from ..ResourceBase import *
 from models import ProjetoModelObject
+from ..serialization import listify_queryset
 
 
 class ProjetoList(ResourceBase):
@@ -115,4 +116,6 @@ class ProjetoList(ResourceBase):
         else :
             headers = {'X-Total-Count' : n_records}
 
-        return self.render(results, headers)
+        data = listify_queryset(results)
+
+        return self.render(data, headers)

@@ -5,6 +5,7 @@ sys.path.append('../../')
 from config import LIMIT_PAGING, OFFSET_PAGING
 from models import DoacaoModelObject
 from ..ResourceBase import *
+from ..serialization import listify_queryset
 
 import pymssql, json
 
@@ -26,11 +27,13 @@ class Doacao(ResourceBase):
                       'more' : 'something is broken'
                       }
             return self.render(result, status_code = 503)
-         
+
         if len(results) == 0:
             result = {'message' : 'No funding info was found with your criteria',
                                  'message_code' : 11}
 
             return self.render(result, status_code = 404)
 
-        return self.render(results)
+        data = listify_queryset(results)
+
+        return self.render(data)

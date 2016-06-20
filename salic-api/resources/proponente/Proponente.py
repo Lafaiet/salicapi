@@ -6,6 +6,7 @@ from config import LIMIT_PAGING, OFFSET_PAGING
 from models import ProponenteModelObject
 from ..ResourceBase import *
 from ..APIError import APIError
+from ..serialization import listify_queryset
 
 import pymssql, json
 
@@ -62,5 +63,7 @@ class Proponente(ResourceBase):
             return self.render(api_error.to_dict(), status_code = api_error.status_code)
 
 
+        data = listify_queryset(results)
+        
         headers = {'X-Total-Count' : n_records}
-        return self.render(results, headers)
+        return self.render(data, headers)

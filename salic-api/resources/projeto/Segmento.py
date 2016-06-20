@@ -20,4 +20,9 @@ class Segmento(ResourceBase):
                         }
             return self.render(result, status_code = 503)
 
-        return self.render(result)
+        data = []
+
+        for item in result:
+            data.append(item[0])
+
+        return self.render(data)

@@ -3,6 +3,7 @@ from flask_restful import Api
 from flask import Response
 from ..ResourceBase import *
 from models import CaptacaoModelObject
+from ..serialization import listify_queryset
 
 class Captacao(ResourceBase):
 
@@ -29,4 +30,6 @@ class Captacao(ResourceBase):
                         }
             return self.render(results, status_code = 404)
 
-        return self.render(results)
+        data = listify_queryset(results)
+
+        return self.render(data)

@@ -1,4 +1,4 @@
-from result_format import get_formated
+from serialization import serialize
 from flask import Flask, request, make_response, send_file
 from flask import Response
 from flask_restful import Resource
@@ -26,15 +26,15 @@ class ResourceBase(Resource):
     def render(self, data, headers =  {}, status_code  = 200):
 
         if request.headers['Accept'] == 'application/xml':
-            response = Response(get_formated(data, 'xml'), content_type='application/xml; charset=utf-8')
+            response = Response(serialize(data, 'xml'), content_type='application/xml; charset=utf-8')
 
         elif request.headers['Accept'] == 'text/csv':
-            response = Response(get_formated(data, 'csv'), content_type='text/csv; charset=utf-8')
+            response = Response(serialize(data, 'csv'), content_type='text/csv; charset=utf-8')
 
 
         # JSON or invalid Content-Type
         else :
-            response = Response(get_formated(data, 'json'), content_type='application/json; charset=utf-8')
+            response = Response(serialize(data, 'json'), content_type='application/json; charset=utf-8')
 
 
         response.headers.extend(headers)
