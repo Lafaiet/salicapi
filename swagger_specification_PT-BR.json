@@ -301,7 +301,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Doacao"
+                                "$ref": "#/definitions/Captacao"
                             }
                         },
                         "headers": {
@@ -357,7 +357,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Area"
+                                "type": "string"
                             }
                         },
                         "headers": {
@@ -407,7 +407,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Segmento"
+                                "type": "string"
                             }
                         },
                         "headers": {
@@ -1021,22 +1021,6 @@
                 }
             }
         },
-        "Area": {
-            "type": "object",
-            "properties": {
-                "area": {
-                    "type": "string"
-                }
-            }
-        },
-        "Segmento": {
-            "type": "object",
-            "properties": {
-                "segmento": {
-                    "type": "string"
-                }
-            }
-        },
         "Doacao": {
             "type": "object",
             "properties": {
@@ -1054,6 +1038,19 @@
                 },
                 "nome_projeto": {
                     "type": "string"
+                }
+            }
+        },
+        "Captacao": {
+            "type": "object",
+            "properties": {
+                "valor": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "data_recibo": {
+                    "type": "string",
+                    "format": "date"
                 },
                 "nome_doador": {
                     "type": "string"
