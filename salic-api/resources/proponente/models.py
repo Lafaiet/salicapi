@@ -29,16 +29,7 @@ class ProponenteModelObject(ModelsBase):
                                                InteressadoModel.Responsavel.label('responsavel'),
                                                InteressadoModel.CgcCpf.label('cgccpf'),
                                                tipo_pessoa_case.label('tipo_pessoa'),
-                                               func.count(ProjetoModel.PRONAC).label('quantidade_projetos'),
-                                               ).join(ProjetoModel)\
-                                                .group_by(InteressadoModel.Nome,
-                                                          InteressadoModel.Cidade,
-                                                          InteressadoModel.Uf,
-                                                          InteressadoModel.Responsavel,
-                                                          InteressadoModel.CgcCpf,
-                                                          tipo_pessoa_case,
-                                                  )\
-                                                .order_by(InteressadoModel.CgcCpf)
+                                               ).order_by(InteressadoModel.CgcCpf)
 
 
         if cgccpf is not None:

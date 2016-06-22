@@ -871,7 +871,7 @@
             "properties": {
                 "PRONAC": {
                     "type": "string",
-                    "format": "int64"
+                    "format": "int64",
                 },
                 "ano_projeto": {
                     "type": "string"
@@ -894,6 +894,9 @@
                 },
                 "UF": {
                     "type": "string"
+                },
+                "municipio" : {
+                  "type" : "string"
                 },
                 "data_inicio": {
                     "type": "string",

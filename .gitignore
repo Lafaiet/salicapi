@@ -22,7 +22,9 @@ var/
 *.egg
 
 # Logging
-.log
+*.log
 
 # Configuration
 config.py
+
+*.csv

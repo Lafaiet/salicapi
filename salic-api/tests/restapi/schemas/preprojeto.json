@@ -1,0 +1,49 @@
+{
+    "$schema": "http://json-schema.org/draft-03/schema",
+    "type" : "array",
+    "items" : {
+        "type":"object",
+        "properties":{
+          "id": {
+              "type": "integer",
+              "format": "int64",
+              "required":true
+
+          },
+          "nome": {
+              "type": "string",
+              "required":true
+
+          },
+          "mecanismo": {
+              "type": "string",
+              "required":true
+
+          },
+          "data_aceite": {
+              "type": "string",
+              "format": "date",
+              "required":true
+
+          },
+          "data_inicio": {
+              "type": "string",
+              "format": "date",
+              "required":true
+
+          },
+          "data_termino": {
+              "type": "string",
+              "format": "date",
+              "required":true
+
+          },
+          "data_arquivamento": {
+              "type": "string",
+              "format": "date",
+              "required":true
+          }
+        },
+        "additionalProperties": false
+    }
+}

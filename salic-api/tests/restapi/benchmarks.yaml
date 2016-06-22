@@ -1,0 +1,30 @@
+---
+- config:
+    - testset: "SALIC API BENCHMARKS"
+    - timeout: 2000
+
+- benchmark:
+    - name: "Projeto Detalhe"
+    - url: "/alpha/projetos/090001/"
+    - warmup_runs: 2
+    - 'benchmark_runs': '5'
+    - output_file: 'projeto-detalhe-benchmark.csv'
+    - metrics:
+        - total_time
+        - total_time: mean
+        - total_time: median
+        - size_download
+        - speed_download: median
+
+- benchmark:
+    - name: "Projeto Lista"
+    - url: "/alpha/projetos/"
+    - warmup_runs: 2
+    - 'benchmark_runs': '5'
+    - output_file: 'projeto-lista-benchmark.csv'
+    - metrics:
+        - total_time
+        - total_time: mean
+        - total_time: median
+        - size_download
+        - speed_download: median
