@@ -1,0 +1,10 @@
+---
+- config:
+    - testset: "SALIC API TESTS"
+    - timeout: 2000
+
+- test:
+  - name: "Projeto Lista"
+  - url: "/alpha/projetos/090001/"
+  - validators:
+        - json_schema: {schema: {file: 'schemas/projeto_detail.json'}}

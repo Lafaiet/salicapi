@@ -86,11 +86,6 @@ def listsTodict(keys, values):
     for value in values:
         values_list.append(value)
 
-    "Getting rid of spaces"
-    if 'cgccpf' in keys:
-        cgccpf_index = keys.index('cgccpf')
-        values_list[cgccpf_index]  = str(values_list[cgccpf_index]).split()[0]
-
     return dict(zip(keys, list_serializable(values_list)))
 
 

@@ -3,6 +3,8 @@ sys.path.append('../../')
 from ..ResourceBase import *
 from models import ProjetoModelObject
 from ..serialization import listify_queryset
+from ..format_utils import truncate, remove_blanks, remove_html_tags, HTMLEntitiesToUnicode
+from sanitization import sanitize
 
 
 class ProjetoList(ResourceBase):
@@ -96,7 +98,7 @@ class ProjetoList(ResourceBase):
             Log.debug('Starting database call')
             results, n_records = ProjetoModelObject().all(limit, offset, PRONAC, nome,
                               proponente, cgccpf, area, segmento,
-                              UF, municipio, data_inicio, data_termino, extra_fields, ano_projeto)
+                              UF, municipio, data_inicio, data_termino, True, ano_projeto)
             Log.debug('Database call was successful')
 
         except Exception as e:
@@ -117,5 +119,25 @@ class ProjetoList(ResourceBase):
             headers = {'X-Total-Count' : n_records}
 
         data = listify_queryset(results)
+
+        for projeto in data:
+
+            "Getting rid of blanks"
+            projeto["cgccpf"]  = remove_blanks(str(projeto["cgccpf"]))
+
+            "Sanitizing text values"
+            projeto['acessibilidade'] = sanitize(projeto['acessibilidade'])
+            projeto['objetivos'] = sanitize(projeto['objetivos'])
+            projeto['justificativa'] = sanitize(projeto['justificativa'])
+            projeto['etapa'] = sanitize(projeto['etapa'])
+            projeto['ficha_tecnica'] = sanitize(projeto['ficha_tecnica'])
+            projeto['impacto_ambiental'] = sanitize(projeto['impacto_ambiental'])
+            projeto['especificacao_tecnica'] = sanitize(projeto['especificacao_tecnica'])
+            projeto['estrategia_execucao'] = sanitize(projeto['estrategia_execucao'])
+            projeto['providencia'] = sanitize(projeto['providencia'])
+            projeto['democratizacao'] =  sanitize(projeto["democratizacao"])
+
+            projeto['sinopse'] = truncate(projeto["sinopse"])
+            projeto['resumo'] = truncate(projeto["resumo"])
 
         return self.render(data, headers)

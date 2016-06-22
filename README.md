@@ -37,6 +37,9 @@ Se tudo ocorrer bem, a aplicação deve estar instalada em **/opt/salic/salic-ap
 -	`python-dev`
 -	`python-pip`
 -	`freetds-dev`
+-	`libxml2-dev`
+- `libxslt1-dev`
+- `libz-dev`
 
 ### Pacotes python
 

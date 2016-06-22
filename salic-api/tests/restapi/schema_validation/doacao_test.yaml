@@ -1,0 +1,11 @@
+---
+- config:
+    - testset: "SALIC API TESTS"
+    - timeout: 2000
+
+
+- test:
+  - name: "Doacoes"
+  - url: "/alpha/incentivadores/00000000001830/doacoes/"
+  - validators:
+        - json_schema: {schema: {file: 'schemas/doacao.json'}}

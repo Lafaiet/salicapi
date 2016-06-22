@@ -3,10 +3,10 @@
 echo "Installing SALIC API..."
 
 echo "Installing dependencies:"
-apt-get update && apt-get install python-dev python-pip freetds-dev
+apt-get update && apt-get install python-dev python-pip freetds-dev libxml2-dev libxslt1-dev libz-dev
 pip install -r salic-api/requirements.txt
 
-echo "Dependencies installed" 
+echo "Dependencies installed"
 
 cp /opt/salic/salic-api/config.py config.py.old
 

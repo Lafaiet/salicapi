@@ -1,0 +1,9 @@
+- import: areas_test.yaml
+- import: captacao_test.yaml
+- import: doacao_test.yaml
+- import: incentivador_test.yaml
+- import: preprojeto_test.yaml
+- import: projeto_detail_test.yaml
+- import: projeto_list_test.yaml
+- import: proponentes_test.yaml
+- import: segmentos_test.yaml

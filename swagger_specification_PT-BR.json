@@ -40,14 +40,6 @@
                         "required": true,
                         "type": "string",
                         "format": "int64"
-                    },
-                    {
-                        "in": "query",
-                        "name": "extra_fields",
-                        "description": "Se true, Retorna campos adicionais: providencia, acessibilidade, democratizacao, objetivos, etapa, ficha_tecnica, justificativa, sinopse, impacto_ambiental, especificacao_tecnica, estrategia_execucao ",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false
                     }
                 ],
                 "responses": {
@@ -196,14 +188,6 @@
                         "required": false,
                         "type": "string",
                         "format": "date"
-                    },
-                    {
-                        "in": "query",
-                        "name": "extra_fields",
-                        "description": "Se true, Retorna campos adicionais: providencia, acessibilidade, democratizacao, objetivos, etapa, ficha_tecnica, justificativa, sinopse, impacto_ambiental, especificacao_tecnica, estrategia_execucao ",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false
                     }
                 ],
                 "responses": {
@@ -493,14 +477,6 @@
                         "required": false,
                         "type": "string",
                         "format": "date"
-                    },
-                    {
-                        "in": "query",
-                        "name": "extra_fields",
-                        "description": "Se true, Retorna campos adicionais:  resumo, acessibilidade, democratizacao, etapa, objetivos, justificativa, sinopse, impacto_ambiental, especificacao_tecnica, estrategia_execucao, ficha_tecnica",
-                        "required": false,
-                        "type": "boolean",
-                        "default": false
                     }
                 ],
                 "responses": {
@@ -938,6 +914,42 @@
                 "valor_aprovado": {
                     "type": "number",
                     "format": "double"
+                },
+                "acessibilidade": {
+                    "type": "string"
+                },
+                "objetivos": {
+                    "type": "string"
+                },
+                "justificativa": {
+                    "type": "string"
+                },
+                "etapa": {
+                    "type": "string"
+                },
+                "ficha_tecnica": {
+                    "type": "string"
+                },
+                "impacto_ambiental": {
+                    "type": "string"
+                },
+                "especificacao_tecnica": {
+                    "type": "string"
+                },
+                "estrategia_execucao": {
+                    "type": "string"
+                },
+                "providencia": {
+                    "type": "string"
+                },
+                "democratizacao": {
+                    "type": "string"
+                },
+                "sinopse": {
+                    "type": "string"
+                },
+                "resumo": {
+                    "type": "string"
                 }
             }
         },
@@ -969,6 +981,42 @@
                 "data_arquivamento": {
                     "type": "string",
                     "format": "date"
+                },
+                "acessibilidade": {
+                    "type": "string"
+                },
+                "objetivos": {
+                    "type": "string"
+                },
+                "justificativa": {
+                    "type": "string"
+                },
+                "etapa": {
+                    "type": "string"
+                },
+                "ficha_tecnica": {
+                    "type": "string"
+                },
+                "impacto_ambiental": {
+                    "type": "string"
+                },
+                "especificacao_tecnica": {
+                    "type": "string"
+                },
+                "estrategia_execucao": {
+                    "type": "string"
+                },
+                "providencia": {
+                    "type": "string"
+                },
+                "democratizacao": {
+                    "type": "string"
+                },
+                "sinopse": {
+                    "type": "string"
+                },
+                "resumo": {
+                    "type": "string"
                 }
             }
         },

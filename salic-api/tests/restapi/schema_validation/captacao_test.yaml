@@ -1,0 +1,10 @@
+---
+- config:
+    - testset: "SALIC API TESTS"
+    - timeout: 2000
+
+- test:
+  - name: "Captacoes"
+  - url: "/alpha/projetos/090006/captacoes/"
+  - validators:
+        - json_schema: {schema: {file: 'schemas/captacao.json'}}

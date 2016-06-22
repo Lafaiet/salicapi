@@ -1,0 +1,11 @@
+---
+- config:
+    - testset: "SALIC API TESTS"
+    - timeout: 2000
+
+
+- test:
+  - name: "Incentivadores"
+  - url: "/alpha/incentivadores/?limit=1"
+  - validators:
+        - json_schema: {schema: {file: 'schemas/incentivador.json'}}

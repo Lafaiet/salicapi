@@ -1,0 +1,11 @@
+---
+- config:
+    - testset: "SALIC API TESTS"
+    - timeout: 2000
+
+- test:
+  - name: "XML Content"
+  - url: "/alpha/projetos/?limit=1"
+  - headers: {accept: 'application/xml'}
+  - validators:
+     - compare: {header: "content-type", comparator: contains, expected: 'application/xml'}
