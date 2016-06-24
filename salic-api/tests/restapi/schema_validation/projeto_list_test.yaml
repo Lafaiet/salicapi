@@ -5,6 +5,6 @@
 
 - test:
   - name: "Projeto Lista"
-  - url: "/alpha/projetos/?limit=1"
+  - url: "/alpha/projetos/"
   - validators:
         - json_schema: {schema: {file: 'schemas/projeto_list.json'}}

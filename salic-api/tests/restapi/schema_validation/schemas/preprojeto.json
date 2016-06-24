@@ -8,7 +8,6 @@
               "type": "integer",
               "format": "int64",
               "required":true
-
           },
           "nome": {
               "type": "string",
@@ -21,7 +20,7 @@
 
           },
           "data_aceite": {
-              "type": "string",
+              "type": ["string", "null"],
               "format": "date",
               "required":true
 
@@ -39,9 +38,53 @@
 
           },
           "data_arquivamento": {
-              "type": "string",
+              "type": ["string", "null"],
               "format": "date",
               "required":true
+          },
+          "acessibilidade": {
+              "type": "string",
+              "required": true
+          },
+          "objetivos": {
+              "type": "string",
+              "required": true
+          },
+          "justificativa": {
+              "type": "string",
+              "required": true
+          },
+          "etapa": {
+              "type": "string",
+              "required": true
+          },
+          "ficha_tecnica": {
+              "type": "string",
+              "required": true
+          },
+          "impacto_ambiental": {
+              "type": "string",
+              "required": true
+          },
+          "especificacao_tecnica": {
+              "type": "string",
+              "required": true
+          },
+          "estrategia_execucao": {
+              "type": "string",
+              "required": true
+          },
+          "democratizacao": {
+              "type": "string",
+              "required": true
+          },
+          "sinopse": {
+              "type": "string",
+              "required": true
+          },
+          "resumo": {
+              "type": "string",
+              "required": true
           }
         },
         "additionalProperties": false

@@ -4,7 +4,7 @@ from ..ResourceBase import *
 from models import ProjetoModelObject
 from ..serialization import listify_queryset
 from ..format_utils import truncate, remove_blanks, remove_html_tags, HTMLEntitiesToUnicode
-from sanitization import sanitize
+from ..sanitization import sanitize
 
 
 class ProjetoList(ResourceBase):
@@ -137,7 +137,7 @@ class ProjetoList(ResourceBase):
             projeto['providencia'] = sanitize(projeto['providencia'])
             projeto['democratizacao'] =  sanitize(projeto["democratizacao"])
 
-            projeto['sinopse'] = truncate(projeto["sinopse"])
-            projeto['resumo'] = truncate(projeto["resumo"])
+            projeto['sinopse'] = sanitize(projeto["sinopse"])
+            projeto['resumo'] = sanitize(projeto["resumo"])
 
         return self.render(data, headers)

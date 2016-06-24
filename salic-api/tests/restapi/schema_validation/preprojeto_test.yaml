@@ -5,4 +5,6 @@
 
 - test:
   - name: "Pre Projetos"
-  - url: "/alpha/preprojetos/?limit=1"
+  - url: "/alpha/preprojetos/"
+  - validators:
+        - json_schema: {schema: {file: 'schemas/preprojeto.json'}}

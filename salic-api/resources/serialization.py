@@ -70,9 +70,9 @@ def list_serializable(l):
 
     for e in l:
         if isinstance(e, decimal.Decimal):
-                l_serializable.append(float(e))
+            l_serializable.append(float(e))
         elif isinstance(e, datetime.date):
-                 l_serializable.append(str(e))
+            l_serializable.append(str(e))
         else:
             l_serializable.append(e)
 

@@ -4,7 +4,7 @@ from ..ResourceBase import *
 from models import ProjetoModelObject
 from ..serialization import listify_queryset
 from ..format_utils import truncate, remove_blanks
-from sanitization import sanitize
+from ..sanitization import sanitize
 
 
 
@@ -54,18 +54,18 @@ class ProjetoDetail(ResourceBase):
         projeto["cgccpf"]  = remove_blanks(str(projeto["cgccpf"]))
 
         "Sanitizing text values"
-        projeto['acessibilidade'] = sanitize(projeto['acessibilidade'])
-        projeto['objetivos'] = sanitize(projeto['objetivos'])
-        projeto['justificativa'] = sanitize(projeto['justificativa'])
-        projeto['etapa'] = sanitize(projeto['etapa'])
-        projeto['ficha_tecnica'] = sanitize(projeto['ficha_tecnica'])
-        projeto['impacto_ambiental'] = sanitize(projeto['impacto_ambiental'])
-        projeto['especificacao_tecnica'] = sanitize(projeto['especificacao_tecnica'])
-        projeto['estrategia_execucao'] = sanitize(projeto['estrategia_execucao'])
-        projeto['providencia'] = sanitize(projeto['providencia'])
-        projeto['democratizacao'] =  sanitize(projeto["democratizacao"])
+        projeto['acessibilidade'] = sanitize(projeto['acessibilidade'], truncated = False)
+        projeto['objetivos'] = sanitize(projeto['objetivos'], truncated = False)
+        projeto['justificativa'] = sanitize(projeto['justificativa'], truncated = False)
+        projeto['etapa'] = sanitize(projeto['etapa'], truncated = False)
+        projeto['ficha_tecnica'] = sanitize(projeto['ficha_tecnica'], truncated = False)
+        projeto['impacto_ambiental'] = sanitize(projeto['impacto_ambiental'], truncated = False)
+        projeto['especificacao_tecnica'] = sanitize(projeto['especificacao_tecnica'], truncated = False)
+        projeto['estrategia_execucao'] = sanitize(projeto['estrategia_execucao'], truncated = False)
+        projeto['providencia'] = sanitize(projeto['providencia'], truncated = False)
+        projeto['democratizacao'] =  sanitize(projeto["democratizacao"], truncated = False)
 
-        projeto['sinopse'] = truncate(projeto["sinopse"])
-        projeto['resumo'] = truncate(projeto["resumo"])
+        projeto['sinopse'] = sanitize(projeto["sinopse"], truncated = False)
+        projeto['resumo'] = sanitize(projeto["resumo"], truncated = False)
 
         return self.render(projeto)

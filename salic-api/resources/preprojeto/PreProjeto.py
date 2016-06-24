@@ -4,6 +4,7 @@ sys.path.append('../../')
 from ..ResourceBase import *
 from models import PreProjetoModelObject
 from ..serialization import listify_queryset
+from ..sanitization import sanitize
 
 
 class PreProjetoList(ResourceBase):
@@ -65,7 +66,7 @@ class PreProjetoList(ResourceBase):
         try:
             Log.debug('Starting database call')
             results, n_records = PreProjetoModelObject().all(limit, offset, id, nome,
-                             data_inicio, data_termino, extra_fields)
+                             data_inicio, data_termino, extra_fields = True)
             Log.debug('Database call was successful')
 
         except Exception as e:
@@ -86,5 +87,21 @@ class PreProjetoList(ResourceBase):
             headers = {'X-Total-Count' : n_records}
 
         data = listify_queryset(results)
+
+        for preprojeto in data:
+
+            "Sanitizing text values"
+            preprojeto['acessibilidade'] = sanitize(preprojeto['acessibilidade'])
+            preprojeto['objetivos'] = sanitize(preprojeto['objetivos'])
+            preprojeto['justificativa'] = sanitize(preprojeto['justificativa'])
+            preprojeto['etapa'] = sanitize(preprojeto['etapa'])
+            preprojeto['ficha_tecnica'] = sanitize(preprojeto['ficha_tecnica'])
+            preprojeto['impacto_ambiental'] = sanitize(preprojeto['impacto_ambiental'])
+            preprojeto['especificacao_tecnica'] = sanitize(preprojeto['especificacao_tecnica'])
+            preprojeto['estrategia_execucao'] = sanitize(preprojeto['estrategia_execucao'])
+            preprojeto['democratizacao'] =  sanitize(preprojeto["democratizacao"])
+
+            preprojeto['sinopse'] = sanitize(preprojeto["sinopse"], truncated = False)
+            preprojeto['resumo'] = sanitize(preprojeto["resumo"], truncated = False)
 
         return self.render(data, headers)
