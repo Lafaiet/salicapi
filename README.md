@@ -3,6 +3,11 @@
 
 API aberta para o portal [NOVO SALIC](http://novosalic.cultura.gov.br/cidadao/consultar). Tem por objetivo expor os dados de projetos da lei Rouanet.
 
+A documentação da API pode ser acessada [aqui](http://lafa.mine.nu/salicapi/doc/).
+
+O projeto ainda se encontra em **PRE ALPHA**, sujeito a muitas alterações, reformulações e atualizacões.
+
+
 
 ## Requisitos
 
