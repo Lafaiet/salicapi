@@ -532,6 +532,73 @@
                 }
             }
         },
+        "/preprojetos/{id}/": {
+            "get": {
+                "tags": [
+                    "preprojetos : Dados relativos a Pré Projetos"
+                ],
+                "summary": "Busca preprojetos dado uma combinação de valores diversos de pesquisa",
+                "operationId": "preproject_detail",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "id do pré projeto",
+                        "required": true,
+                        "type": "string",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "$ref": "#/definitions/PreProjeto"
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Número total de objetos que atendem seu critério de busca",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Projetos com esses parâmetros não encontrados",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Invalid parameter(s) supplied",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
         "/incentivadores/": {
             "get": {
                 "tags": [
@@ -847,7 +914,7 @@
             "properties": {
                 "PRONAC": {
                     "type": "string",
-                    "format": "int64",
+                    "format": "int64"
                 },
                 "ano_projeto": {
                     "type": "string"
@@ -871,8 +938,8 @@
                 "UF": {
                     "type": "string"
                 },
-                "municipio" : {
-                  "type" : "string"
+                "municipio": {
+                    "type": "string"
                 },
                 "data_inicio": {
                     "type": "string",
