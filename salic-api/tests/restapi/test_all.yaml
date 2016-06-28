@@ -2,7 +2,8 @@
 - import: schema_validation/captacao_test.yaml
 - import: schema_validation/doacao_test.yaml
 - import: schema_validation/incentivador_test.yaml
-- import: schema_validation/preprojeto_test.yaml
+- import: schema_validation/preprojeto_list_test.yaml
+- import: schema_validation/preprojeto_detail_test.yaml
 - import: schema_validation/projeto_detail_test.yaml
 - import: schema_validation/projeto_list_test.yaml
 - import: schema_validation/proponentes_test.yaml

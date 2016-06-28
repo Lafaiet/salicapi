@@ -5,6 +5,6 @@
 
 - test:
   - name: "Pre Projetos"
-  - url: "/alpha/preprojetos/"
+  - url: "/alpha/preprojetos/1/"
   - validators:
-        - json_schema: {schema: {file: 'schemas/preprojeto.json'}}
+        - json_schema: {schema: {file: 'schemas/preprojeto_detail.json'}}
