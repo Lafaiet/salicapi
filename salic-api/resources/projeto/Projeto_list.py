@@ -42,7 +42,11 @@ class ProjetoList(ResourceBase):
         UF = None
         municipio = None
         data_inicio = None
+        data_inicio_min = None
+        data_inicio_max = None
         data_termino = None
+        data_termino_min = None
+        data_termino_max = None
         ano_projeto = None
         extra_fields = False
 
@@ -82,8 +86,20 @@ class ProjetoList(ResourceBase):
         if request.args.get('data_inicio') is not None:
             data_inicio = request.args.get('data_inicio')
 
+        if request.args.get('data_inicio_min') is not None:
+            data_inicio_min = request.args.get('data_inicio_min')
+
+        if request.args.get('data_inicio_max') is not None:
+            data_inicio_max = request.args.get('data_inicio_max')
+
         if request.args.get('data_termino') is not None:
             data_termino = request.args.get('data_termino')
+
+        if request.args.get('data_termino_min') is not None:
+            data_termino_min = request.args.get('data_termino_min')
+
+        if request.args.get('data_termino_max') is not None:
+            data_termino_max = request.args.get('data_termino_max')
 
         if request.args.get('extra_fields') == 'true':
             extra_fields = True
@@ -91,14 +107,13 @@ class ProjetoList(ResourceBase):
         if request.args.get('ano_projeto') is not None:
             ano_projeto = request.args.get('ano_projeto')
 
-        #return_fields = request.values.getlist('fields')
-        #print return_fields
-
         try:
             Log.debug('Starting database call')
             results, n_records = ProjetoModelObject().all(limit, offset, PRONAC, nome,
                               proponente, cgccpf, area, segmento,
-                              UF, municipio, data_inicio, data_termino, True, ano_projeto)
+                              UF, municipio, data_inicio, data_inicio_min, data_inicio_max,
+                              data_termino, data_termino_min, data_termino_max, True, ano_projeto)
+
             Log.debug('Database call was successful')
 
         except Exception as e:

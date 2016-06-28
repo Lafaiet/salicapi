@@ -22,8 +22,10 @@ class ProjetoModelObject(ModelsBase):
 
     def all(self, limit, offset, PRONAC = None, nome = None, proponente = None,
                           cgccpf = None, area = None, segmento = None,
-                          UF = None, municipio = None, data_inicio = None, data_termino = None, extra_fields = False,
-                          ano_projeto = None):
+                          UF = None, municipio = None, data_inicio = None,
+                          data_inicio_min = None, data_inicio_max = None,
+                          data_termino = None, data_termino_min = None,
+                          data_termino_max = None, extra_fields = False, ano_projeto = None):
 
         start_row = offset
         end_row = offset+limit
@@ -129,8 +131,20 @@ class ProjetoModelObject(ModelsBase):
         if data_inicio is not None:
             res = res.filter(ProjetoModel.DtInicioExecucao == data_inicio)
 
+        if data_inicio_min is not None:
+            res = res.filter(ProjetoModel.DtInicioExecucao >= data_inicio_min)
+
+        if data_inicio_max is not None:
+            res = res.filter(ProjetoModel.DtInicioExecucao <= data_inicio_max)
+
         if data_termino is not None:
             res = res.filter(ProjetoModel.DtFimExecucao == data_termino)
+
+        if data_termino_min is not None:
+            res = res.filter(ProjetoModel.DtFimExecucao >= data_termino_min)
+
+        if data_termino_max is not None:
+            res = res.filter(ProjetoModel.DtFimExecucao <= data_termino_max)
 
         if ano_projeto is not None:
             res = res.filter(ProjetoModel.AnoProjeto == ano_projeto)
