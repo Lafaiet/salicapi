@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
+
 from sqlalchemy import case, func
 
 from ..ModelsBase import ModelsBase
 from ..SharedModels import AreaModel, SegmentoModel
 from ..SharedModels import (ProjetoModel, InteressadoModel, MecanismoModel,
                             SituacaoModel, PreProjetoModel, EnquadramentoModel,
-                            PreProjetoModel, CaptacaoModel
+                            PreProjetoModel, CaptacaoModel, CertidoesNegativasModel
                             )
 
 
@@ -204,4 +206,34 @@ class SegmentoModelObject(ModelsBase):
 
     def all(self):
         res  = self.sql_connector.session.query(SegmentoModel.Descricao.label('segmento'))
+        return res.all()
+
+class CertidoesNegativasModelObject(ModelsBase):
+
+    def __init__(self):
+        super (CertidoesNegativasModelObject,self).__init__()
+
+
+    def all(self, PRONAC = None, CgcCpf = None):
+
+        descricao_case = case([
+                                (CertidoesNegativasModel.CodigoCertidao == '49', u'Quitação de Tributos Federais'),
+                                (CertidoesNegativasModel.CodigoCertidao == '51', 'FGTS'),
+                                (CertidoesNegativasModel.CodigoCertidao == '52', 'INSS'),
+                                (CertidoesNegativasModel.CodigoCertidao == '244', 'CADIN'),
+        ])
+
+        situacao_case = case([(CertidoesNegativasModel.cdSituacaoCertidao == 0, u'Pendente')],
+        else_ = u'Não Pendente'
+        )
+
+        res  = self.sql_connector.session.query(CertidoesNegativasModel.DtEmissao.label('data_emissao'),
+                                                CertidoesNegativasModel.DtValidade.label('data_validade'),
+                                                descricao_case.label('descricao'),
+                                                situacao_case.label('situacao'),
+                                                )
+
+        if PRONAC is not None:
+            res = res.filter(CertidoesNegativasModel.PRONAC == PRONAC)
+
         return res.all()

@@ -139,6 +139,33 @@
           "resumo": {
               "type": "string",
               "required" : true
+          },
+          "certidoes_negativas": {
+            "type": "array",
+                "items":{
+                "type":"object",
+                "properties": {
+                    "descricao" : {
+                      "type": "string",
+                      "required" : true
+                    },
+                    "situacao" : {
+                      "type": "string",
+                      "required" : true
+                    },
+                    "data_emissao": {
+                        "type": "string",
+                        "format": "date",
+                        "required": true
+                    },
+                    "data_validade": {
+                        "type": "string",
+                        "format": "date",
+                        "required": true
+                    }
+                },
+                "additionalProperties": false
+              }
           }
       },
       "additionalProperties": false

@@ -1,7 +1,7 @@
 from flask_restful import Api
 from flask import Response
 from ..ResourceBase import *
-from models import ProjetoModelObject
+from models import ProjetoModelObject, CertidoesNegativasModelObject
 from ..serialization import listify_queryset
 from ..format_utils import truncate, remove_blanks
 from ..sanitization import sanitize
@@ -49,6 +49,18 @@ class ProjetoDetail(ResourceBase):
              return self.render(result, status_code = 404)
 
         projeto = listify_queryset(result)[0]
+
+        try:
+            certidoes_negativas = CertidoesNegativasModelObject().all(projeto['PRONAC'])
+        except Exception as e:
+            Log.error( str(e))
+
+        # if len(certidoes_negativas) == 0:
+        #     certidoes_negativas = None
+        # else:
+        #     certidoes_negativas = listify_queryset(certidoes_negativas)
+
+        projeto['certidoes_negativas'] = listify_queryset(certidoes_negativas)
 
         "Getting rid of blanks"
         projeto["cgccpf"]  = remove_blanks(str(projeto["cgccpf"]))

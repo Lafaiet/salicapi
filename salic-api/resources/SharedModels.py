@@ -151,7 +151,7 @@ class CaptacaoModel(Base):
     Idcaptacao = Column(Integer, primary_key=True)
     AnoProjeto = Column(String)
     Sequencial = Column(String)
-    PRONAC = column_property    (AnoProjeto + Sequencial)
+    PRONAC = column_property (AnoProjeto + Sequencial)
     CaptacaoReal = Column(String)
     DtRecibo = Column(Date)
 
@@ -159,3 +159,17 @@ class CaptacaoModel(Base):
     interessado_related = relationship('InteressadoModel', foreign_keys=[CgcCpfMecena])
 
     projeto_related = relationship('ProjetoModel', primaryjoin='CaptacaoModel.PRONAC==ProjetoModel.PRONAC')
+
+class CertidoesNegativasModel(Base):
+
+    __tablename__ = 'CertidoesNegativas'
+
+    idCertidoesNegativas = Column(Integer, primary_key=True)
+    AnoProjeto = Column(String)
+    Sequencial = Column(String)
+    PRONAC = column_property(AnoProjeto + Sequencial)
+    DtEmissao = Column(Date)
+    DtValidade = Column(Date)
+    CodigoCertidao = Column(Integer)
+    cdSituacaoCertidao = Column(Integer)
+    CgcCpf = Column(String)
