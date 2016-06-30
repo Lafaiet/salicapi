@@ -5,6 +5,7 @@ from models import ProjetoModelObject, CertidoesNegativasModelObject
 from ..serialization import listify_queryset
 from ..format_utils import truncate, remove_blanks
 from ..sanitization import sanitize
+from file_attachment import build_link
 
 
 
@@ -55,12 +56,42 @@ class ProjetoDetail(ResourceBase):
         except Exception as e:
             Log.error( str(e))
 
+        projeto['certidoes_negativas'] = listify_queryset(certidoes_negativas)
+
         # if len(certidoes_negativas) == 0:
         #     certidoes_negativas = None
         # else:
         #     certidoes_negativas = listify_queryset(certidoes_negativas)
 
-        projeto['certidoes_negativas'] = listify_queryset(certidoes_negativas)
+        try:
+            documentos_anexados = ProjetoModelObject().attached_documents(projeto['IdPRONAC'])
+        except Exception as e:
+            Log.error( str(e))
+
+        documentos_anexados = listify_queryset(documentos_anexados)
+
+        sanitized_documentos = []
+
+        for documento in documentos_anexados:
+            link = build_link(documento)
+
+            if link == '':
+                continue
+
+            sanitized_doc = {}
+
+            sanitized_doc['link'] = link
+
+            sanitized_doc['classificacao'] = documento['Descricao']
+            sanitized_doc['data'] = documento['Data']
+            sanitized_doc['nome'] = documento['NoArquivo']
+
+            sanitized_documentos.append(sanitized_doc)
+
+        projeto['documentos_anexados'] = sanitized_documentos
+
+        "Removing IdPRONAC"
+        del projeto['IdPRONAC']
 
         "Getting rid of blanks"
         projeto["cgccpf"]  = remove_blanks(str(projeto["cgccpf"]))

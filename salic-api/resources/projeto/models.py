@@ -22,6 +22,11 @@ class ProjetoModelObject(ModelsBase):
     def __init__(self):
         super (ProjetoModelObject, self).__init__()
 
+    def attached_documents(self, idPronac ):
+        query = 'SAC.dbo.paDocumentos %d'%idPronac
+        return self.sql_connector.session.execute(query)
+
+
     def all(self, limit, offset, PRONAC = None, nome = None, proponente = None,
                           cgccpf = None, area = None, segmento = None,
                           UF = None, municipio = None, data_inicio = None,
@@ -78,6 +83,7 @@ class ProjetoModelObject(ModelsBase):
                                                   InteressadoModel.Cidade.label('municipio'),
                                                   ProjetoModel.DtInicioExecucao.label('data_inicio'),
                                                   ProjetoModel.DtFimExecucao.label('data_termino'),
+                                                  ProjetoModel.IdPRONAC,
 
                                                   AreaModel.Descricao.label('area'),
                                                   SegmentoModel.Descricao.label('segmento'),

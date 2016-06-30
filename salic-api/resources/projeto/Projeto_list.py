@@ -137,6 +137,9 @@ class ProjetoList(ResourceBase):
 
         for projeto in data:
 
+            "Removing IdPRONAC"
+            del projeto['IdPRONAC']
+
             "Getting rid of blanks"
             projeto["cgccpf"]  = remove_blanks(str(projeto["cgccpf"]))
 

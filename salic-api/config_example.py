@@ -4,6 +4,7 @@ VERSION = "0.2.2"
 # API version
 BASE_VERSION = 'alpha'
 
+SALIC_BASE_URL = 'http://novosalic.cultura.gov.br/'
 
 # Webserver
 WEBSERVER_PORT = 8000
