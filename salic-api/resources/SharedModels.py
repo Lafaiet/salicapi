@@ -15,6 +15,7 @@ class ProjetoModel(Base):
     Sequencial = Column(String)
     PRONAC = column_property(AnoProjeto + Sequencial)
     NomeProjeto = Column(String)
+    Localizacao = Column(String)
     DtInicioExecucao = Column(Date)
     DtFimExecucao = Column(Date)
 
@@ -97,7 +98,7 @@ class EnquadramentoModel(Base):
     Enquadramento = Column(Integer)
     AnoProjeto = Column(String)
     Sequencial = Column(String)
-    IdPRONAC = Column(Integer, ForeignKey('ProjetoModel.IdPRONAC'))
+    IdPRONAC = Column(Integer, ForeignKey('Projetos.IdPRONAC'))
 
     def __init__(self):
         pass
@@ -158,7 +159,7 @@ class CaptacaoModel(Base):
     CgcCpfMecena = Column(String, ForeignKey('Interessado.CgcCpf'))
     interessado_related = relationship('InteressadoModel', foreign_keys=[CgcCpfMecena])
 
-    projeto_related = relationship('ProjetoModel', primaryjoin='CaptacaoModel.PRONAC==ProjetoModel.PRONAC')
+    #projeto_related = relationship('ProjetoModel', primaryjoin='CaptacaoModel.PRONAC==ProjetoModel.PRONAC')
 
 class CertidoesNegativasModel(Base):
 
@@ -173,3 +174,76 @@ class CertidoesNegativasModel(Base):
     CodigoCertidao = Column(Integer)
     cdSituacaoCertidao = Column(Integer)
     CgcCpf = Column(String)
+
+class VerificacaoModel(Base):
+
+    __tablename__ = 'Verificacao'
+
+    idVerificacao = Column(Integer, primary_key=True)
+    idTipo = Column(Integer)
+    Descricao = Column(String)
+    stEstado = Column(Integer)
+
+class PlanoDivulgacaoModel(Base):
+
+    __tablename__ = 'PlanoDeDivulgacao'
+
+    idPlanoDivulgacao = Column(Integer, primary_key=True)
+    idPeca = Column(Integer)
+    idVeiculo = Column(Integer)
+    stPlanoDivulgacao = Column(Integer)
+
+    idProjeto = Column(Integer, ForeignKey('Projetos.idProjeto'))
+    projeto_related = relationship('ProjetoModel', foreign_keys = [idProjeto])
+
+
+class ProdutoModel(Base):
+
+    __tablename__ = 'Produto'
+
+    Codigo = Column(Integer, primary_key=True)
+    Descricao = Column(String)
+    Area = Column(String)
+    Sintese = Column(String)
+    Idorgao = Column(Integer)
+    stEstado = Column(Integer)
+
+
+class PlanoDistribuicaoModel(Base):
+
+    __tablename__ = 'PlanoDistribuicaoProduto'
+
+
+    idPlanoDistribuicao = Column(Integer, primary_key=True)
+
+    idProjeto = Column(Integer, ForeignKey('Projetos.idProjeto'))
+    projeto_related = relationship('ProjetoModel', foreign_keys = [idProjeto])
+
+    idProduto = Column(Integer,  ForeignKey('Produto.Codigo'))
+    produto_related = relationship('ProdutoModel', foreign_keys = [idProduto])
+
+    stPrincipal = Column(Integer)
+
+    Segmento = Column(String, ForeignKey('Segmento.Codigo'))
+    segmento_related = relationship('SegmentoModel', foreign_keys = [Segmento])
+
+    Area = Column(String, ForeignKey('Area.Codigo'))
+    area_related = relationship('AreaModel', foreign_keys = [Area])
+
+    idPosicaoDaLogo = Column(Integer, ForeignKey('Verificacao.idVerificacao'))
+    vetificacao_related = relationship('VerificacaoModel', foreign_keys = [idPosicaoDaLogo])
+
+    PrecoUnitarioNormal = Column(String)
+    PrecoUnitarioPromocional = Column(String)
+
+
+    QtdeProduzida = Column(Integer)
+    QtdeProponente = Column(Integer)
+    QtdePatrocinador = Column(Integer)
+    QtdeOutros = Column(Integer)
+    QtdeVendaNormal = Column(Integer)
+    QtdeVendaPromocional = Column(Integer)
+    QtdeUnitarioNormal = Column(Integer)
+    QtdeUnitarioPromocional = Column(Integer)
+
+    stPlanoDistribuicaoProduto = Column(Integer)

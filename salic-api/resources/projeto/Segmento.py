@@ -1,4 +1,3 @@
-from ..result_format import get_formated, to_json
 from flask_restful import Api
 from flask import Response
 from ..ResourceBase import *

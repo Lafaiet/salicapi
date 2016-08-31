@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Essa é uma API aberta para acesso aos dados do portal [**SALIC.**](http://novosalic.cultura.gov.br/cidadao/consultar) \n\nSALIC é um sistema que reúne dados a respeito de propostas de projetos culturais a serem incentivados pelo Ministério da Cultura (**MINC**) por meio da lei Rouanet. Veja mais informações [aqui](http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-).\n\n\n\n\n# **Formatos de Exportação** \n\n Atualmente a API suporta exportação dos dados nos formatos * <code>JSON</code>(padrão) * * <code>XML</code> e * <code>CSV</code>. A escolha do formato deve ser definido a cada chamada, por meio do campo de cabeçalho <code>Accept</code>. \n\n # **Limitação de uso** \n\nPara requisições sem autenticação, você pode fazer até **2000 requisições diárias**. Requisições não autenticadas estão ligadas ao endereço IP de origem, não ao usuário fazendo a requisição. \n\nO cabeçalho da resposta lhe diz tudo o que você precisa saber sobre o seu limite de uso atualmente:\n<table> <tr> <td>**Campo do Cabeçalho**</td> <td>**Descrição**</td> </tr>\n<tr> <td>X-RateLimit-Limit</td> <td>Número de requisições permitidas no período.</td> </tr>\n<tr> <td>X-RateLimit-Remaining</td> <td>Número de requisições restantes na janela de limite atual.</td> </tr>\n<tr> <td>X-RateLimit-Reset</td> <td>Tempo para que a janela de limite resete em segundos UTC epoch.</td> </tr>\n<tr> <td>Retry-After</td> <td>Segundos para tentar novamente ou a data http quando a janela de limite será resetada.</td> </tr>\n</table>\n\n\n # **Paginação** \n\n Para alguns recursos que possam gerar um grande volume de resultados, a API provê um sistema de  paginação. Ao fazer sua requisição, basta fazer uso dos campos <code>limit</code> **[1-100]** e <code>offset</code> **[0-Total-Count]** para navegar pelos resultados. Um campo de cabeçalho chamado <code>X-Total-Count</code> será enviado junto às respostas, denotando o total de entradas contidas na base de dados que atendam ao seu critério de busca.",
+        "description": "Essa é uma API aberta para acesso aos dados do portal [**SALIC.**](http://novosalic.cultura.gov.br/cidadao/consultar) \n\nSALIC é um sistema que reúne dados a respeito de propostas de projetos culturais a serem incentivados pelo Ministério da Cultura (**MINC**) por meio da lei Rouanet. Veja mais informações [aqui](http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-).\n\n\n\n\n# **Formatos de Resposta** \n\n Atualmente a API suporta exportação dos dados nos formatos * <code>JSON</code>(padrão) * * <code>XML</code> e * <code>CSV</code>. A escolha do formato deve ser definido a cada chamada, por meio do campo de cabeçalho <code>Accept</code>. \n\n # **Limitação de uso** \n\nPara requisições sem autenticação, você pode fazer até **2000 requisições diárias**. Requisições não autenticadas estão ligadas ao endereço IP de origem, não ao usuário fazendo a requisição. \n\nO cabeçalho da resposta lhe diz tudo o que você precisa saber sobre o seu limite de uso atualmente:\n<table> <tr> <td>**Campo do Cabeçalho**</td> <td>**Descrição**</td> </tr>\n<tr> <td>X-RateLimit-Limit</td> <td>Número de requisições permitidas no período.</td> </tr>\n<tr> <td>X-RateLimit-Remaining</td> <td>Número de requisições restantes na janela de limite atual.</td> </tr>\n<tr> <td>X-RateLimit-Reset</td> <td>Tempo para que a janela de limite resete em segundos UTC epoch.</td> </tr>\n<tr> <td>Retry-After</td> <td>Segundos para tentar novamente ou a data http quando a janela de limite será resetada.</td> </tr>\n</table>\n\n\n # **Paginação** \n\n Para alguns recursos que possam gerar um grande volume de resultados, a API provê um sistema de  paginação. Ao fazer sua requisição, basta fazer uso dos campos <code>limit</code> **[1-100]** e <code>offset</code> **[0-Total-Count]** para navegar pelos resultados. Um campo de cabeçalho chamado <code>X-Total-Count</code> será enviado junto às respostas, denotando o total de entradas contidas na base de dados que atendam ao seu critério de busca.",
         "version": "0.0.2",
         "title": "SALIC API",
         "termsOfService": "http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-",
@@ -46,7 +46,7 @@
                     "200": {
                         "description": "Operação bem-sucedida",
                         "schema": {
-                            "$ref": "#/definitions/Projeto"
+                            "$ref": "#/definitions/ProjetoDetail"
                         },
                         "headers": {
                             "X-Rate-Limit-Limit": {
@@ -125,15 +125,8 @@
                     },
                     {
                         "in": "query",
-                        "name": "ano_projeto",
-                        "description": "Ano em que o projeto foi apresentado em dois dígitos. Formato AA",
-                        "required": false,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
                         "name": "proponente",
-                        "description": "Proponente do projeto",
+                        "description": "Nome do proponente do projeto (valor exato ou parcial)",
                         "required": false,
                         "type": "string"
                     },
@@ -148,28 +141,35 @@
                     {
                         "in": "query",
                         "name": "nome",
-                        "description": "Nome do projeto",
+                        "description": "Nome do projeto (valor exato ou parcial)",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "in": "query",
                         "name": "area",
-                        "description": "Área do projeto",
+                        "description": "Área do projeto (valor exato ou parcial)",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "in": "query",
                         "name": "segmento",
-                        "description": "Segmento do projeto",
+                        "description": "Segmento do projeto (valor exato ou parcial)",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "in": "query",
                         "name": "UF",
-                        "description": "Estado de origem",
+                        "description": "Estado de origem no formato EE ",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "ano_projeto",
+                        "description": "Ano em que o projeto foi apresentado em dois dígitos. Formato AA",
                         "required": false,
                         "type": "string"
                     },
@@ -188,6 +188,38 @@
                         "required": false,
                         "type": "string",
                         "format": "date"
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_inicio_min",
+                        "description": "Data de início mínimo no formato AAAA-MM-DD",
+                        "required": false,
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_inicio_max",
+                        "description": "Data de início máximo no formato AAAA-MM-DD",
+                        "required": false,
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_termino_min",
+                        "description": "Data de término mínimo no formato AAAA-MM-DD",
+                        "required": false,
+                        "type": "string",
+                        "format": "date"
+                    },
+                    {
+                        "in": "query",
+                        "name": "data_termino_max",
+                        "description": "Data de término máximo no formato AAAA-MM-DD",
+                        "required": false,
+                        "type": "string",
+                        "format": "date"
                     }
                 ],
                 "responses": {
@@ -196,7 +228,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Projeto"
+                                "$ref": "#/definitions/ProjetoList"
                             }
                         },
                         "headers": {
@@ -230,91 +262,6 @@
                     },
                     "405": {
                         "description": "Invalid parameter(s) supplied",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
-                    "503": {
-                        "description": "Erro interno",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    }
-                }
-            }
-        },
-        "/projetos/{PRONAC}/captacoes": {
-            "get": {
-                "tags": [
-                    "projetos : Dados relativos a Projetos"
-                ],
-                "summary": "Dado o número de PRONAC de um projeto, retorna informações relativas as captações obtidas",
-                "operationId": "projetos_donation",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "limit",
-                        "description": "number of proponents to return",
-                        "required": false,
-                        "type": "integer",
-                        "default": 10,
-                        "minimum": 1,
-                        "maximum": 100
-                    },
-                    {
-                        "in": "query",
-                        "name": "offset",
-                        "description": "paging number of results",
-                        "required": false,
-                        "type": "integer",
-                        "default": 0,
-                        "minimum": 0
-                    },
-                    {
-                        "in": "path",
-                        "name": "PRONAC",
-                        "description": "Número do PRONAC",
-                        "required": true,
-                        "type": "string",
-                        "format": "int64"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Operação bem-sucedida",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Captacao"
-                            }
-                        },
-                        "headers": {
-                            "X-Rate-Limit-Limit": {
-                                "description": "Número de requisições permitidas no período",
-                                "type": "integer"
-                            },
-                            "X-Rate-Limit-Remaining": {
-                                "description": "Número de requisições restantes na janela de limite atual",
-                                "type": "integer"
-                            },
-                            "X-Rate-Limit-Reset": {
-                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
-                                "type": "integer"
-                            },
-                            "Retry-After": {
-                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
-                                "type": "integer"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Projeto com PRONAC fornecido não encontrado",
-                        "schema": {
-                            "$ref": "#/definitions/Error"
-                        }
-                    },
-                    "405": {
-                        "description": "PRONAC inválido",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -458,7 +405,7 @@
                     {
                         "in": "query",
                         "name": "nome",
-                        "description": "Nome do projeto",
+                        "description": "Nome do projeto (valor exato ou parcial)",
                         "required": false,
                         "type": "string"
                     },
@@ -629,7 +576,7 @@
                     {
                         "in": "query",
                         "name": "nome",
-                        "description": "Nome do incentivador",
+                        "description": "Nome do incentivador (valor exato ou parcial)",
                         "required": false,
                         "type": "string"
                     },
@@ -644,14 +591,14 @@
                     {
                         "in": "query",
                         "name": "municipio",
-                        "description": "Cidade",
+                        "description": "Cidade do incentivador (valor exato ou parcial)",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "in": "query",
                         "name": "UF",
-                        "description": "Estado",
+                        "description": "Estado do incentivador no formato EE ",
                         "required": false,
                         "type": "string"
                     },
@@ -665,6 +612,14 @@
                         ],
                         "required": false,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "PRONAC",
+                        "description": "Número do PRONAC",
+                        "required": false,
+                        "type": "string",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -744,6 +699,157 @@
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/Doacao"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Projeto com PRONAC fornecido não encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "PRONAC inválido",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/fornecedores/": {
+            "get": {
+                "tags": [
+                    "fornecedores : Dados relativos a fornecedores"
+                ],
+                "summary": "Busca fornecedores dado uma combinação de valores diversos de pesquisa",
+                "operationId": "Suppliers related data",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "nome",
+                        "description": "Nome do incentivador (valor exato ou parcial)",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "cgccpf",
+                        "description": "Cgc/Cpf do incentivador",
+                        "required": false,
+                        "type": "string",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "PRONAC",
+                        "description": "Número do PRONAC",
+                        "required": false,
+                        "type": "string",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Fornecedor"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            },
+                            "X-Total-Count": {
+                                "description": "Número total de objetos que atendem seu critério de busca",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No supplier was found with your criteria",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "PRONAC inválido",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/fornecedores/{cgccpf}/itens": {
+            "get": {
+                "tags": [
+                    "fornecedores : Dados relativos a fornecedores"
+                ],
+                "summary": "Dado o CGC, CPF ou CNPJ de um fornecedor, retorna informações relativas a todas os ítens ou serviços fornecidos por ele",
+                "operationId": "supplier_items",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "cgccpf",
+                        "description": "Cgc/Cpf do fornecedor",
+                        "required": true,
+                        "type": "string",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Item"
                             }
                         },
                         "headers": {
@@ -909,7 +1015,7 @@
         }
     },
     "definitions": {
-        "Projeto": {
+        "ProjetoList": {
             "type": "object",
             "properties": {
                 "PRONAC": {
@@ -1017,6 +1123,235 @@
                 },
                 "resumo": {
                     "type": "string"
+                }
+            }
+        },
+        "MarcaAnexada": {
+            "type": "object",
+            "properties": {}
+        },
+        "Pedido": {
+            "type": "object",
+            "properties": {}
+        },
+        "Divulgacao": {
+            "type": "object",
+            "properties": {
+                "peca": {
+                    "type": "string"
+                },
+                "veiculo": {
+                    "type": "string"
+                }
+            }
+        },
+        "Prorrogacao": {
+            "type": "object",
+            "properties": {}
+        },
+        "Distribuicao": {
+            "type": "object",
+            "properties": {}
+        },
+        "DocumentoAnexado": {
+            "type": "object",
+            "properties": {}
+        },
+        "CertidaoNegativa": {
+            "type": "object",
+            "properties": {}
+        },
+        "RelacaoPagamento": {
+            "type": "object",
+            "properties": {}
+        },
+        "Parecer": {
+            "type": "object",
+            "properties": {}
+        },
+        "RelatorioFisco": {
+            "type": "object",
+            "properties": {}
+        },
+        "ProjetoDetail": {
+            "type": "object",
+            "properties": {
+                "PRONAC": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "ano_projeto": {
+                    "type": "string"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "cgccpf": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "proponente": {
+                    "type": "string"
+                },
+                "segmento": {
+                    "type": "string"
+                },
+                "area": {
+                    "type": "string"
+                },
+                "UF": {
+                    "type": "string"
+                },
+                "municipio": {
+                    "type": "string"
+                },
+                "data_inicio": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "data_termino": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "situacao": {
+                    "type": "string"
+                },
+                "mecanismo": {
+                    "type": "string"
+                },
+                "enquadramento": {
+                    "type": "string"
+                },
+                "valor_projeto": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "outras_fontes": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "valor_captado": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "valor_proposta": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "valor_solicitado": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "valor_aprovado": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "acessibilidade": {
+                    "type": "string"
+                },
+                "objetivos": {
+                    "type": "string"
+                },
+                "justificativa": {
+                    "type": "string"
+                },
+                "etapa": {
+                    "type": "string"
+                },
+                "ficha_tecnica": {
+                    "type": "string"
+                },
+                "impacto_ambiental": {
+                    "type": "string"
+                },
+                "especificacao_tecnica": {
+                    "type": "string"
+                },
+                "estrategia_execucao": {
+                    "type": "string"
+                },
+                "providencia": {
+                    "type": "string"
+                },
+                "democratizacao": {
+                    "type": "string"
+                },
+                "sinopse": {
+                    "type": "string"
+                },
+                "resumo": {
+                    "type": "string"
+                },
+                "marcas_anexadas": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/MarcaAnexada"
+                    }
+                },
+                "divulgacao": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Divulgacao"
+                    }
+                },
+                "relatorio_fisco": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RelatorioFisco"
+                    }
+                },
+                "relacao_pagamentos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RelacaoPagamento"
+                    }
+                },
+                "certidoes_negativas": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CertidaoNegativa"
+                    }
+                },
+                "readequacoes": {
+                    "type": "object",
+                    "properties": {
+                        "pedidos": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Pedido"
+                            }
+                        },
+                        "pareceres": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Parecer"
+                            }
+                        }
+                    }
+                },
+                "documentos_anexados": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/DocumentoAnexado"
+                    }
+                },
+                "distribuicao": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Distribuicao"
+                    }
+                },
+                "prorrogacao": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Prorrogacao"
+                    }
+                },
+                "captacoes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Captacao"
+                    }
                 }
             }
         },
@@ -1176,6 +1511,69 @@
                 "cgccpf": {
                     "type": "string",
                     "format": "int64"
+                }
+            }
+        },
+        "Fornecedor": {
+            "type": "object",
+            "properties": {
+                "nome": {
+                    "type": "string"
+                },
+                "cgccpf": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                }
+            }
+        },
+        "Item": {
+            "type": "object",
+            "properties": {
+                "id_planilha_aprovacao": {
+                    "type": "integer"
+                },
+                "justificativa": {
+                    "type": "string"
+                },
+                "data_pagamento": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "cgccpf": {
+                    "type": "string"
+                },
+                "data_aprovacao": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "valor_pagamento": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "nm_arquivo": {
+                    "type": "string"
+                },
+                "id_arquivo": {
+                    "type": "integer"
+                },
+                "nome_fornecedor": {
+                    "type": "string"
+                },
+                "id_comprovante_pagamento": {
+                    "type": "integer"
+                },
+                "nr_documento_pagamento": {
+                    "type": "string"
+                },
+                "tipo_documento": {
+                    "type": "string"
                 }
             }
         },

@@ -3,38 +3,70 @@ from flask import Flask, request, make_response, send_file
 from flask import Response
 from flask_restful import Resource
 from APIError import APIError
-from rate_limiting import shared_limiter, GLOBAL_RATE_LIMITS, RATE_LIMITING_ACTIVE
+from rate_limiting import shared_limiter
 import sys
 sys.path.append('../')
 from app import app
 from utils.Log import Log
-from config import LIMIT_PAGING, OFFSET_PAGING, AVAILABLE_CONTENT_TYPES
+from caching import make_key
+
+# import the flask extension
+from flask.ext.cache import Cache
 
 
 class ResourceBase(Resource):
 
-    if RATE_LIMITING_ACTIVE:
-        Log.info('Rate limiting active : %s'%(GLOBAL_RATE_LIMITS))
+    # Rate limiting setup --------------------
+
+    if app.config['RATE_LIMITING_ACTIVE']:
+        Log.info('Rate limiting active : %s'%(app.config['GLOBAL_RATE_LIMITS']))
         decorators = [shared_limiter]
     else:
         Log.info('Rate limiting is turned off')
+
+
+    # Caching setup --------------------
+    if app.config['CACHING_ACTIVE']:
+        Log.info('Caching is active')
+    else:
+        app.config['CACHE_TYPE'] = 'null'
+        Log.info('Caching is disabled')
+        app.config['CACHE_NO_NULL_WARNING'] = True
+
+    # register the cache instance and binds it on to your app
+    app.cache = Cache(app)
+    app.cache.clear()
 
     def __init__(self):
         pass
 
 
-    def render(self, data, headers =  {}, status_code  = 200):
+    def render(self, data, headers =  {}, status_code  = 200, raw = False):
 
         if request.headers['Accept'] == 'application/xml':
-            response = Response(serialize(data, 'xml'), content_type='application/xml; charset=utf-8')
+            if raw:
+                data = data
+            else:
+                data = serialize(data, 'xml')
+            response = Response(data, content_type='application/xml; charset=utf-8')
 
         elif request.headers['Accept'] == 'text/csv':
+            if raw:
+                data = data
+            else:
+                data = serialize(data, 'csv')
+
             response = Response(serialize(data, 'csv'), content_type='text/csv; charset=utf-8')
 
 
         # JSON or invalid Content-Type
         else :
-            response = Response(serialize(data, 'json'), content_type='application/json; charset=utf-8')
+            if raw:
+                data = data
+            else:
+                data = serialize(data, 'json')
+
+            response = Response(data, content_type='application/json; charset=utf-8')
 
 
         response.headers.extend(headers)

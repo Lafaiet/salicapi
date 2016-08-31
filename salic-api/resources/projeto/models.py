@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from sqlalchemy import case, func
+from sqlalchemy import case, func, and_
+from sqlalchemy.orm import aliased
+from sqlalchemy.sql import text
 
 from ..ModelsBase import ModelsBase
 from ..SharedModels import AreaModel, SegmentoModel
 from ..SharedModels import (ProjetoModel, InteressadoModel, MecanismoModel,
                             SituacaoModel, PreProjetoModel, EnquadramentoModel,
-                            PreProjetoModel, CaptacaoModel, CertidoesNegativasModel
+                            PreProjetoModel, CaptacaoModel, CertidoesNegativasModel,
+                            VerificacaoModel, PlanoDivulgacaoModel, PlanoDistribuicaoModel,
+                            ProdutoModel, AreaModel, SegmentoModel
                             )
 
 
@@ -23,8 +27,201 @@ class ProjetoModelObject(ModelsBase):
         super (ProjetoModelObject, self).__init__()
 
     def attached_documents(self, idPronac ):
-        query = 'SAC.dbo.paDocumentos %d'%idPronac
-        return self.sql_connector.session.execute(query)
+        query = text("""SAC.dbo.paDocumentos :idPronac""")
+        return self.sql_connector.session.execute(query, {'idPronac' : idPronac})
+
+    def attached_brands(self, idPronac):
+
+        query = text("""
+                    SELECT a.idArquivo, a.nmArquivo, a.dtEnvio, a.nrTamanho, d.idDocumento, CAST(dsDocumento AS TEXT) AS dsDocumento,
+                        dp.stAtivoDocumentoProjeto, p.idPronac, p.AnoProjeto + p.Sequencial as Pronac, p.NomeProjeto
+                    FROM BDCORPORATIVO.scCorp.tbArquivoImagem AS ai
+                    INNER JOIN BDCORPORATIVO.scCorp.tbArquivo AS a ON ai.idArquivo = a.idArquivo
+                    INNER JOIN BDCORPORATIVO.scCorp.tbDocumento AS d ON a.idArquivo = d.idArquivo
+                    INNER JOIN BDCORPORATIVO.scCorp.tbDocumentoProjeto AS dp ON dp.idDocumento = d.idDocumento
+                    INNER JOIN SAC.dbo.Projetos AS p ON dp.idPronac = p.IdPRONAC WHERE (dp.idTipoDocumento = 1) AND (p.idPronac = :IdPRONAC)
+        """)
+        return self.sql_connector.session.execute(query, {'IdPRONAC' : idPronac})
+
+    def postpone_request(self, idPronac):
+
+        query = text("""
+                    SELECT a.DtPedido, a.DtInicio, a.DtFinal, a.Observacao, a.Atendimento,
+                        CASE
+                            WHEN Atendimento = 'A'
+                                THEN 'Em analise'
+                            WHEN Atendimento = 'N'
+                                THEN 'Deferido'
+                            WHEN Atendimento = 'I'
+                                THEN 'Indeferido'
+                            WHEN Atendimento = 'S'
+                                THEN 'Processado'
+                            END as Estado
+                        , b.usu_nome AS Usuario FROM prorrogacao AS a
+                        LEFT JOIN TABELAS.dbo.Usuarios AS b ON a.Logon = b.usu_codigo WHERE (idPronac = :IdPRONAC)
+        """)
+
+        return self.sql_connector.session.execute(query, {'IdPRONAC' : idPronac})
+
+
+    def payments_listing(self, idPronac = None, cgccpf = None):
+        #Relação de pagamentos
+
+        if idPronac != None:
+
+            query = text("""
+                        SELECT
+                                d.Descricao as nome,
+                                b.idComprovantePagamento as id_comprovante_pagamento,
+                                a.idPlanilhaAprovacao as id_planilha_aprovacao,
+                                g.CNPJCPF as cgccpf,
+                                e.Descricao as nome_fornecedor,
+                                b.DtPagamento as data_aprovacao,
+                                CASE tpDocumento
+                                    WHEN 1 THEN ('Boleto Bancario')
+                                    WHEN 2 THEN ('Cupom Fiscal')
+                                    WHEN 3 THEN ('Guia de Recolhimento')
+                                    WHEN 4 THEN ('Nota Fiscal/Fatura')
+                                    WHEN 5 THEN ('Recibo de Pagamento')
+                                    WHEN 6 THEN ('RPA')
+                                    ELSE ''
+                                END as tipo_documento,
+                                b.nrComprovante as nr_comprovante,
+                                b.dtEmissao as data_pagamento,
+                                CASE
+                                  WHEN b.tpFormaDePagamento = '1'
+                                     THEN 'Cheque'
+                                  WHEN b.tpFormaDePagamento = '2'
+                                     THEN 'Transferencia Bancaria'  WHEN b.tpFormaDePagamento = '3'
+                                     THEN 'Saque/Dinheiro'
+                                     ELSE ''
+                                END as tipo_forma_pagamento,
+                                b.nrDocumentoDePagamento nr_documento_pagamento,
+                                a.vlComprovado as valor_pagamento,
+                                b.idArquivo as id_arquivo,
+                                b.dsJustificativa as justificativa,
+                                f.nmArquivo as nm_arquivo FROM BDCORPORATIVO.scSAC.tbComprovantePagamentoxPlanilhaAprovacao AS a
+                                INNER JOIN BDCORPORATIVO.scSAC.tbComprovantePagamento AS b ON a.idComprovantePagamento = b.idComprovantePagamento
+                                LEFT JOIN SAC.dbo.tbPlanilhaAprovacao AS c ON a.idPlanilhaAprovacao = c.idPlanilhaAprovacao
+                                LEFT JOIN SAC.dbo.tbPlanilhaItens AS d ON c.idPlanilhaItem = d.idPlanilhaItens
+                                LEFT JOIN Agentes.dbo.Nomes AS e ON b.idFornecedor = e.idAgente
+                                LEFT JOIN BDCORPORATIVO.scCorp.tbArquivo AS f ON b.idArquivo = f.idArquivo
+                                LEFT JOIN Agentes.dbo.Agentes AS g ON b.idFornecedor = g.idAgente WHERE (c.idPronac = :idPronac)
+                                """
+                                )
+            return self.sql_connector.session.execute(query, {'idPronac' : idPronac})
+
+        else:
+            query = text("""
+                        SELECT
+                                d.Descricao as nome,
+                                b.idComprovantePagamento as id_comprovante_pagamento,
+                                a.idPlanilhaAprovacao as id_planilha_aprovacao,
+                                g.CNPJCPF as cgccpf,
+                                e.Descricao as nome_fornecedor,
+                                b.DtPagamento as data_aprovacao,
+                                CASE tpDocumento
+                                    WHEN 1 THEN ('Boleto Bancario')
+                                    WHEN 2 THEN ('Cupom Fiscal')
+                                    WHEN 3 THEN ('Guia de Recolhimento')
+                                    WHEN 4 THEN ('Nota Fiscal/Fatura')
+                                    WHEN 5 THEN ('Recibo de Pagamento')
+                                    WHEN 6 THEN ('RPA')
+                                    ELSE ''
+                                END as tipo_documento,
+                                b.nrComprovante as nr_comprovante,
+                                b.dtEmissao as data_pagamento,
+                                CASE
+                                  WHEN b.tpFormaDePagamento = '1'
+                                     THEN 'Cheque'
+                                  WHEN b.tpFormaDePagamento = '2'
+                                     THEN 'Transferencia Bancaria'  WHEN b.tpFormaDePagamento = '3'
+                                     THEN 'Saque/Dinheiro'
+                                     ELSE ''
+                                END as tipo_forma_pagamento,
+                                b.nrDocumentoDePagamento nr_documento_pagamento,
+                                a.vlComprovado as valor_pagamento,
+                                b.idArquivo as id_arquivo,
+                                b.dsJustificativa as justificativa,
+                                f.nmArquivo as nm_arquivo FROM BDCORPORATIVO.scSAC.tbComprovantePagamentoxPlanilhaAprovacao AS a
+                                INNER JOIN BDCORPORATIVO.scSAC.tbComprovantePagamento AS b ON a.idComprovantePagamento = b.idComprovantePagamento
+                                LEFT JOIN SAC.dbo.tbPlanilhaAprovacao AS c ON a.idPlanilhaAprovacao = c.idPlanilhaAprovacao
+                                LEFT JOIN SAC.dbo.tbPlanilhaItens AS d ON c.idPlanilhaItem = d.idPlanilhaItens
+                                LEFT JOIN Agentes.dbo.Nomes AS e ON b.idFornecedor = e.idAgente
+                                LEFT JOIN BDCORPORATIVO.scCorp.tbArquivo AS f ON b.idArquivo = f.idArquivo
+                                JOIN SAC.dbo.Projetos AS Projetos ON c.idPronac = Projetos.IdPRONAC
+                                LEFT JOIN Agentes.dbo.Agentes AS g ON b.idFornecedor = g.idAgente WHERE (g.CNPJCPF LIKE :cgccpf)
+                                """
+                                )
+
+            return self.sql_connector.session.execute(query, {'cgccpf' : '%'+cgccpf+'%'})
+
+
+
+
+    def taxing_report(self, idPronac):
+        # Relatório fisco
+
+        query = text("""
+                    SELECT
+                    f.idPlanilhaEtapa,
+                    f.Descricao AS Etapa,
+                    d.Descricao AS Item,
+                    g.Descricao AS Unidade,
+                    (c.qtItem*nrOcorrencia) AS qteProgramada,
+                    (c.qtItem*nrOcorrencia*c.vlUnitario) AS vlProgramado,
+                    ((sum(b.vlComprovacao) / (c.qtItem*nrOcorrencia*c.vlUnitario)) * 100) AS PercExecutado,
+                    (sum(b.vlComprovacao)) AS vlExecutado,
+                    (100 - (sum(b.vlComprovacao) / (c.qtItem*nrOcorrencia*c.vlUnitario)) * 100) AS PercAExecutar
+                 FROM BDCORPORATIVO.scSAC.tbComprovantePagamentoxPlanilhaAprovacao AS a
+                 INNER JOIN BDCORPORATIVO.scSAC.tbComprovantePagamento AS b ON a.idComprovantePagamento = b.idComprovantePagamento
+                 INNER JOIN SAC.dbo.tbPlanilhaAprovacao AS c ON a.idPlanilhaAprovacao = c.idPlanilhaAprovacao
+                 INNER JOIN SAC.dbo.tbPlanilhaItens AS d ON c.idPlanilhaItem = d.idPlanilhaItens
+                 INNER JOIN SAC.dbo.tbPlanilhaEtapa AS f ON c.idEtapa = f.idPlanilhaEtapa
+                 INNER JOIN SAC.dbo.tbPlanilhaUnidade AS g ON c.idUnidade= g.idUnidade WHERE (c.idPronac = :IdPRONAC) GROUP BY c.idPronac,
+                    f.Descricao,
+                    d.Descricao,
+                    g.Descricao,
+                    c.qtItem,
+                    nrOcorrencia,
+                    c.vlUnitario,
+                    f.idPlanilhaEtapa
+                    """
+                    )
+
+        return self.sql_connector.session.execute(query, {'IdPRONAC' : idPronac})
+
+
+    def goods_capital_listing(self, idPronac):
+        #Relação de bens de capital
+
+        query = text("""
+                    SELECT
+                    CASE
+                        WHEN tpDocumento = 1 THEN 'Boleto Bancario'
+                        WHEN tpDocumento = 2 THEN 'Cupom Fiscal'
+                        WHEN tpDocumento = 3 THEN 'Nota Fiscal / Fatura'
+                        WHEN tpDocumento = 4 THEN 'Recibo de Pagamento'
+                        WHEN tpDocumento = 5 THEN 'RPA'
+                    END as Titulo,
+                    b.nrComprovante,
+                    d.Descricao as Item,
+                    DtEmissao as dtPagamento,
+                    dsItemDeCusto Especificacao,
+                    dsMarca as Marca,
+                    dsFabricante as Fabricante,
+                    (c.qtItem*nrOcorrencia) as Qtde,
+                    c.vlUnitario,
+                    (c.qtItem*nrOcorrencia*c.vlUnitario) as vlTotal
+                 FROM BDCORPORATIVO.scSAC.tbComprovantePagamentoxPlanilhaAprovacao AS a
+                 INNER JOIN BDCORPORATIVO.scSAC.tbComprovantePagamento AS b ON a.idComprovantePagamento = b.idComprovantePagamento
+                 INNER JOIN SAC.dbo.tbPlanilhaAprovacao AS c ON a.idPlanilhaAprovacao = c.idPlanilhaAprovacao
+                 INNER JOIN SAC.dbo.tbPlanilhaItens AS d ON c.idPlanilhaItem = d.idPlanilhaItens
+                 INNER JOIN BDCORPORATIVO.scSAC.tbItemCusto AS e ON e.idPlanilhaAprovacao = c.idPlanilhaAprovacao
+                 WHERE (c.idPronac = :IdPRONAC)
+        """)
+
+        return self.sql_connector.session.execute(query, {'IdPRONAC' : idPronac})
 
 
     def all(self, limit, offset, PRONAC = None, nome = None, proponente = None,
@@ -32,13 +229,13 @@ class ProjetoModelObject(ModelsBase):
                           UF = None, municipio = None, data_inicio = None,
                           data_inicio_min = None, data_inicio_max = None,
                           data_termino = None, data_termino_min = None,
-                          data_termino_max = None, extra_fields = False, ano_projeto = None):
+                          data_termino_max = None, ano_projeto = None):
 
         start_row = offset
         end_row = offset+limit
 
-        if extra_fields:
-            additional_fields =  (
+
+        text_fields = (
                              PreProjetoModel.Acessibilidade.label('acessibilidade'),
                              PreProjetoModel.Objetivos.label('objetivos'),
                              PreProjetoModel.Justificativa.label('justificativa'),
@@ -53,9 +250,6 @@ class ProjetoModelObject(ModelsBase):
 
                              ProjetoModel.ProvidenciaTomada.label('providencia'),
                              )
-        else:
-            additional_fields = ()
-
 
         valor_proposta_case = case([(ProjetoModel.IdPRONAC != None, func.sac.dbo.fnValorDaProposta(ProjetoModel.IdPRONAC)),],
         else_ = func.sac.dbo.fnValorSolicitado(ProjetoModel.AnoProjeto, ProjetoModel.Sequencial))
@@ -75,7 +269,7 @@ class ProjetoModelObject(ModelsBase):
         else_ = func.sac.dbo.fnValorAprovado(ProjetoModel.AnoProjeto,ProjetoModel.Sequencial))
 
         with Timer(action = 'Database query for get_projeto_list method', verbose = True):
-          res= self.sql_connector.session.query(
+          res = self.sql_connector.session.query(
                                                   ProjetoModel.NomeProjeto.label('nome'),
                                                   ProjetoModel.PRONAC,
                                                   ProjetoModel.AnoProjeto.label('ano_projeto'),
@@ -101,7 +295,7 @@ class ProjetoModelObject(ModelsBase):
 
                                                   enquadramento_case.label('enquadramento'),
 
-                                                  *additional_fields
+                                                  *text_fields
 
                                                   ).join(AreaModel)\
                                                   .join(SegmentoModel)\
@@ -111,6 +305,9 @@ class ProjetoModelObject(ModelsBase):
                                                   .join(MecanismoModel)\
                                                   .outerjoin(EnquadramentoModel, EnquadramentoModel.IdPRONAC ==  ProjetoModel.IdPRONAC)\
                                                   .order_by(ProjetoModel.IdPRONAC)
+
+
+        #res = res.filter(ProjetoModel.IdPRONAC == '150465')
 
         if PRONAC is not None:
             res = res.filter(ProjetoModel.PRONAC == PRONAC)
@@ -184,8 +381,6 @@ class CaptacaoModelObject(ModelsBase):
                                                 .join(InteressadoModel, CaptacaoModel.CgcCpfMecena==InteressadoModel.CgcCpf)\
 
 
-
-
         if PRONAC is not None:
             res = res.filter(CaptacaoModel.PRONAC == PRONAC)
 
@@ -243,3 +438,171 @@ class CertidoesNegativasModelObject(ModelsBase):
             res = res.filter(CertidoesNegativasModel.PRONAC == PRONAC)
 
         return res.all()
+
+class DivulgacaoModelObject(ModelsBase):
+
+    V1 = aliased(VerificacaoModel)
+    V2 = aliased(VerificacaoModel)
+
+
+    def __init__(self):
+        super (DivulgacaoModelObject,self).__init__()
+
+
+    def all(self, IdPRONAC):
+
+        stmt = text(
+                    """
+                        SELECT v1.Descricao as peca,v2.Descricao as veiculo
+                        FROM sac.dbo.PlanoDeDivulgacao d
+                        INNEr JOIN sac.dbo.Projetos p on (d.idProjeto = p.idProjeto)
+                        INNER JOIN sac.dbo.Verificacao v1 on (d.idPeca = v1.idVerificacao)
+                        INNER JOIN sac.dbo.Verificacao v2 on (d.idVeiculo = v2.idVerificacao)
+                        WHERE p.IdPRONAC=:IdPRONAC AND d.stPlanoDivulgacao = 1
+                    """
+                    )
+
+        return self.sql_connector.session.execute(stmt, {'IdPRONAC' : IdPRONAC})
+
+
+class DescolamentoModelObject(ModelsBase):
+
+    def __init__(self):
+        super (DescolamentoModelObject,self).__init__()
+
+    def all(self, IdPRONAC):
+
+        stmt = text(
+                    """
+                        SELECT
+                            idDeslocamento,
+                            d.idProjeto,
+                            p.Descricao as PaisOrigem,
+                            u.Descricao as UFOrigem,
+                            m.Descricao as MunicipioOrigem,
+                            p2.Descricao as PaisDestino,
+                            u2.Descricao as UFDestino,
+                            m2.Descricao as MunicipioDestino,
+                            Qtde
+                FROM
+                   Sac.dbo.tbDeslocamento d
+                INNER JOIN Sac.dbo.Projetos y on (d.idProjeto = y.idProjeto)
+                INNER JOIN Agentes..Pais p on (d.idPaisOrigem = p.idPais)
+                INNER JOIN Agentes..uf u on (d.idUFOrigem = u.iduf)
+                INNER JOIN Agentes..Municipios m on (d.idMunicipioOrigem = m.idMunicipioIBGE)
+                INNER JOIN Agentes..Pais p2 on (d.idPaisDestino = p2.idPais)
+                INNER JOIN Agentes..uf u2 on (d.idUFDestino = u2.iduf)
+                INNER JOIN Agentes..Municipios m2 on (d.idMunicipioDestino = m2.idMunicipioIBGE)
+                WHERE y.idPRONAC = :IdPRONAC
+                    """
+        )
+
+        return self.sql_connector.session.execute(stmt, {'IdPRONAC' : IdPRONAC})
+
+class DistribuicaoModelObject(ModelsBase):
+
+    def __init__(self):
+        super (DistribuicaoModelObject,self).__init__()
+
+
+    def all(self, IdPRONAC):
+
+        res  = self.sql_connector.session.query( PlanoDistribuicaoModel.idPlanoDistribuicao,
+                                                 PlanoDistribuicaoModel.QtdeVendaNormal,
+                                                 PlanoDistribuicaoModel.QtdeVendaPromocional,
+                                                 PlanoDistribuicaoModel.PrecoUnitarioNormal,
+                                                 PlanoDistribuicaoModel.PrecoUnitarioPromocional,
+                                                 PlanoDistribuicaoModel.QtdeOutros,
+                                                 PlanoDistribuicaoModel.QtdeProponente,
+                                                 PlanoDistribuicaoModel.QtdeProduzida,
+                                                 PlanoDistribuicaoModel.QtdePatrocinador,
+
+                                                 AreaModel.Descricao.label('area'),
+                                                 SegmentoModel.Descricao.label('segmento'),
+
+                                                 ProdutoModel.Descricao.label('produto'),
+                                                 VerificacaoModel.Descricao.label('posicao_logo'),
+                                                 ProjetoModel.Localizacao,
+        ).join(ProjetoModel)\
+         .join(ProdutoModel)\
+         .join(AreaModel, AreaModel.Codigo == PlanoDistribuicaoModel.Area)\
+         .join(SegmentoModel, SegmentoModel.Codigo == PlanoDistribuicaoModel.Segmento)\
+         .join(VerificacaoModel)\
+
+        res  = res.filter(and_(ProjetoModel.IdPRONAC == IdPRONAC, PlanoDistribuicaoModel.stPlanoDistribuicaoProduto == 1))
+
+        return res.all()
+
+
+class AdequacoesPedidoModelObject(ModelsBase):
+
+    def __init__(self):
+        super (AdequacoesPedidoModelObject,self).__init__()
+
+    def all(self, IdPRONAC):
+
+        stmt = text(
+                    """
+                    SELECT
+                a.idReadequacao,
+                a.idPronac,
+                a.dtSolicitacao,
+                CAST(a.dsSolicitacao AS TEXT) AS dsSolicitacao,
+                CAST(a.dsJustificativa AS TEXT) AS dsJustificativa,
+                a.idSolicitante,
+                a.idAvaliador,
+                a.dtAvaliador,
+                CAST(a.dsAvaliacao AS TEXT) AS dsAvaliacao,
+                a.idTipoReadequacao,
+                CAST(c.dsReadequacao AS TEXT) AS dsReadequacao,
+                a.stAtendimento,
+                a.siEncaminhamento,
+                CAST(b.dsEncaminhamento AS TEXT) AS dsEncaminhamento,
+                a.stEstado,
+                e.idArquivo,
+                e.nmArquivo
+             FROM tbReadequacao AS a
+             INNER JOIN SAC.dbo.tbTipoEncaminhamento AS b ON a.siEncaminhamento = b.idTipoEncaminhamento INNER JOIN SAC.dbo.tbTipoReadequacao AS c ON c.idTipoReadequacao = a.idTipoReadequacao
+             LEFT JOIN BDCORPORATIVO.scCorp.tbDocumento AS d ON d.idDocumento = a.idDocumento
+             LEFT JOIN BDCORPORATIVO.scCorp.tbArquivo AS e ON e.idArquivo = d.idArquivo WHERE (a.idPronac = :IdPRONAC) AND (a.siEncaminhamento <> 12)
+                    """
+        )
+
+        return self.sql_connector.session.execute(stmt, {'IdPRONAC' : IdPRONAC})
+
+class AdequacoesParecerModelObject(ModelsBase):
+
+    def __init__(self):
+        super (AdequacoesParecerModelObject,self).__init__()
+
+    def all(self, IdPRONAC):
+
+        stmt = text(
+                    """
+                    SELECT
+                                    a.idReadequacao,
+                                    a.idPronac,
+                                    a.dtSolicitacao,
+                                    CAST(a.dsSolicitacao AS TEXT) AS dsSolicitacao,
+                                    CAST(a.dsJustificativa AS TEXT) AS dsJustificativa,
+                                    a.idSolicitante,
+                                    a.idAvaliador,
+                                    a.dtAvaliador,
+                                    CAST(a.dsAvaliacao AS TEXT) AS dsAvaliacao,
+                                    a.idTipoReadequacao,
+                                    CAST(c.dsReadequacao AS TEXT) AS dsReadequacao,
+                                    a.stAtendimento,
+                                    a.siEncaminhamento,
+                                    CAST(b.dsEncaminhamento AS TEXT) AS dsEncaminhamento,
+                                    a.stEstado,
+                                    e.idArquivo,
+                                    e.nmArquivo
+                                 FROM tbReadequacao AS a
+                     INNER JOIN SAC.dbo.tbTipoEncaminhamento AS b ON a.siEncaminhamento = b.idTipoEncaminhamento
+                     INNER JOIN SAC.dbo.tbTipoReadequacao AS c ON c.idTipoReadequacao = a.idTipoReadequacao
+                     LEFT JOIN BDCORPORATIVO.scCorp.tbDocumento AS d ON d.idDocumento = a.idDocumento
+                     LEFT JOIN BDCORPORATIVO.scCorp.tbArquivo AS e ON e.idArquivo = d.idArquivo WHERE (a.idPronac = :IdPRONAC) AND (a.siEncaminhamento <> 12)
+                    """
+        )
+
+        return self.sql_connector.session.execute(stmt, {'IdPRONAC' : IdPRONAC})

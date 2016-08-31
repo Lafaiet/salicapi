@@ -3,7 +3,6 @@ from sqlalchemy import func
 import sys
 sys.path.append('../')
 
-#from config import DEFAULT_SQL_CONNECTOR as sql_connector
 from database.connectors.mssql_connector import MSSql_connector as SQL_connector
 
 

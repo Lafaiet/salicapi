@@ -2,7 +2,6 @@ from flask import Flask
 from flask import request
 import sys
 sys.path.append('../../')
-from config import LIMIT_PAGING, OFFSET_PAGING
 from models import ProponenteModelObject
 from ..ResourceBase import *
 from ..APIError import APIError
@@ -23,12 +22,12 @@ class Proponente(ResourceBase):
         if request.args.get('limit') is not None:
             limit = int(request.args.get('limit'))
         else:
-            limit = LIMIT_PAGING
+            limit = app.config['LIMIT_PAGING']
 
         if request.args.get('offset') is not None:
             offset = int(request.args.get('offset'))
         else:
-            offset = OFFSET_PAGING
+            offset = app.config['OFFSET_PAGING']
 
         nome = None
         cgccpf = None
@@ -64,6 +63,6 @@ class Proponente(ResourceBase):
 
 
         data = listify_queryset(results)
-        
+
         headers = {'X-Total-Count' : n_records}
         return self.render(data, headers)

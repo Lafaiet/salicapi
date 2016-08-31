@@ -36,7 +36,7 @@ import logging
 import inspect
 
 sys.path.append('../')
-from config import LOGFILE, LEVELOFLOG, STREAMTYPE
+from app import app
 
 
 ##
@@ -44,8 +44,8 @@ from config import LOGFILE, LEVELOFLOG, STREAMTYPE
 #
 class Log():
     logger = None
-    
-    ## 
+
+    ##
     # Creates a new instance of Log class.
     # @param streamType - String containing the stream type name.
     # @param logLevel - String containing the name of the level to be used in the log.
@@ -57,30 +57,30 @@ class Log():
             logging.addLevelName(logging.VERBOSE, "VERBOSE")
             logging.Logger.verbose = lambda inst, msg, *args, **kwargs: inst.log(logging.VERBOSE, msg, *args, **kwargs)
             logging.verbose = lambda msg, *args, **kwargs: logging.log(logging.VERBOSE, msg, *args, **kwargs)
-            
+
             cls.logger = logging.getLogger()
-            
+
             if logLevel not in logging._levelNames:
                 raise Exception( 'Invalid file level' )
-            
+
             cls.logger.setLevel( logging._levelNames[logLevel] )
 
-            streamType = STREAMTYPE
-            
+            streamType = app.config['STREAMTYPE']
+
             if streamType == "SCREEN":
                 stream = logging.StreamHandler()
             else:
-                stream = logging.FileHandler( LOGFILE )
-            
+                stream = logging.FileHandler( app.config['LOGFILE'] )
+
             formatter = logging.Formatter( '[%(levelname)-7s - %(asctime)s] %(message)s' )
             stream.setFormatter( formatter )
             cls.logger.addHandler( stream )
         except Exception, e:
             print( 'Unable to get/set log configurations. Error: %s'%( e ) )
             cls.logger = None
-    
-    
-    ## 
+
+
+    ##
     # Records a message in a file and/or displays it in the screen.
     # @param level - String containing the name of the log message.
     # @param message - String containing the message to be recorded.
@@ -88,43 +88,43 @@ class Log():
     @classmethod
     def log( cls, level, message, caller = None ):
         if not cls.logger:
-            cls.instantiate( logLevel = LEVELOFLOG )
-        
+            cls.instantiate( logLevel = app.config['LEVELOFLOG'] )
+
         try:
             if level not in logging._levelNames:
                 cls.log( "ERROR", 'Invalid file level \'%s\''%( level ) )
-            
+
             logLevel = logging._levelNames[level]
             if not caller:
                 callers = Log.getCallers( inspect.stack() )
             else:
                 callers = caller
             message = '%s.%s - %s'%( callers[0], callers[1] , message )
-            
+
             cls.logger.log( logLevel, message )
         except Exception, e:
             print 'Unable to record the log. Error: %s'%( e )
-    
+
     @classmethod
     def info( cls, message ):
         cls.log("INFO", message, Log.getCallers( inspect.stack() ))
-    
+
     @classmethod
     def error( cls, message ):
         cls.log("ERROR", message, Log.getCallers( inspect.stack() ))
-    
+
     @classmethod
     def warn( cls, message ):
         cls.log("WARN", message, Log.getCallers( inspect.stack() ))
-    
+
     @classmethod
     def debug( cls, message ):
         cls.log("DEBUG", message, Log.getCallers( inspect.stack() ))
-        
+
     @classmethod
     def verbose( cls, message ):
         cls.log("VERBOSE", message, Log.getCallers( inspect.stack() ))
-    
+
     ##
     # Gets the data about the caller of the log method.
     # @param stack Array containing the system calling stack.
@@ -148,4 +148,3 @@ class Log():
                     else:
                         caller_class = 'NoneType'
         return ( caller_class, caller_method )
-    

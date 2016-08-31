@@ -27,4 +27,6 @@ six==1.10.0
 tornado==4.3
 wsgiref==0.1.2
 htmllaundry==2.1
-BeautifulStoneSoup
+BeautifulSoup
+Flask-Cache
+redis

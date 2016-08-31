@@ -22,7 +22,7 @@ do_start() {
 		else
 			nohup python /opt/salic/salic-api/run.py > /dev/null &
 		fi
-		
+
 		sleep 2
 		PID=$(pgrep -f /opt/salic/salic-api/run.py)
 		echo "Salic API started with Process id: ${PID}..."
@@ -46,7 +46,7 @@ do_force_stop() {
 	kill -9 $PID
 
 	sleep 2
-	echo "RACE Daemon stoped..."
+	echo "Salic API stoped..."
 }
 
 do_restart() {
@@ -97,6 +97,6 @@ case "$1" in
 		do_status
 		;;
 	*)
-		echo "*Usage: /etc/init.d/race_daemon (start|stop|force-stop|restart|force-restart|status)"
+		echo "*Usage: /etc/init.d/salic-api (start|stop|force-stop|restart|force-restart|status)"
 		;;
 esac

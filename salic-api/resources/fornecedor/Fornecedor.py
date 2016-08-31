@@ -3,17 +3,16 @@ from flask import request
 import sys
 sys.path.append('../../')
 from ..ResourceBase import *
-from models import IncentivadorModelObject
+from models import FornecedordorModelObject
 from ..serialization import listify_queryset
 
 import pymssql, json
 
 
-class Incentivador(ResourceBase):
+class Fornecedor(ResourceBase):
 
      def __init__(self):
-        self.tipos_pessoa = {'1' : 'fisica', '2' : 'juridica'}
-        super (Incentivador,self).__init__()
+        super (Fornecedor, self).__init__()
 
 
      def get(self):
@@ -41,37 +40,30 @@ class Incentivador(ResourceBase):
         if request.args.get('cgccpf') is not None:
             cgccpf = request.args.get('cgccpf')
 
-        if request.args.get('municipio') is not None:
-            municipio = request.args.get('municipio')
-
-        if request.args.get('UF') is not None:
-            UF = request.args.get('UF')
-
-        if request.args.get('tipo_pessoa') is not None:
-            tipo_pessoa = request.args.get('tipo_pessoa')
-
         if request.args.get('PRONAC') is not None:
             PRONAC = request.args.get('PRONAC')
 
         try:
-            results, n_records = IncentivadorModelObject().all(limit, offset, nome, cgccpf, municipio, UF,tipo_pessoa, PRONAC)
+            results = FornecedordorModelObject().all(cgccpf = cgccpf, PRONAC =  PRONAC, nome  = nome)
         except Exception as e:
             Log.error( str(e))
             result = {'message' : 'internal error',
-                      'message_code' :  13,
+                      'message_code' :  17,
                       'more' : 'something is broken'
                       }
             return self.render(result, status_code = 503)
 
-        if n_records == 0:
+        results = listify_queryset(results)
 
-            result = {'message' : 'No donator was found with your criteria',
+        if len(results) == 0:
+
+            result = {'message' : 'No supplier was found with your criteria',
                                  'message_code' : 11}
 
             return self.render(result, status_code = 404)
 
-        headers = {'X-Total-Count' : n_records}
+        headers = {'X-Total-Count' : len(results)}
 
-        data = listify_queryset(results)
+        data = results
 
         return self.render(data, headers)

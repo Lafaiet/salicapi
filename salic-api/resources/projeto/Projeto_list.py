@@ -12,6 +12,7 @@ class ProjetoList(ResourceBase):
      def __init__(self):
         super (ProjetoList,self).__init__()
 
+     @app.cache.cached(timeout=app.config['GLOBAL_CACHE_TIMEOUT'], key_prefix=make_key)
      def get(self):
 
         headers = {}
@@ -19,19 +20,19 @@ class ProjetoList(ResourceBase):
         if request.args.get('limit') is not None:
             limit = int(request.args.get('limit'))
 
-            if limit > LIMIT_PAGING:
+            if limit > app.config['LIMIT_PAGING']:
                 results = {'message' : 'Max limit paging exceeded',
                         'message_code' : 7
                     }
                 return self.render(results, status_code = 405)
 
         else:
-            limit = LIMIT_PAGING
+            limit = app.config['LIMIT_PAGING']
 
         if request.args.get('offset') is not None:
             offset = int(request.args.get('offset'))
         else:
-            offset = OFFSET_PAGING
+            offset = app.config['OFFSET_PAGING']
 
         PRONAC = None
         nome = None
@@ -48,7 +49,6 @@ class ProjetoList(ResourceBase):
         data_termino_min = None
         data_termino_max = None
         ano_projeto = None
-        extra_fields = False
 
         if request.args.get('limit') is not None:
             limit = int(request.args.get('limit'))
@@ -101,9 +101,6 @@ class ProjetoList(ResourceBase):
         if request.args.get('data_termino_max') is not None:
             data_termino_max = request.args.get('data_termino_max')
 
-        if request.args.get('extra_fields') == 'true':
-            extra_fields = True
-
         if request.args.get('ano_projeto') is not None:
             ano_projeto = request.args.get('ano_projeto')
 
@@ -112,7 +109,7 @@ class ProjetoList(ResourceBase):
             results, n_records = ProjetoModelObject().all(limit, offset, PRONAC, nome,
                               proponente, cgccpf, area, segmento,
                               UF, municipio, data_inicio, data_inicio_min, data_inicio_max,
-                              data_termino, data_termino_min, data_termino_max, True, ano_projeto)
+                              data_termino, data_termino_min, data_termino_max, ano_projeto)
 
             Log.debug('Database call was successful')
 
@@ -155,7 +152,7 @@ class ProjetoList(ResourceBase):
             projeto['providencia'] = sanitize(projeto['providencia'])
             projeto['democratizacao'] =  sanitize(projeto["democratizacao"])
 
-            projeto['sinopse'] = sanitize(projeto["sinopse"])
-            projeto['resumo'] = sanitize(projeto["resumo"])
+            projeto['sinopse'] = sanitize(projeto["sinopse"],  truncated = False)
+            projeto['resumo'] = sanitize(projeto["resumo"],  truncated = False)
 
         return self.render(data, headers)

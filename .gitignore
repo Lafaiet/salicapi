@@ -25,6 +25,8 @@ var/
 *.log
 
 # Configuration
-config.py
+deployment.cfg
+development.cfg
+fab_config.py
 
 *.csv

@@ -1,7 +1,7 @@
 from sqlalchemy import case, func
 
 from ..ModelsBase import ModelsBase
-from ..SharedModels import InteressadoModel, CaptacaoModel, ProjetoModel
+from ..SharedModels import InteressadoModel, CaptacaoModel, ProjetoModel, CaptacaoModel
 
 
 class IncentivadorModelObject(ModelsBase):
@@ -11,13 +11,14 @@ class IncentivadorModelObject(ModelsBase):
 
 
 
-    def all(self,  limit, offset, nome = None, cgccpf = None, municipio = None, UF = None, tipo_pessoa = None):
+    def all(self,  limit, offset, nome = None, cgccpf = None, municipio = None, UF = None, tipo_pessoa = None, PRONAC = None):
 
         start_row = offset
         end_row = offset+limit
 
         tipo_pessoa_case = case([(InteressadoModel.tipoPessoa=='1', 'fisica'),],
         else_ = 'juridica')
+
 
         res= self.sql_connector.session.query(
                                                InteressadoModel.Nome.label('nome'),
@@ -27,15 +28,11 @@ class IncentivadorModelObject(ModelsBase):
                                                InteressadoModel.CgcCpf.label('cgccpf'),
                                                func.sum(CaptacaoModel.CaptacaoReal).label('total_doado'),
                                                tipo_pessoa_case.label('tipo_pessoa'),
-                                               ).join(CaptacaoModel)\
-                                               .group_by(InteressadoModel.Nome,
-                                                         InteressadoModel.Cidade,
-                                                         InteressadoModel.Uf,
-                                                         InteressadoModel.Responsavel,
-                                                         InteressadoModel.CgcCpf,
-                                                         tipo_pessoa_case
-                                                          )\
-                                               .order_by(InteressadoModel.CgcCpf)
+                                               ).join(CaptacaoModel)
+
+        if PRONAC is not None:
+            res = res.join(ProjetoModel, CaptacaoModel.PRONAC == ProjetoModel.PRONAC)
+            res = res.filter(CaptacaoModel.PRONAC == PRONAC)
 
         if cgccpf is not None:
             res = res.filter(InteressadoModel.CgcCpf.like('%' + cgccpf + '%') )
@@ -56,6 +53,15 @@ class IncentivadorModelObject(ModelsBase):
                 tipo_pessoa = '2'
 
             res = res.filter(InteressadoModel.tipoPessoa == tipo_pessoa )
+
+        res = res.group_by(InteressadoModel.Nome,
+                  InteressadoModel.Cidade,
+                  InteressadoModel.Uf,
+                  InteressadoModel.Responsavel,
+                  InteressadoModel.CgcCpf,
+                  tipo_pessoa_case
+                   )\
+        .order_by(InteressadoModel.CgcCpf)
 
         total_records = res.count()
 
