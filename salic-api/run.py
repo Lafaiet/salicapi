@@ -6,7 +6,6 @@ from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from urls import *
 import argparse
-from config import WEBSERVER_PORT, WEBSERVER_ADDR, SUBPROCESS_NUMBER
 import logging
 from utils.Log import Log
 
@@ -25,11 +24,11 @@ if __name__ == '__main__':
     if arguments.dev:
         app.config['DEBUG'] = True
         Log.info("Running webserver in DEBUG mode")
-        app.run(host = WEBSERVER_ADDR, port = WEBSERVER_PORT)
+        app.run(host = app.config['WEBSERVER_ADDR'], port = app.config['WEBSERVER_PORT'])
     else:
         Log.info("Running webserver in DEPLOYMENT mode")
-        sockets = tornado.netutil.bind_sockets(WEBSERVER_PORT)
-        tornado.process.fork_processes(SUBPROCESS_NUMBER)
+        sockets = tornado.netutil.bind_sockets(app.config['WEBSERVER_PORT'])
+        tornado.process.fork_processes(app.config['SUBPROCESS_NUMBER'])
         server = HTTPServer(WSGIContainer(app))
         server.add_sockets(sockets)
         IOLoop.current().start()

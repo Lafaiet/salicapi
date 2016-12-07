@@ -2,11 +2,30 @@ from flask_restful import Api
 from flask import Response
 from ..ResourceBase import *
 from models import SegmentoModelObject
+from ..serialization import listify_queryset
+
 
 class Segmento(ResourceBase):
 
     def __init__(self):
         super (Segmento,self).__init__()
+
+        def hal_builder(data, args = {}):
+            
+            hal_data = {'_links' : {'self' : app.config['API_ROOT_URL']+'projetos/segmentos/'}}
+            
+            for segmento in data:
+
+                link = app.config['API_ROOT_URL']+'projetos/?segmento=%s'%segmento['codigo']  
+                segmento['_links'] = {'self' : link}
+
+            
+            hal_data['_embedded'] = {'segmentos' : data}
+
+            return hal_data
+
+        self.to_hal = hal_builder
+
 
 
     def get(self):
@@ -19,9 +38,7 @@ class Segmento(ResourceBase):
                         }
             return self.render(result, status_code = 503)
 
-        data = []
+        result = listify_queryset(result)
+        result = sorted(result)
 
-        for item in result:
-            data.append(item[0])
-
-        return self.render(data)
+        return self.render(result)

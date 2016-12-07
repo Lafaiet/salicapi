@@ -28,5 +28,8 @@ var/
 deployment.cfg
 development.cfg
 fab_config.py
+general_config_deploy.py
+
+tests.py
 
 *.csv

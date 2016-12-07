@@ -22,7 +22,7 @@ from resources.incentivador.Incentivador import Incentivador
 from resources.incentivador.Doacao import Doacao
 
 from resources.fornecedor.Fornecedor import Fornecedor
-from resources.fornecedor.Item import Item
+from resources.fornecedor.Produto import Product
 
 
 
@@ -40,19 +40,20 @@ api.add_resource(TestResource, '/test', '/test/')
 api.add_resource(ProjetoDetail, '/%s/projetos/<string:PRONAC>/'%(base_version))
 api.add_resource(ProjetoList, '/%s/projetos/'%(base_version))
 api.add_resource(Proponente, '/%s/proponentes/'%(base_version))
+
 api.add_resource(Captacao, '/%s/projetos/<string:PRONAC>/captacoes/'%(base_version))
 
 api.add_resource(Area, '/%s/projetos/areas/'%(base_version))
 api.add_resource(Segmento, '/%s/projetos/segmentos/'%(base_version))
 
-api.add_resource(PreProjetoList, '/%s/preprojetos/'%(base_version))
-api.add_resource(PreProjetoDetail, '/%s/preprojetos/<string:id>/'%(base_version))
+api.add_resource(PreProjetoList, '/%s/propostas/'%(base_version))
+api.add_resource(PreProjetoDetail, '/%s/propostas/<string:id>/'%(base_version))
 
 api.add_resource(Incentivador, '/%s/incentivadores/'%(base_version))
-api.add_resource(Doacao, '/%s/incentivadores/<string:cgccpf>/doacoes/'%(base_version))
+api.add_resource(Doacao, '/%s/incentivadores/<string:url_id>/doacoes/'%(base_version))
 
 api.add_resource(Fornecedor, '/%s/fornecedores/'%(base_version))
-api.add_resource(Item, '/%s/fornecedores/<string:cgccpf>/itens/'%(base_version))
+api.add_resource(Product, '/%s/fornecedores/<string:url_id>/produtos/'%(base_version))
 
 api.add_resource(SwaggerDef, '/%s/swagger-def/'%(base_version))
 

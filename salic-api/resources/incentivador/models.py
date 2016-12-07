@@ -85,6 +85,8 @@ class DoacaoModelObject(ModelsBase):
                                                CaptacaoModel.CaptacaoReal.label('valor'),
                                                CaptacaoModel.DtRecibo.label('data_recibo'),
                                                ProjetoModel.NomeProjeto.label('nome_projeto'),
+                                               CaptacaoModel.CgcCpfMecena.label('cgccpf'),
+                                               InteressadoModel.Nome.label('nome_doador'),
                                               ).join(ProjetoModel, CaptacaoModel.PRONAC==ProjetoModel.PRONAC)\
                                                 .join(InteressadoModel, CaptacaoModel.CgcCpfMecena==InteressadoModel.CgcCpf)\
 
@@ -95,3 +97,12 @@ class DoacaoModelObject(ModelsBase):
             res = res.filter(InteressadoModel.CgcCpf.like('%' + cgccpf + '%') )
 
         return res.all()
+
+    def total(self, cgccpf):
+
+      res = self.sql_connector.session.query(
+                                               func.sum(CaptacaoModel.CaptacaoReal).label('total_doado')
+                                               
+                                              ).join(InteressadoModel, CaptacaoModel.CgcCpfMecena==InteressadoModel.CgcCpf)
+
+      res = res.filter(InteressadoModel.CgcCpf.like('%' + cgccpf + '%') )

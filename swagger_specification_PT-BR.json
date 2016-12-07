@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "Essa é uma API aberta para acesso aos dados do portal [**SALIC.**](http://novosalic.cultura.gov.br/cidadao/consultar) \n\nSALIC é um sistema que reúne dados a respeito de propostas de projetos culturais a serem incentivados pelo Ministério da Cultura (**MINC**) por meio da lei Rouanet. Veja mais informações [aqui](http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-).\n\n\n\n\n# **Formatos de Resposta** \n\n Atualmente a API suporta exportação dos dados nos formatos * <code>JSON</code>(padrão) * * <code>XML</code> e * <code>CSV</code>. A escolha do formato deve ser definido a cada chamada, por meio do campo de cabeçalho <code>Accept</code>. \n\n # **Limitação de uso** \n\nPara requisições sem autenticação, você pode fazer até **2000 requisições diárias**. Requisições não autenticadas estão ligadas ao endereço IP de origem, não ao usuário fazendo a requisição. \n\nO cabeçalho da resposta lhe diz tudo o que você precisa saber sobre o seu limite de uso atualmente:\n<table> <tr> <td>**Campo do Cabeçalho**</td> <td>**Descrição**</td> </tr>\n<tr> <td>X-RateLimit-Limit</td> <td>Número de requisições permitidas no período.</td> </tr>\n<tr> <td>X-RateLimit-Remaining</td> <td>Número de requisições restantes na janela de limite atual.</td> </tr>\n<tr> <td>X-RateLimit-Reset</td> <td>Tempo para que a janela de limite resete em segundos UTC epoch.</td> </tr>\n<tr> <td>Retry-After</td> <td>Segundos para tentar novamente ou a data http quando a janela de limite será resetada.</td> </tr>\n</table>\n\n\n # **Paginação** \n\n Para alguns recursos que possam gerar um grande volume de resultados, a API provê um sistema de  paginação. Ao fazer sua requisição, basta fazer uso dos campos <code>limit</code> **[1-100]** e <code>offset</code> **[0-Total-Count]** para navegar pelos resultados. Um campo de cabeçalho chamado <code>X-Total-Count</code> será enviado junto às respostas, denotando o total de entradas contidas na base de dados que atendam ao seu critério de busca.",
-        "version": "0.0.2",
+        "version": "0.2.1-beta",
         "title": "SALIC API",
         "termsOfService": "http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-",
         "contact": {
@@ -15,7 +15,7 @@
         }
     },
     "host": "hmg.api.salic.cultura.gov.br",
-    "basePath": "/alpha",
+    "basePath": "/beta",
     "schemes": [
         "http"
     ],
@@ -102,7 +102,7 @@
                         "description": "Número de projetos a serem retornados",
                         "required": false,
                         "type": "integer",
-                        "default": 10,
+                        "default": 100,
                         "minimum": 1,
                         "maximum": 100
                     },
@@ -148,14 +148,14 @@
                     {
                         "in": "query",
                         "name": "area",
-                        "description": "Área do projeto (valor exato ou parcial)",
+                        "description": "Código da Área do projeto",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "in": "query",
                         "name": "segmento",
-                        "description": "Segmento do projeto (valor exato ou parcial)",
+                        "description": "Código do Segmento do projeto",
                         "required": false,
                         "type": "string"
                     },
@@ -220,6 +220,13 @@
                         "required": false,
                         "type": "string",
                         "format": "date"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort",
+                        "description": "Ordenar a busca por um dos campos : PRONAC, ano_projeto, data_inicio, data_termino. Formato: sort=CAMPO, sort=CAMPO:asc ou sort=CAMPO:desc ",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -261,7 +268,7 @@
                         }
                     },
                     "405": {
-                        "description": "Invalid parameter(s) supplied",
+                        "description": "Parametros fornecidos invalidos ",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -288,7 +295,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "string"
+                                "$ref": "#/definitions/Area"
                             }
                         },
                         "headers": {
@@ -311,7 +318,7 @@
                         }
                     },
                     "404": {
-                        "description": "No project area available",
+                        "description": "Areas indisponiveis",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -338,7 +345,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "string"
+                                "$ref": "#/definitions/Segmento"
                             }
                         },
                         "headers": {
@@ -361,7 +368,7 @@
                         }
                     },
                     "404": {
-                        "description": "No project segment available",
+                        "description": "Segmentos indisponiveis",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -375,21 +382,21 @@
                 }
             }
         },
-        "/preprojetos/": {
+        "/propostas/": {
             "get": {
                 "tags": [
-                    "preprojetos : Dados relativos a Pré Projetos"
+                    "propostas : Dados relativos à Propostas de projetos"
                 ],
-                "summary": "Busca preprojetos dado uma combinação de valores diversos de pesquisa",
-                "operationId": "preproject_list",
+                "summary": "Busca propostas dado uma combinação de valores diversos de pesquisa",
+                "operationId": "proposta_list",
                 "parameters": [
                     {
                         "in": "query",
                         "name": "limit",
-                        "description": "Número de projetos a serem retornados",
+                        "description": "Número de propostas a serem retornados",
                         "required": false,
                         "type": "integer",
-                        "default": 10,
+                        "default": 100,
                         "minimum": 1,
                         "maximum": 100
                     },
@@ -432,7 +439,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/PreProjeto"
+                                "$ref": "#/definitions/Proposta"
                             }
                         },
                         "headers": {
@@ -459,13 +466,13 @@
                         }
                     },
                     "404": {
-                        "description": "Projetos com esses parâmetros não encontrados",
+                        "description": "Propostas com esses parâmetros não encontrados",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
                     },
                     "405": {
-                        "description": "Invalid parameter(s) supplied",
+                        "description": "Parametros fornecidos invalidos",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -479,18 +486,18 @@
                 }
             }
         },
-        "/preprojetos/{id}/": {
+        "/propostas/{id}/": {
             "get": {
                 "tags": [
-                    "preprojetos : Dados relativos a Pré Projetos"
+                    "propostas : Dados relativos à Propostas de projetos"
                 ],
-                "summary": "Busca preprojetos dado uma combinação de valores diversos de pesquisa",
-                "operationId": "preproject_detail",
+                "summary": "Dados detalhados de uma proposta",
+                "operationId": "proposta_detail",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
-                        "description": "id do pré projeto",
+                        "description": "id da proposta",
                         "required": true,
                         "type": "string",
                         "format": "int64"
@@ -500,7 +507,7 @@
                     "200": {
                         "description": "Operação bem-sucedida",
                         "schema": {
-                            "$ref": "#/definitions/PreProjeto"
+                            "$ref": "#/definitions/Proposta"
                         },
                         "headers": {
                             "X-Rate-Limit-Limit": {
@@ -526,13 +533,13 @@
                         }
                     },
                     "404": {
-                        "description": "Projetos com esses parâmetros não encontrados",
+                        "description": "Proposta com ID fornecido nao encontrado",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
                     },
                     "405": {
-                        "description": "Invalid parameter(s) supplied",
+                        "description": "Parametro fornecido invalido",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -560,7 +567,7 @@
                         "description": "Número de incentivadores a serem retornados",
                         "required": false,
                         "type": "integer",
-                        "default": 10,
+                        "default": 100,
                         "minimum": 1,
                         "maximum": 100
                     },
@@ -655,13 +662,13 @@
                         }
                     },
                     "404": {
-                        "description": "No donator was found with your criteria",
+                        "description": "Nenhum incentivador encontrado com esses criterios",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
                     },
                     "405": {
-                        "description": "PRONAC inválido",
+                        "description": "Parametros fornecidos invalidos",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -675,7 +682,7 @@
                 }
             }
         },
-        "/incentivadores/{cgccpf}/doacoes": {
+        "/incentivadores/{url_id}/doacoes": {
             "get": {
                 "tags": [
                     "incentivadores : Dados relativos a Incentivadores"
@@ -685,11 +692,10 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "cgccpf",
-                        "description": "Cgc/Cpf do incentivador",
+                        "name": "url_id",
+                        "description": "id de identificação do incentivador",
                         "required": true,
-                        "type": "string",
-                        "format": "int64"
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -721,13 +727,13 @@
                         }
                     },
                     "404": {
-                        "description": "Projeto com PRONAC fornecido não encontrado",
+                        "description": "Incentivador com cgccpf fornecido não encontrado",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
                     },
                     "405": {
-                        "description": "PRONAC inválido",
+                        "description": "cgccpf inválido",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -744,7 +750,7 @@
         "/fornecedores/": {
             "get": {
                 "tags": [
-                    "fornecedores : Dados relativos a fornecedores"
+                    "fornecedores : Dados relativos a Fornecedores"
                 ],
                 "summary": "Busca fornecedores dado uma combinação de valores diversos de pesquisa",
                 "operationId": "Suppliers related data",
@@ -771,6 +777,25 @@
                         "required": false,
                         "type": "string",
                         "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Número de fornecedores a serem retornados",
+                        "required": false,
+                        "type": "integer",
+                        "default": 100,
+                        "minimum": 1,
+                        "maximum": 100
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Número de paginação de resultados",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0,
+                        "minimum": 0
                     }
                 ],
                 "responses": {
@@ -806,13 +831,13 @@
                         }
                     },
                     "404": {
-                        "description": "No supplier was found with your criteria",
+                        "description": "Fornecedor com cgccpf ou PRONAC fornecido não encontrado",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
                     },
                     "405": {
-                        "description": "PRONAC inválido",
+                        "description": "PRONAC ou cgccpf inválido",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -826,21 +851,20 @@
                 }
             }
         },
-        "/fornecedores/{cgccpf}/itens": {
+        "/fornecedores/{url_id}/produtos": {
             "get": {
                 "tags": [
-                    "fornecedores : Dados relativos a fornecedores"
+                    "fornecedores : Dados relativos a Fornecedores"
                 ],
                 "summary": "Dado o CGC, CPF ou CNPJ de um fornecedor, retorna informações relativas a todas os ítens ou serviços fornecidos por ele",
-                "operationId": "supplier_items",
+                "operationId": "supplier_products",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "cgccpf",
-                        "description": "Cgc/Cpf do fornecedor",
+                        "name": "url_id",
+                        "description": "id de identificação do fornecedor",
                         "required": true,
-                        "type": "string",
-                        "format": "int64"
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -849,7 +873,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Item"
+                                "$ref": "#/definitions/Produto"
                             }
                         },
                         "headers": {
@@ -872,13 +896,13 @@
                         }
                     },
                     "404": {
-                        "description": "Projeto com PRONAC fornecido não encontrado",
+                        "description": "Nenhum item encontrado referente ao fornecedor com cgccpf fornecido",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
                     },
                     "405": {
-                        "description": "PRONAC inválido",
+                        "description": "cgccpf inválido",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -906,7 +930,7 @@
                         "description": "Número de proponentes a serem retornados",
                         "required": false,
                         "type": "integer",
-                        "default": 10,
+                        "default": 100,
                         "minimum": 1,
                         "maximum": 100
                     },
@@ -933,6 +957,14 @@
                         "required": false,
                         "type": "string",
                         "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "url_id",
+                        "description": "id de identificacao do proponente",
+                        "required": false,
+                        "type": "string",
+                        "format": "string"
                     },
                     {
                         "in": "query",
@@ -993,13 +1025,13 @@
                         }
                     },
                     "404": {
-                        "description": "Projeto com PRONAC fornecido não encontrado",
+                        "description": "Nenhum proponente com criterios fornecidos encontrados",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
                     },
                     "405": {
-                        "description": "PRONAC inválido",
+                        "description": "Parametros fornecidos inválidos",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -1355,7 +1387,7 @@
                 }
             }
         },
-        "PreProjeto": {
+        "Proposta": {
             "type": "object",
             "properties": {
                 "id": {
@@ -1530,7 +1562,7 @@
                 }
             }
         },
-        "Item": {
+        "Produto": {
             "type": "object",
             "properties": {
                 "id_planilha_aprovacao": {
@@ -1573,6 +1605,28 @@
                     "type": "string"
                 },
                 "tipo_documento": {
+                    "type": "string"
+                }
+            }
+        },
+        "Area": {
+            "type": "object",
+            "properties": {
+                "codigo": {
+                    "type": "integer"
+                },
+                "nome": {
+                    "type": "string"
+                }
+            }
+        },
+        "Segmento": {
+            "type": "object",
+            "properties": {
+                "codigo": {
+                    "type": "integer"
+                },
+                "nome": {
                     "type": "string"
                 }
             }

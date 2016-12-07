@@ -1,20 +1,22 @@
 import sys
 sys.path.append('../../')
 from ..ResourceBase import *
-from models import ItemModelObject
+from models import ProductModelObject
 from ..serialization import listify_queryset
+from ..security import decrypt
 
-
-class Item(ResourceBase):
+class Product(ResourceBase):
 
      def __init__(self):
-        super (Item, self).__init__()
+        super (Product, self).__init__()
 
 
-     def get(self, cgccpf):
+     def get(self, url_id):
+      
+        cgccpf = decrypt(url_id)
 
         try:
-            results = ItemModelObject().all(cgccpf)
+            results = ProductModelObject().all(cgccpf)
         except Exception as e:
             Log.error( str(e))
             result = {'message' : 'internal error',
@@ -27,7 +29,7 @@ class Item(ResourceBase):
 
         if len(results) == 0:
 
-            result = {'message' : 'No items were found with your criteria',
+            result = {'message' : 'No Products were found with your criteria',
                                  'message_code' : 11}
 
             return self.render(result, status_code = 404)

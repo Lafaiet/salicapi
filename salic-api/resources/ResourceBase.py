@@ -38,7 +38,8 @@ class ResourceBase(Resource):
     app.cache.clear()
 
     def __init__(self):
-        pass
+
+        self.to_hal = None
 
 
     def render(self, data, headers =  {}, status_code  = 200, raw = False):
@@ -56,7 +57,7 @@ class ResourceBase(Resource):
             else:
                 data = serialize(data, 'csv')
 
-            response = Response(serialize(data, 'csv'), content_type='text/csv; charset=utf-8')
+            response = Response(data, content_type='text/csv; charset=utf-8')
 
 
         # JSON or invalid Content-Type
@@ -64,9 +65,12 @@ class ResourceBase(Resource):
             if raw:
                 data = data
             else:
+                if self.to_hal is not None and status_code == 200:
+                    data = self.to_hal(data)
+
                 data = serialize(data, 'json')
 
-            response = Response(data, content_type='application/json; charset=utf-8')
+            response = Response(data, content_type='application/hal+json; charset=utf-8')
 
 
         response.headers.extend(headers)
@@ -79,6 +83,20 @@ class ResourceBase(Resource):
         Log.info(request.path+' '+real_ip+' '+str(status_code) + ' '+str(response.headers.get('Content-Length')))
 
         return response
+
+
+        # Given a cgc/cpf/cnpj, makes sure it return only elements with exact match
+    # Used to correct the use of SQL LIKE statement
+    def get_unique(self, cgccpf, elements):
+
+        exact_matches = []
+
+        for e in elements: 
+
+            if e['cgccpf'] == cgccpf:
+                exact_matches.append(e)
+
+        return exact_matches
 
 
 def format_args(hearder_args):
@@ -107,3 +125,8 @@ def request_start():
     #             }
     #     return {'error' : 'content-type'}
     #     return self.render(results, status_code = 405)
+
+
+
+
+

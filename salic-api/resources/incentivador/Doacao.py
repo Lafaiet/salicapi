@@ -5,6 +5,9 @@ sys.path.append('../../')
 from models import DoacaoModelObject
 from ..ResourceBase import *
 from ..serialization import listify_queryset
+from ..security import decrypt
+from ..format_utils import remove_blanks, cgccpf_mask
+
 
 import pymssql, json
 
@@ -15,7 +18,9 @@ class Doacao(ResourceBase):
         super (Doacao,self).__init__()
 
 
-     def get(self, cgccpf):
+     def get(self, url_id):
+
+        cgccpf = decrypt(url_id)
 
         try:
             results = DoacaoModelObject().all(cgccpf = cgccpf)
@@ -34,5 +39,9 @@ class Doacao(ResourceBase):
             return self.render(result, status_code = 404)
 
         data = listify_queryset(results)
+
+        for interessado in data:
+            interessado["cgccpf"] = remove_blanks(interessado['cgccpf'])
+            interessado["cgccpf"] = cgccpf_mask(interessado["cgccpf"])
 
         return self.render(data)

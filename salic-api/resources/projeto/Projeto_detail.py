@@ -8,19 +8,50 @@ from models import (
                     AdequacoesParecerModelObject, CaptacaoModelObject
                     )
 from ..serialization import listify_queryset
-from ..format_utils import truncate, remove_blanks
+from ..format_utils import truncate, remove_blanks, cgccpf_mask
 from ..sanitization import sanitize
 import file_attachment
 import brand_attachment
 from datetime import datetime
+from ..security import encrypt
 
 
 
 
 class ProjetoDetail(ResourceBase):
 
+    def build_links(self, args = {}):
+
+        self.links["self"] += args['PRONAC']
+
+        url_id = encrypt(args['proponente_id'])
+        proponente_link = app.config['API_ROOT_URL']+'proponentes/?url_id=%s'%url_id
+
+        incentivadores_link = app.config['API_ROOT_URL']+ 'incentivadores/?PRONAC='+args['PRONAC']
+        fornecedores_link = app.config['API_ROOT_URL']+ 'fornecedores/?PRONAC='+args['PRONAC']
+
+        self.links["proponente"] = proponente_link
+        self.links["incentivadores"] = incentivadores_link
+        self.links["fornecedores"] = fornecedores_link
+
+
     def __init__(self):
         super (ProjetoDetail,self).__init__()
+
+        self.links = {
+                    "self" : app.config['API_ROOT_URL']+'projetos/',
+        }
+
+        def hal_builder(data, args = {}):
+
+            hal_data = data
+            
+            hal_data['_links']  = self.links
+
+            return hal_data
+
+
+        self.to_hal = hal_builder
 
     @app.cache.cached(timeout=app.config['GLOBAL_CACHE_TIMEOUT'])
     def get(self, PRONAC):
@@ -348,7 +379,7 @@ class ProjetoDetail(ResourceBase):
         "Removing IdPRONAC"
         del projeto['IdPRONAC']
 
-        #timestamp = str(datetime.now())
-        #projeto['timestamp'] = timestamp
+        self.build_links(args = {'PRONAC' : projeto['PRONAC'], 'proponente_id' : projeto['cgccpf']})
+        projeto['cgccpf'] = cgccpf_mask(projeto['cgccpf'])
 
         return self.render(projeto)

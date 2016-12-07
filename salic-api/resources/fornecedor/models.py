@@ -10,7 +10,7 @@ class FornecedordorModelObject(ModelsBase):
         super (FornecedordorModelObject,self).__init__()
 
 
-    def all(self, cgccpf = None, PRONAC = None, nome = None):
+    def all(self, limit, offset, cgccpf = None, PRONAC = None, nome = None):
 
         if cgccpf is not None:
             query = text ("""
@@ -27,13 +27,17 @@ class FornecedordorModelObject(ModelsBase):
                    LEFT JOIN Agentes.dbo.Internet AS Internet ON b.idFornecedor = Internet.idAgente
 
                    WHERE (g.CNPJCPF LIKE :cgccpf)
+                   
+                   ORDER BY cgccpf
+                   OFFSET :offset ROWS
+                   FETCH NEXT :limit ROWS ONLY;
 
               """)
 
-            return self.sql_connector.session.execute(query, {'cgccpf' : '%'+cgccpf+'%'})
+            return self.sql_connector.session.execute(query, {'cgccpf' : '%'+cgccpf+'%', 'offset' : offset, 'limit' : limit})
 
 
-        if nome is not None:
+        elif nome is not None:
             query = text ("""
               SELECT
                    DISTINCT g.CNPJCPF as cgccpf, e.Descricao as nome, Internet.Descricao as email
@@ -49,13 +53,17 @@ class FornecedordorModelObject(ModelsBase):
 
                    WHERE (e.Descricao LIKE :nome)
 
+                   ORDER BY cgccpf
+                   OFFSET :offset ROWS
+                   FETCH NEXT :limit ROWS ONLY;
+
               """)
 
-            return self.sql_connector.session.execute(query, {'nome' : '%'+nome+'%'})
+            return self.sql_connector.session.execute(query, {'nome' : '%'+nome+'%', 'offset' : offset, 'limit' : limit})
 
 
 
-        else:
+        elif PRONAC is not None:
             query = text ("""
               SELECT
                    DISTINCT g.CNPJCPF as cgccpf, e.Descricao as nome, Internet.Descricao as email
@@ -72,15 +80,43 @@ class FornecedordorModelObject(ModelsBase):
 
                    WHERE (Projetos.AnoProjeto + Projetos.Sequencial = :PRONAC)
 
+                   ORDER BY cgccpf
+                   OFFSET :offset ROWS
+                   FETCH NEXT :limit ROWS ONLY;
+
               """)
 
-            return self.sql_connector.session.execute(query, {'PRONAC' : PRONAC})
+            return self.sql_connector.session.execute(query, {'PRONAC' : PRONAC, 'offset' : offset, 'limit' : limit})
+
+        else:
+            query = text ("""
+              SELECT
+                   DISTINCT g.CNPJCPF as cgccpf, e.Descricao as nome, Internet.Descricao as email
+                    
+                   FROM BDCORPORATIVO.scSAC.tbComprovantePagamentoxPlanilhaAprovacao AS a
+                   INNER JOIN BDCORPORATIVO.scSAC.tbComprovantePagamento AS b ON a.idComprovantePagamento = b.idComprovantePagamento
+                   LEFT JOIN SAC.dbo.tbPlanilhaAprovacao AS PlanilhaAprovacao ON a.idPlanilhaAprovacao = PlanilhaAprovacao.idPlanilhaAprovacao
+                   LEFT JOIN SAC.dbo.tbPlanilhaItens AS d ON PlanilhaAprovacao.idPlanilhaItem = d.idPlanilhaItens
+                   LEFT JOIN Agentes.dbo.Nomes AS e ON b.idFornecedor = e.idAgente
+                   LEFT JOIN BDCORPORATIVO.scCorp.tbArquivo AS f ON b.idArquivo = f.idArquivo
+                   LEFT JOIN Agentes.dbo.Agentes AS g ON b.idFornecedor = g.idAgente
+                   LEFT JOIN Agentes.dbo.Internet AS Internet ON b.idFornecedor = Internet.idAgente
+                   JOIN SAC.dbo.Projetos AS Projetos ON PlanilhaAprovacao.idPronac = Projetos.IdPRONAC
+
+                   ORDER BY cgccpf
+                   OFFSET :offset ROWS
+                   FETCH NEXT :limit ROWS ONLY;
 
 
-class ItemModelObject(ModelsBase):
+              """)
+
+            return self.sql_connector.session.execute(query, {'offset' : offset, 'limit' : limit})
+
+
+class ProductModelObject(ModelsBase):
 
   def __init__(self):
-        super (ItemModelObject,self).__init__()
+        super (ProductModelObject,self).__init__()
 
 
   def all(self, cgccpf):

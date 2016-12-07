@@ -33,10 +33,10 @@ def check_password():
 
 def deploy():
     check_password()
-    rsync_project(remote_dir = 'salicapi/', local_dir = '../salicapi/')
+    rsync_project(remote_dir = 'salicapi/', local_dir = '../salicapi/', delete=True, exclude=['*.pyc'])
     sudo('cd /home/%s/salicapi/ && sh install.sh'%(PRODUCTION_USER))
     sudo("cd /opt/salic/salic-api && find . -name '*.pyc' -delete")
-    put('salic-api/app/deployment.cfg', '/opt/salic/salic-api/app/deployment.cfg', use_sudo=True)
+    put('general_config_deploy.py', '/opt/salic/salic-api/app/general_config.py', use_sudo=True)
     sudo('/etc/init.d/salic-api start')
 
 

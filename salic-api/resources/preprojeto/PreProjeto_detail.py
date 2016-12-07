@@ -16,30 +16,9 @@ class PreProjetoDetail(ResourceBase):
 
         headers = {}
 
-        if request.args.get('limit') is not None:
-            limit = int(request.args.get('limit'))
-
-            if limit > LIMIT_PAGING:
-                results = {'message' : 'Max limit paging exceeded',
-                        'message_code' : 7
-                    }
-                return self.render(results, status_code = 405)
-
-        else:
-            limit = LIMIT_PAGING
-
-        if request.args.get('offset') is not None:
-            offset = int(request.args.get('offset'))
-        else:
-            offset = OFFSET_PAGING
-
-
-        id = id
-
-
         try:
             Log.debug('Starting database call')
-            results, n_records = PreProjetoModelObject().all(limit, offset, id = id, extra_fields = True)
+            results, n_records = PreProjetoModelObject().all(limit = 1, offset = 0, id = id, extra_fields = True)
             Log.debug('Database call was successful')
 
         except Exception as e:

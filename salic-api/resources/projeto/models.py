@@ -3,6 +3,7 @@
 from sqlalchemy import case, func, and_
 from sqlalchemy.orm import aliased
 from sqlalchemy.sql import text
+from sqlalchemy.sql.expression import asc, desc
 
 from ..ModelsBase import ModelsBase
 from ..SharedModels import AreaModel, SegmentoModel
@@ -120,6 +121,7 @@ class ProjetoModelObject(ModelsBase):
                                 g.CNPJCPF as cgccpf,
                                 e.Descricao as nome_fornecedor,
                                 b.DtPagamento as data_aprovacao,
+                                Projetos.AnoProjeto + Projetos.Sequencial as PRONAC,
                                 CASE tpDocumento
                                     WHEN 1 THEN ('Boleto Bancario')
                                     WHEN 2 THEN ('Cupom Fiscal')
@@ -229,11 +231,17 @@ class ProjetoModelObject(ModelsBase):
                           UF = None, municipio = None, data_inicio = None,
                           data_inicio_min = None, data_inicio_max = None,
                           data_termino = None, data_termino_min = None,
-                          data_termino_max = None, ano_projeto = None):
+                          data_termino_max = None, ano_projeto = None, sort_field = None, sort_order = None):
 
-        start_row = offset
-        end_row = offset+limit
+        if sort_field == None:
+            sort_field = 'PRONAC'
 
+        sort_fields_mapping = {
+            'ano_projeto' : ProjetoModel.AnoProjeto, 'PRONAC': ProjetoModel.PRONAC,
+            'data_inicio' : ProjetoModel.DtInicioExecucao, 'data_termino' : ProjetoModel.DtFimExecucao
+        }
+
+        sort_field = sort_fields_mapping[sort_field]
 
         text_fields = (
                              PreProjetoModel.Acessibilidade.label('acessibilidade'),
@@ -271,7 +279,7 @@ class ProjetoModelObject(ModelsBase):
         with Timer(action = 'Database query for get_projeto_list method', verbose = True):
           res = self.sql_connector.session.query(
                                                   ProjetoModel.NomeProjeto.label('nome'),
-                                                  ProjetoModel.PRONAC,
+                                                  ProjetoModel.PRONAC.label('PRONAC'),
                                                   ProjetoModel.AnoProjeto.label('ano_projeto'),
                                                   ProjetoModel.UfProjeto.label('UF'),
                                                   InteressadoModel.Cidade.label('municipio'),
@@ -303,9 +311,15 @@ class ProjetoModelObject(ModelsBase):
                                                   .join(InteressadoModel)\
                                                   .join(PreProjetoModel)\
                                                   .join(MecanismoModel)\
-                                                  .outerjoin(EnquadramentoModel, EnquadramentoModel.IdPRONAC ==  ProjetoModel.IdPRONAC)\
-                                                  .order_by(ProjetoModel.IdPRONAC)
+                                                  .outerjoin(EnquadramentoModel, EnquadramentoModel.IdPRONAC ==  ProjetoModel.IdPRONAC)
+                                                
 
+        # order by descending
+        if sort_order == 'desc':
+            res = res.order_by(desc(sort_field))
+        #order by ascending
+        else:
+            res = res.order_by(sort_field)
 
         #res = res.filter(ProjetoModel.IdPRONAC == '150465')
 
@@ -313,10 +327,10 @@ class ProjetoModelObject(ModelsBase):
             res = res.filter(ProjetoModel.PRONAC == PRONAC)
 
         if area is not None:
-            res = res.filter(AreaModel.Descricao == area)
+            res = res.filter(AreaModel.Codigo == area)
 
         if segmento is not None:
-            res = res.filter(SegmentoModel.Descricao == segmento)
+            res = res.filter(SegmentoModel.Codigo == segmento)
 
         if proponente is not None:
             res = res.filter(InteressadoModel.Nome.like('%' + proponente + '%'))
@@ -362,7 +376,8 @@ class ProjetoModelObject(ModelsBase):
         #   #Log.debug("total : "+str(total_records))
 
         with Timer(action = 'Projects slice()', verbose = True):
-          res = res.slice(start_row, end_row)
+          # res = res.slice(start_row, end_row)
+          res = res.limit(limit).offset(offset)
 
         return res.all(), total_records
 
@@ -373,10 +388,12 @@ class CaptacaoModelObject(ModelsBase):
     def all(self, PRONAC):
 
         res = self.sql_connector.session.query(
+                                               CaptacaoModel.PRONAC,
                                                CaptacaoModel.CaptacaoReal.label('valor'),
                                                CaptacaoModel.DtRecibo.label('data_recibo'),
-                                               InteressadoModel.Nome.label('nome_doador'),
+                                               ProjetoModel.NomeProjeto.label('nome_projeto'),
                                                CaptacaoModel.CgcCpfMecena.label('cgccpf'),
+                                               InteressadoModel.Nome.label('nome_doador'),
                                               ).join(ProjetoModel, CaptacaoModel.PRONAC==ProjetoModel.PRONAC)\
                                                 .join(InteressadoModel, CaptacaoModel.CgcCpfMecena==InteressadoModel.CgcCpf)\
 
@@ -394,7 +411,7 @@ class AreaModelObject(ModelsBase):
         super (AreaModelObject,self).__init__()
 
     def all(self):
-        res  = self.sql_connector.session.query(AreaModel.Descricao.label('area'))
+        res  = self.sql_connector.session.query(AreaModel.Descricao.label('nome'), AreaModel.Codigo.label('codigo'))
         return res.all()
 
 
@@ -406,7 +423,7 @@ class SegmentoModelObject(ModelsBase):
 
 
     def all(self):
-        res  = self.sql_connector.session.query(SegmentoModel.Descricao.label('segmento'))
+        res  = self.sql_connector.session.query(SegmentoModel.Descricao.label('nome'), SegmentoModel.Codigo.label('codigo'))
         return res.all()
 
 class CertidoesNegativasModelObject(ModelsBase):

@@ -13,7 +13,7 @@ def to_xml(data):
     return dicttoxml.dicttoxml(data)
 
 def to_json(data):
-    return json.dumps(data, ensure_ascii=False, encoding="utf-8")
+    return json.dumps(data, ensure_ascii=False, encoding='utf-8')
 
 def to_csv(data):
 
@@ -41,6 +41,9 @@ def to_csv(data):
 
         elif isinstance(item, float) or isinstance(item, int):
                 uni_data = str(item).decode('utf8')
+
+        elif isinstance(item, list) or isinstance(item, dict): #TODO: fix these special cases
+                uni_data = u"null"
         else:
             uni_data = u'\"'+item+u'\"'
 
@@ -55,6 +58,9 @@ def to_csv(data):
 
             elif isinstance(item, float) or isinstance(item, int):
                 uni_data = str(item).decode('utf8')
+
+            elif isinstance(item, list) or isinstance(item, dict): #TODO: fix these special cases
+                uni_data = u"null"
             else:
                 uni_data = u'\"'+item+u'\"'
 
@@ -110,3 +116,8 @@ def serialize(data, out_format):
 
     elif out_format == 'csv':
         return to_csv(data)
+
+
+def to_hal(resource, resource_links):
+
+    resource["_links"] = resource_links

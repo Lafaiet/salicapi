@@ -10,6 +10,7 @@ from sqlalchemy import create_engine, Column
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import func, distinct
 from flask import Flask
+import urllib
 
 import datetime, json
 
@@ -18,13 +19,23 @@ import datetime, json
 class MSSql_connector(SQL_connector):
 
     def __init__(self):
-        engine = create_engine('mssql+pymssql://%s:%s@%s:%d/%s?charset=utf8'
-                                    %(app.config['DATABASE_USER'],
-                                      app.config['DATABASE_PASSWORD'],
-                                      app.config['DATABASE_HOST'],
-                                      app.config['DATABASE_PORT'],
-                                      app.config['DATABASE_NAME']))
 
+        if app.config['SQL_DRIVER'] == 'pymssql':
+          engine = create_engine(r"mssql+pymssql://{0}:{1}@{2}/{3}".format( 
+                                          app.config['DATABASE_USER'],
+                                          app.config['DATABASE_PASSWORD'],
+                                          app.config['DATABASE_HOST'],
+                                          app.config['DATABASE_NAME']))
+
+        else:
+          quoted = urllib.quote_plus('DRIVER={FreeTDS};Server=%s;Database=%s;UID=%s;PWD=%s;TDS_Version=8.0;CHARSET=UTF8;Port=1433;'
+                                          %(app.config['DATABASE_HOST'],
+                                            app.config['DATABASE_NAME'],
+                                            app.config['DATABASE_USER'],
+                                            app.config['DATABASE_PASSWORD']))
+
+          engine = create_engine('mssql+pyodbc:///?odbc_connect={}'.format(quoted), connect_args={'convert_unicode': True})
+          
         # create a Session
         Session = sessionmaker(bind=engine)
         self.session = Session()

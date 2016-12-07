@@ -30,3 +30,4 @@ htmllaundry==2.1
 BeautifulSoup
 Flask-Cache
 redis
+pycrypto

@@ -19,19 +19,19 @@ class PreProjetoList(ResourceBase):
         if request.args.get('limit') is not None:
             limit = int(request.args.get('limit'))
 
-            if limit > LIMIT_PAGING:
+            if limit > app.config['LIMIT_PAGING']:
                 results = {'message' : 'Max limit paging exceeded',
                         'message_code' : 7
                     }
                 return self.render(results, status_code = 405)
 
         else:
-            limit = LIMIT_PAGING
+            limit = app.config['LIMIT_PAGING']
 
         if request.args.get('offset') is not None:
             offset = int(request.args.get('offset'))
         else:
-            offset = OFFSET_PAGING
+            offset = app.config['OFFSET_PAGING']
 
         nome = None
         id = None
@@ -90,7 +90,7 @@ class PreProjetoList(ResourceBase):
 
         for preprojeto in data:
 
-            "Sanitizing text values"
+            #Sanitizing text values
             preprojeto['acessibilidade'] = sanitize(preprojeto['acessibilidade'])
             preprojeto['objetivos'] = sanitize(preprojeto['objetivos'])
             preprojeto['justificativa'] = sanitize(preprojeto['justificativa'])
