@@ -5,7 +5,7 @@ API aberta para o portal [NOVO SALIC](http://novosalic.cultura.gov.br/cidadao/co
 
 A documentação da API pode ser acessada [aqui](http://hmg.api.salic.cultura.gov.br/doc/).
 
-O projeto ainda se encontra em **PRE ALPHA**, sujeito a muitas alterações, reformulações e atualizacões.
+O projeto ainda se encontra em **implantação**, sujeito ainda a muitas alterações, reformulações e atualizacões.
 
 
 
@@ -56,7 +56,8 @@ $ sudo pip install -r requirements.txt
 
 ## Configuração
 
-soon...
+Edite o arquivo **salic-api/app/example_config.py** de acordo com seu ambiente.
+Edite o arquivo **salic-api/app/general_config.py** apontando o arquivo de configuração a ser usado. 
 
 ## Execução
 
