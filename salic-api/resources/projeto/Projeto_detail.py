@@ -34,6 +34,16 @@ class ProjetoDetail(ResourceBase):
         self.links["incentivadores"] = incentivadores_link
         self.links["fornecedores"] = fornecedores_link
 
+        self.captacoes_links = []
+
+        for captacao in args['captacoes']:
+                captacao_links = {}
+                captacao_links['projeto'] = app.config['API_ROOT_URL'] + 'projetos/%s'%args['PRONAC']
+                url_id = encrypt(captacao['cgccpf'])
+                captacao_links['incentivador'] = app.config['API_ROOT_URL'] + 'incentivadores/?url_id=%s'%url_id
+
+                self.captacoes_links.append(captacao_links)
+
 
     def __init__(self):
         super (ProjetoDetail,self).__init__()
@@ -47,6 +57,16 @@ class ProjetoDetail(ResourceBase):
             hal_data = data
             
             hal_data['_links']  = self.links
+
+            hal_data['_embedded'] = {'captacoes' : []}
+
+            for index in range(len(data['captacoes'])):
+                data['captacoes'][index]['_links'] = self.captacoes_links[index]
+                
+
+            hal_data['_embedded']['captacoes'] = data['captacoes']
+            del data['captacoes']
+
 
             return hal_data
 
@@ -379,7 +399,10 @@ class ProjetoDetail(ResourceBase):
         "Removing IdPRONAC"
         del projeto['IdPRONAC']
 
-        self.build_links(args = {'PRONAC' : projeto['PRONAC'], 'proponente_id' : projeto['cgccpf']})
+        self.build_links(args = {'PRONAC' : projeto['PRONAC'], 'proponente_id' : projeto['cgccpf'], 'captacoes' : projeto['captacoes']})
         projeto['cgccpf'] = cgccpf_mask(projeto['cgccpf'])
+
+        for captacao in projeto['captacoes']:
+            captacao['cgccpf'] = cgccpf_mask(captacao['cgccpf'])
 
         return self.render(projeto)

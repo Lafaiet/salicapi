@@ -9,8 +9,51 @@ from ..sanitization import sanitize
 
 class PreProjetoList(ResourceBase):
 
+     def build_links(self, args = {}):
+
+        query_args = '&'
+
+        for arg in request.args:
+            if arg!= 'limit' and arg != 'offset':
+                query_args+=arg+'='+request.args[arg]+'&'
+
+        self.links["self"] += '?limit=%d&offset=%d'%(args['limit'], args['offset'])+query_args
+        self.links["next"] += '?limit=%d&offset=%d'%(args['limit'], args['offset']+args['limit'])+query_args
+
+        if args['offset']-args['limit'] < 0:
+            self.links["prev"] += '?limit=%d&offset=%d'%(args['limit'], 0)+query_args
+
+        else:
+            self.links["prev"] += '?limit=%d&offset=%d'%(args['limit'], args['offset']-args['limit'])+query_args
+
+
      def __init__(self):
         super (PreProjetoList,self).__init__()
+
+        self.links = {
+                    "self" : app.config['API_ROOT_URL']+'propostas/',
+                    "prev" : app.config['API_ROOT_URL']+'propostas/',
+                    "next" : app.config['API_ROOT_URL']+'propostas/',
+        }
+
+        def hal_builder(data, args = {}):
+            
+            hal_data = {'_links' : self.links}
+
+            for p_index in range(len(data)):
+                proposta = data[p_index]
+
+                self_link = app.config['API_ROOT_URL']+'propostas/'+str(proposta['id'])
+
+                proposta['_links'] = {}
+                proposta['_links']['self'] = self_link
+                
+            hal_data['_embedded'] = {'propostas' : data}
+
+            return hal_data
+
+
+        self.to_hal = hal_builder
 
      def get(self):
 
@@ -103,5 +146,7 @@ class PreProjetoList(ResourceBase):
 
             preprojeto['sinopse'] = sanitize(preprojeto["sinopse"], truncated = False)
             preprojeto['resumo'] = sanitize(preprojeto["resumo"], truncated = False)
+
+        self.build_links(args = {'limit' : limit, 'offset' : offset})
 
         return self.render(data, headers)

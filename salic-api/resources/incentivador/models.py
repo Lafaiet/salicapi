@@ -1,4 +1,5 @@
 from sqlalchemy import case, func
+from sqlalchemy.sql.expression import asc, desc
 
 from ..ModelsBase import ModelsBase
 from ..SharedModels import InteressadoModel, CaptacaoModel, ProjetoModel, CaptacaoModel
@@ -11,13 +12,17 @@ class IncentivadorModelObject(ModelsBase):
 
 
 
-    def all(self,  limit, offset, nome = None, cgccpf = None, municipio = None, UF = None, tipo_pessoa = None, PRONAC = None):
+    def all(self,  limit, offset, nome = None, cgccpf = None, municipio = None,
+            UF = None, tipo_pessoa = None, PRONAC = None, sort_field = None, sort_order = None):
 
         start_row = offset
         end_row = offset+limit
 
         tipo_pessoa_case = case([(InteressadoModel.tipoPessoa=='1', 'fisica'),],
         else_ = 'juridica')
+
+        if sort_field == None:
+            sort_field = 'cgccpf'
 
 
         res= self.sql_connector.session.query(
@@ -60,8 +65,14 @@ class IncentivadorModelObject(ModelsBase):
                   InteressadoModel.Responsavel,
                   InteressadoModel.CgcCpf,
                   tipo_pessoa_case
-                   )\
-        .order_by(InteressadoModel.CgcCpf)
+                   )
+
+        # order by descending
+        if sort_order == 'desc':
+            res = res.order_by(desc(sort_field))
+        #order by ascending
+        else:
+            res = res.order_by(sort_field)
 
         total_records = res.count()
 

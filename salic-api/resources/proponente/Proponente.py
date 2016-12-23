@@ -131,6 +131,7 @@ class Proponente(ResourceBase):
 
         if cgccpf is not None:
             data = self.get_unique(cgccpf, data)
+            proponentes_ids = [cgccpf]
 
         self.build_links(args = {'limit' : limit, 'offset' : offset, 'proponentes_ids' : proponentes_ids})
 

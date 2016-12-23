@@ -26,7 +26,7 @@ def decrypt(cypher_text):
         dec_msg = cipher.decrypt(enc_msg)
 
     except Exception:
-        return None
+        return 'invalid'
 
     return dec_msg[AES.block_size:]
 

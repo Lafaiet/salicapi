@@ -224,7 +224,7 @@
                     {
                         "in": "query",
                         "name": "sort",
-                        "description": "Ordenar a busca por um dos campos : PRONAC, ano_projeto, data_inicio, data_termino. Formato: sort=CAMPO, sort=CAMPO:asc ou sort=CAMPO:desc ",
+                        "description": "Ordenar a busca por um dos campos : PRONAC, ano_projeto, data_inicio, data_termino, valor_solicitado, outras_fontes, valor_captado, valor_proposta, valor_aprovado, valor_projeto. Formato: sort=CAMPO ou sort=CAMPO:asc ou ainda sort=CAMPO:desc ",
                         "required": false,
                         "type": "string"
                     }
@@ -385,7 +385,7 @@
         "/propostas/": {
             "get": {
                 "tags": [
-                    "propostas : Dados relativos à Propostas de projetos"
+                    "propostas : Dados relativos a Propostas de projetos"
                 ],
                 "summary": "Busca propostas dado uma combinação de valores diversos de pesquisa",
                 "operationId": "proposta_list",
@@ -489,7 +489,7 @@
         "/propostas/{id}/": {
             "get": {
                 "tags": [
-                    "propostas : Dados relativos à Propostas de projetos"
+                    "propostas : Dados relativos a Propostas de projetos"
                 ],
                 "summary": "Dados detalhados de uma proposta",
                 "operationId": "proposta_detail",
@@ -627,6 +627,13 @@
                         "required": false,
                         "type": "string",
                         "format": "int64"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort",
+                        "description": "Ordenar a busca por um dos campos : total_doado.Formato: sort=CAMPO ou sort=CAMPO:asc ou ainda sort=CAMPO:desc ",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {

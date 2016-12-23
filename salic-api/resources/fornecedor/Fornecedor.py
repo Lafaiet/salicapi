@@ -6,7 +6,7 @@ from ..ResourceBase import *
 from models import FornecedordorModelObject
 from ..serialization import listify_queryset
 from ..format_utils import remove_blanks, cgccpf_mask
-from ..security import encrypt 
+from ..security import encrypt, decrypt
 
 
 import pymssql, json
@@ -101,8 +101,13 @@ class Fornecedor(ResourceBase):
         if request.args.get('cgccpf') is not None:
             cgccpf = request.args.get('cgccpf')
 
+        if request.args.get('url_id') is not None:
+            url_id = request.args.get('url_id')
+            cgccpf = decrypt(url_id)
+
         if request.args.get('PRONAC') is not None:
             PRONAC = request.args.get('PRONAC')
+
 
         try:
             results = FornecedordorModelObject().all(limit, offset, cgccpf = cgccpf, PRONAC =  PRONAC, nome  = nome)

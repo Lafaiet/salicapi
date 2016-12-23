@@ -186,7 +186,7 @@ class ProjetoList(ResourceBase):
 
             if sort_field not in self.sort_fields:
                 Log.error('sorting field error: '+str(sort_field))
-                result = {'message' : 'field error: "sort"',
+                result = {'message' : 'field error: "%s"'%sort_field,
                       'message_code' :  10,
                       }
                 return self.render(result, status_code = 405)
@@ -219,8 +219,6 @@ class ProjetoList(ResourceBase):
 
         data = listify_queryset(results)
 
-        proponentes_ids = []
-
         for projeto in data:
 
             "Removing IdPRONAC"
@@ -228,7 +226,6 @@ class ProjetoList(ResourceBase):
 
             "Getting rid of blanks"
             projeto["cgccpf"]  = remove_blanks(str(projeto["cgccpf"]))
-            proponentes_ids.append(projeto['cgccpf'])
 
             "Sanitizing text values"
             projeto['acessibilidade'] = sanitize(projeto['acessibilidade'])
@@ -248,7 +245,10 @@ class ProjetoList(ResourceBase):
         if cgccpf is not None:
             data = self.get_unique(cgccpf, data)
 
+        proponentes_ids = []
+
         for projeto_index in range(len(data)):
+            proponentes_ids.append(projeto['cgccpf'])
             data[projeto_index]['cgccpf'] = cgccpf_mask(data[projeto_index]['cgccpf'])
 
         self.build_links(args = {'limit' : limit, 'offset' : offset, 'proponentes_ids' : proponentes_ids})

@@ -8,7 +8,7 @@ from sqlalchemy.sql.expression import asc, desc
 from ..ModelsBase import ModelsBase
 from ..SharedModels import AreaModel, SegmentoModel
 from ..SharedModels import (ProjetoModel, InteressadoModel, MecanismoModel,
-                            SituacaoModel, PreProjetoModel, EnquadramentoModel,
+                            SituacaoModel, EnquadramentoModel,
                             PreProjetoModel, CaptacaoModel, CertidoesNegativasModel,
                             VerificacaoModel, PlanoDivulgacaoModel, PlanoDistribuicaoModel,
                             ProdutoModel, AreaModel, SegmentoModel
@@ -236,12 +236,6 @@ class ProjetoModelObject(ModelsBase):
         if sort_field == None:
             sort_field = 'PRONAC'
 
-        sort_fields_mapping = {
-            'ano_projeto' : ProjetoModel.AnoProjeto, 'PRONAC': ProjetoModel.PRONAC,
-            'data_inicio' : ProjetoModel.DtInicioExecucao, 'data_termino' : ProjetoModel.DtFimExecucao
-        }
-
-        sort_field = sort_fields_mapping[sort_field]
 
         text_fields = (
                              PreProjetoModel.Acessibilidade.label('acessibilidade'),
@@ -314,14 +308,6 @@ class ProjetoModelObject(ModelsBase):
                                                   .outerjoin(EnquadramentoModel, EnquadramentoModel.IdPRONAC ==  ProjetoModel.IdPRONAC)
                                                 
 
-        # order by descending
-        if sort_order == 'desc':
-            res = res.order_by(desc(sort_field))
-        #order by ascending
-        else:
-            res = res.order_by(sort_field)
-
-        #res = res.filter(ProjetoModel.IdPRONAC == '150465')
 
         if PRONAC is not None:
             res = res.filter(ProjetoModel.PRONAC == PRONAC)
@@ -368,16 +354,25 @@ class ProjetoModelObject(ModelsBase):
         if ano_projeto is not None:
             res = res.filter(ProjetoModel.AnoProjeto == ano_projeto)
 
-        with Timer(action = 'Projects count() fast ', verbose = True):
-          total_records = self.count(res)
+        # order by descending
+        if sort_order == 'desc':
+            res = res.order_by(desc(sort_field))
+        #order by ascending
+        else:
+            res = res.order_by(sort_field)
+
+        #res = res.filter(ProjetoModel.IdPRONAC == '150465')
+
+        #with Timer(action = 'Projects count() fast ', verbose = True):
+        total_records = self.count(res)
 
         # with Timer(action = 'Projects count() slow ', verbose = True):
         #   total_records = res.count()
         #   #Log.debug("total : "+str(total_records))
 
-        with Timer(action = 'Projects slice()', verbose = True):
+        #with Timer(action = 'Projects slice()', verbose = True):
           # res = res.slice(start_row, end_row)
-          res = res.limit(limit).offset(offset)
+        res = res.limit(limit).offset(offset)
 
         return res.all(), total_records
 
