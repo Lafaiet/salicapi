@@ -10,7 +10,8 @@ O formato de log é baseado em [Keep a Changelog](http://keepachangelog.com/) e 
 - Campos  `count` e `total` em consultas tipo lista
 
 ### Changed
-- Links **prev** e **next** não mais aparecem em caso de primeira e última página, respectivamente 
+- Links **prev** e **next** não mais aparecem em caso de primeira e última página, respectivamente
+- Projetos são ordenados por **ano** em ordem **decrescente** 
 
 ### Fixed
 - Link de **fornecedores** não faz mais distinção `fornecedores/` e `fornecedores`
