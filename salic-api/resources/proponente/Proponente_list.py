@@ -13,7 +13,9 @@ from ..security import encrypt, decrypt
 import pymssql, json
 
 
-class Proponente(ResourceBase):
+class ProponenteList(ResourceBase):
+
+    sort_fields = ['total_captado']
 
     def build_links(self, args = {}):
 
@@ -23,47 +25,49 @@ class Proponente(ResourceBase):
             if arg!= 'limit' and arg != 'offset':
                 query_args+=arg+'='+request.args[arg]+'&'
 
+        if args['offset']-args['limit'] >= 0:
+            self.links["prev"] = self.links["self"] + '?limit=%d&offset=%d'%(args['limit'], args['offset']-args['limit'])+query_args
+            
+
+        if args['offset']+args['limit'] <= args['last_offset']:
+            self.links["next"] = self.links["self"] + '?limit=%d&offset=%d'%(args['limit'], args['offset']+args['limit'])+query_args
+        
+        self.links["first"] = self.links["self"] + '?limit=%d&offset=0'%(args['limit'])+query_args
+        self.links["last"] = self.links["self"] + '?limit=%d&offset=%d'%(args['limit'], args['last_offset'])+query_args
         self.links["self"] += '?limit=%d&offset=%d'%(args['limit'], args['offset'])+query_args
-        self.links["next"] += '?limit=%d&offset=%d'%(args['limit'], args['offset']+args['limit'])+query_args
 
-        if args['offset']-args['limit'] < 0:
-            self.links["prev"] += '?limit=%d&offset=%d'%(args['limit'], 0)+query_args
-
-        else:
-            self.links["prev"] += '?limit=%d&offset=%d'%(args['limit'], args['offset']-args['limit'])+query_args
-
-        self.projetos_links = []
+        self.proponentes_links = []
 
         for proponente_id in args['proponentes_ids']:
-            url_id = encrypt(proponente_id)
-            link = app.config['API_ROOT_URL']+'projetos/?url_id=%s'%url_id
-            self.projetos_links.append(link)
+            proponente_id = encrypt(proponente_id)
+            
+            links = {}
+            links['projetos'] = app.config['API_ROOT_URL']+'projetos/?proponente_id=%s'%proponente_id
+            links['self'] = app.config['API_ROOT_URL']+'proponentes/%s'%proponente_id
+            
+            self.proponentes_links.append(links)
 
 
     def __init__(self):
         self.tipos_pessoa = {'1' : 'fisica', '2' : 'juridica'}
-        super (Proponente,self).__init__()
+        super (ProponenteList,self).__init__()
 
 
         self.links = {
                     "self" : app.config['API_ROOT_URL']+'proponentes/',
-                    "prev" : app.config['API_ROOT_URL']+'proponentes/',
-                    "next" : app.config['API_ROOT_URL']+'proponentes/',
         }
 
         def hal_builder(data, args = {}):
             
-            hal_data = {'_links' : self.links}
+            total = args['total']
+            count = len(data)
+
+            hal_data = {'_links' : self.links, 'total' : total, 'count' : count}
             
             for index in range(len(data)):
-                fornecedor = data[index]
+                proponente = data[index]
 
-                self_link = app.config['API_ROOT_URL']+'proponentes/'
-                projetos_links = self.projetos_links[index]
-
-                fornecedor['_links'] = {}
-                fornecedor['_links']['self'] = self_link
-                fornecedor['_links']['projetos'] = projetos_links
+                proponente['_links'] = self.proponentes_links[index]
 
             hal_data['_embedded'] = {'proponentes' : data}
             return hal_data
@@ -89,6 +93,8 @@ class Proponente(ResourceBase):
         UF = None
         tipo_pessoa = None
         url_id = None
+        sort_field = None
+        sort_order = None
 
         if request.args.get('nome') is not None:
             nome = request.args.get('nome')
@@ -105,22 +111,42 @@ class Proponente(ResourceBase):
         if request.args.get('tipo_pessoa') is not None:
             tipo_pessoa = request.args.get('tipo_pessoa')
 
-        if request.args.get('url_id') is not None:
-            url_id = request.args.get('url_id')
-            cgccpf = decrypt(url_id)
+        if request.args.get('proponente_id') is not None:
+            proponente_id = request.args.get('proponente_id')
+            cgccpf = decrypt(proponente_id)
+
+
+        if request.args.get('sort') is not None:
+            sorting = request.args.get('sort').split(':')
+
+            if len(sorting) == 2:
+                sort_field = sorting[0]
+                sort_order = sorting[1]
+            elif len(sorting) == 1:
+                sort_field = sorting[0]
+                sort_order = 'asc'
+
+            if sort_field not in self.sort_fields:
+                Log.error('sorting field error: '+str(sort_field))
+                result = {'message' : 'field error: "%s"'%sort_field,
+                      'message_code' :  10,
+                      }
+                return self.render(result, status_code = 405)
 
         try:
-            results, n_records = ProponenteModelObject().all(limit, offset, nome, cgccpf, municipio, UF,tipo_pessoa)
+            results, n_records = ProponenteModelObject().all(limit, offset, nome,
+              cgccpf, municipio, UF, tipo_pessoa, sort_field, sort_order)
         except Exception as e:
             api_error = APIError('DatadabaseError')
             Log.error( '%s : '%(api_error.internal_message) + str(e) )
             return self.render(api_error.to_dict(), status_code = api_error.status_code)
 
-        if n_records == 0:
+        if n_records == 0 or len(results) == 0:
             api_error = APIError('ResourceNotFound')
             return self.render(api_error.to_dict(), status_code = api_error.status_code)
 
 
+        print 'n_records : ' + str(n_records)
         data = listify_queryset(results)
         proponentes_ids = []
 
@@ -133,7 +159,7 @@ class Proponente(ResourceBase):
             data = self.get_unique(cgccpf, data)
             proponentes_ids = [cgccpf]
 
-        self.build_links(args = {'limit' : limit, 'offset' : offset, 'proponentes_ids' : proponentes_ids})
+        self.build_links(args = {'limit' : limit, 'offset' : offset, 'proponentes_ids' : proponentes_ids, 'last_offset' : n_records-1})
 
         for projeto_index in range(len(data)):
             data[projeto_index]['cgccpf'] = cgccpf_mask(data[projeto_index]['cgccpf'])

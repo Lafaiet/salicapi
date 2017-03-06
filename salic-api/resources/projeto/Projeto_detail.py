@@ -25,7 +25,7 @@ class ProjetoDetail(ResourceBase):
         self.links["self"] += args['PRONAC']
 
         url_id = encrypt(args['proponente_id'])
-        proponente_link = app.config['API_ROOT_URL']+'proponentes/?url_id=%s'%url_id
+        proponente_link = app.config['API_ROOT_URL']+'proponentes/%s'%url_id
 
         incentivadores_link = app.config['API_ROOT_URL']+ 'incentivadores/?PRONAC='+args['PRONAC']
         fornecedores_link = app.config['API_ROOT_URL']+ 'fornecedores/?PRONAC='+args['PRONAC']

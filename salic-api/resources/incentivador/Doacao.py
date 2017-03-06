@@ -19,15 +19,17 @@ class Doacao(ResourceBase):
 
         self.links = {'self' : ''}
 
-        self.links["self"] = app.config['API_ROOT_URL'] + 'incentivadores/%s/doacoes/'%args['url_id']
+        incentivador_id = args['incentivador_id']
+
+        self.links["self"] = app.config['API_ROOT_URL'] + 'incentivadores/%s/doacoes/'%incentivador_id
 
         self.doacoes_links = []
 
         for doacao in args['doacoes']:
                 doacao_links = {}
                 doacao_links['projeto'] = app.config['API_ROOT_URL'] + 'projetos/%s'%doacao['PRONAC']
-                url_id = encrypt(doacao['cgccpf'])
-                doacao_links['incentivador'] = app.config['API_ROOT_URL'] + 'incentivadores/?url_id=%s'%url_id
+                incentivador_id = encrypt(doacao['cgccpf'])
+                doacao_links['incentivador'] = app.config['API_ROOT_URL'] + 'incentivadores/%s'%incentivador_id
 
                 self.doacoes_links.append(doacao_links)
 
@@ -52,9 +54,9 @@ class Doacao(ResourceBase):
 
         self.to_hal = hal_builder
 
-     def get(self, url_id):
+     def get(self, incentivador_id):
 
-        cgccpf = decrypt(url_id)
+        cgccpf = decrypt(incentivador_id)
         print cgccpf
 
         try:
@@ -80,7 +82,7 @@ class Doacao(ResourceBase):
 
         data = self.get_unique(cgccpf, data)
 
-        self.build_links(args = {'url_id' : url_id, 'doacoes' : data})
+        self.build_links(args = {'incentivador_id' : incentivador_id, 'doacoes' : data})
 
         for doacao in data:
             doacao["cgccpf"] = cgccpf_mask(doacao["cgccpf"])

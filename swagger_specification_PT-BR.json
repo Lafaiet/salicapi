@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "Essa é uma API aberta para acesso aos dados do portal [**SALIC.**](http://novosalic.cultura.gov.br/cidadao/consultar) \n\nSALIC é um sistema que reúne dados a respeito de propostas de projetos culturais a serem incentivados pelo Ministério da Cultura (**MINC**) por meio da lei Rouanet. Veja mais informações [aqui](http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-).\n\n\n\n\n# **Formatos de Resposta** \n\n Atualmente a API suporta exportação dos dados nos formatos * <code>JSON</code>(padrão) * * <code>XML</code> e * <code>CSV</code>. A escolha do formato deve ser definido a cada chamada, por meio do campo de cabeçalho <code>Accept</code>. \n\n # **Limitação de uso** \n\nPara requisições sem autenticação, você pode fazer até **2000 requisições diárias**. Requisições não autenticadas estão ligadas ao endereço IP de origem, não ao usuário fazendo a requisição. \n\nO cabeçalho da resposta lhe diz tudo o que você precisa saber sobre o seu limite de uso atualmente:\n<table> <tr> <td>**Campo do Cabeçalho**</td> <td>**Descrição**</td> </tr>\n<tr> <td>X-RateLimit-Limit</td> <td>Número de requisições permitidas no período.</td> </tr>\n<tr> <td>X-RateLimit-Remaining</td> <td>Número de requisições restantes na janela de limite atual.</td> </tr>\n<tr> <td>X-RateLimit-Reset</td> <td>Tempo para que a janela de limite resete em segundos UTC epoch.</td> </tr>\n<tr> <td>Retry-After</td> <td>Segundos para tentar novamente ou a data http quando a janela de limite será resetada.</td> </tr>\n</table>\n\n\n # **Paginação** \n\n Para alguns recursos que possam gerar um grande volume de resultados, a API provê um sistema de  paginação. Ao fazer sua requisição, basta fazer uso dos campos <code>limit</code> **[1-100]** e <code>offset</code> **[0-Total-Count]** para navegar pelos resultados. Um campo de cabeçalho chamado <code>X-Total-Count</code> será enviado junto às respostas, denotando o total de entradas contidas na base de dados que atendam ao seu critério de busca.",
+        "description": "Essa é uma API aberta para acesso aos dados do portal [**SALIC.**](http://novosalic.cultura.gov.br/cidadao/consultar) \n\nSALIC é um sistema que reúne dados a respeito de propostas de projetos culturais a serem incentivados pelo Ministério da Cultura (**MINC**) por meio da lei Rouanet. Veja mais informações [aqui](http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-).\n\n\n\n\n# **Formatos de Resposta** \n\n Atualmente a API suporta exportação dos dados nos formatos * <code>HAL+JSON</code>(padrão) * * <code>XML</code> e * <code>CSV</code>. A escolha do formato deve ser definido a cada chamada, por meio do campo de cabeçalho <code>Accept</code>. \n\n # **Limitação de uso** \n\nPara requisições sem autenticação, você pode fazer até **2000 requisições diárias**. Requisições não autenticadas estão ligadas ao endereço IP de origem, não ao usuário fazendo a requisição. \n\nO cabeçalho da resposta lhe diz tudo o que você precisa saber sobre o seu limite de uso atualmente:\n<table> <tr> <td>**Campo do Cabeçalho**</td> <td>**Descrição**</td> </tr>\n<tr> <td>X-RateLimit-Limit</td> <td>Número de requisições permitidas no período.</td> </tr>\n<tr> <td>X-RateLimit-Remaining</td> <td>Número de requisições restantes na janela de limite atual.</td> </tr>\n<tr> <td>X-RateLimit-Reset</td> <td>Tempo para que a janela de limite resete em segundos UTC epoch.</td> </tr>\n<tr> <td>Retry-After</td> <td>Segundos para tentar novamente ou a data http quando a janela de limite será resetada.</td> </tr>\n</table>\n\n\n # **Paginação** \n\n Para alguns recursos que possam gerar um grande volume de resultados, a API provê um sistema de  paginação. Ao fazer sua requisição, basta fazer uso dos campos <code>limit</code> **[1-100]** e <code>offset</code> **[0-Total-Count]** para navegar pelos resultados. Você também pode se guiar pelos links <code>first, self, prev, next, last</code> contidos nas respostas. Sua resposta conterá campos <code>count</code> e <code>total</code> que se referem ao total de objetos retornados e total de entradas contidas na base de dados repectivamente. Adicionamente, um campo de cabeçalho chamado <code>X-Total-Count</code> será enviado junto às respostas, denotando também o total de entradas contidas na base de dados que atendam ao seu critério de busca.",
         "version": "0.2.1-beta",
         "title": "SALIC API",
         "termsOfService": "http://www.cultura.gov.br/programa-nacional-de-apoio-a-cultura-pronac-",
@@ -31,7 +31,7 @@
                     "projetos : Dados relativos a Projetos"
                 ],
                 "summary": "Busca um projeto por meio de seu número PRONAC",
-                "operationId": "pronac_number",
+                "operationId": "projeto_detail",
                 "parameters": [
                     {
                         "in": "path",
@@ -94,7 +94,7 @@
                     "projetos : Dados relativos a Projetos"
                 ],
                 "summary": "Busca projetos dado uma combinação de valores diversos de pesquisa",
-                "operationId": "project_list",
+                "operationId": "projeto_list",
                 "parameters": [
                     {
                         "in": "query",
@@ -129,6 +129,14 @@
                         "description": "Nome do proponente do projeto (valor exato ou parcial)",
                         "required": false,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "proponente_id",
+                        "description": "id de identificacao do proponente",
+                        "required": false,
+                        "type": "string",
+                        "format": "string"
                     },
                     {
                         "in": "query",
@@ -288,7 +296,7 @@
                     "projetos : Dados relativos a Projetos"
                 ],
                 "summary": "Retorna todas as áreas disponíveis",
-                "operationId": "projet_areas",
+                "operationId": "projeto_areas",
                 "responses": {
                     "200": {
                         "description": "Operação bem-sucedida",
@@ -338,7 +346,7 @@
                     "projetos : Dados relativos a Projetos"
                 ],
                 "summary": "Retorna todos os segmentos disponíveis",
-                "operationId": "projet_segments",
+                "operationId": "projeto_segmentos",
                 "responses": {
                     "200": {
                         "description": "Operação bem-sucedida",
@@ -486,7 +494,7 @@
                 }
             }
         },
-        "/propostas/{id}/": {
+        "/propostas/{proposta_id}/": {
             "get": {
                 "tags": [
                     "propostas : Dados relativos a Propostas de projetos"
@@ -496,7 +504,7 @@
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "id",
+                        "name": "proposta_id",
                         "description": "id da proposta",
                         "required": true,
                         "type": "string",
@@ -524,10 +532,6 @@
                             },
                             "Retry-After": {
                                 "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
-                                "type": "integer"
-                            },
-                            "X-Total-Count": {
-                                "description": "Número total de objetos que atendem seu critério de busca",
                                 "type": "integer"
                             }
                         }
@@ -559,7 +563,7 @@
                     "incentivadores : Dados relativos a Incentivadores"
                 ],
                 "summary": "Busca incentivadores dado uma combinação de valores diversos de pesquisa",
-                "operationId": "Donators related data",
+                "operationId": "incentivador_list",
                 "parameters": [
                     {
                         "in": "query",
@@ -586,6 +590,14 @@
                         "description": "Nome do incentivador (valor exato ou parcial)",
                         "required": false,
                         "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "incentivador_id",
+                        "description": "id de identificacao do incentivador",
+                        "required": false,
+                        "type": "string",
+                        "format": "string"
                     },
                     {
                         "in": "query",
@@ -640,10 +652,7 @@
                     "200": {
                         "description": "Operação bem-sucedida",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/Incentivador"
-                            }
+                            "$ref": "#/definitions/Incentivador"
                         },
                         "headers": {
                             "X-Rate-Limit-Limit": {
@@ -689,18 +698,83 @@
                 }
             }
         },
-        "/incentivadores/{url_id}/doacoes": {
+        "/incentivadores/{incentivador_id}": {
             "get": {
                 "tags": [
                     "incentivadores : Dados relativos a Incentivadores"
                 ],
-                "summary": "Dado o CGC ou CPF de um doador, retorna informações relativas a todas as doações feitas",
-                "operationId": "donator_donations",
+                "summary": "Busca incentivadores dado uma combinação de valores diversos de pesquisa",
+                "operationId": "incentivador_detail",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "url_id",
-                        "description": "id de identificação do incentivador",
+                        "name": "incentivador_id",
+                        "description": "id do incentivador",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Incentivador"
+                            }
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nenhum incentivador encontrado com esses criterios",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Parametros fornecidos invalidos",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/incentivadores/{incentivador_id}/doacoes": {
+            "get": {
+                "tags": [
+                    "incentivadores : Dados relativos a Incentivadores"
+                ],
+                "summary": "Dado o id de um incentivador, retorna informações relativas a todas as doações por ele feitas",
+                "operationId": "doacoes",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "incentivador_id",
+                        "description": "id do incentivador",
                         "required": true,
                         "type": "string"
                     }
@@ -734,7 +808,7 @@
                         }
                     },
                     "404": {
-                        "description": "Incentivador com cgccpf fornecido não encontrado",
+                        "description": "Incentivador com id fornecido não encontrado",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -760,19 +834,27 @@
                     "fornecedores : Dados relativos a Fornecedores"
                 ],
                 "summary": "Busca fornecedores dado uma combinação de valores diversos de pesquisa",
-                "operationId": "Suppliers related data",
+                "operationId": "fornecedores_list",
                 "parameters": [
                     {
                         "in": "query",
                         "name": "nome",
-                        "description": "Nome do incentivador (valor exato ou parcial)",
+                        "description": "Nome do fornecedor (valor exato ou parcial)",
                         "required": false,
                         "type": "string"
                     },
                     {
                         "in": "query",
+                        "name": "fornecedor_id",
+                        "description": "id de identificacao do fornecedor",
+                        "required": false,
+                        "type": "string",
+                        "format": "string"
+                    },
+                    {
+                        "in": "query",
                         "name": "cgccpf",
-                        "description": "Cgc/Cpf do incentivador",
+                        "description": "Cgc/Cpf do fornecedor",
                         "required": false,
                         "type": "string",
                         "format": "int64"
@@ -838,7 +920,7 @@
                         }
                     },
                     "404": {
-                        "description": "Fornecedor com cgccpf ou PRONAC fornecido não encontrado",
+                        "description": "Fornecedor com os critérios fornecidos não encontrados",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -858,18 +940,80 @@
                 }
             }
         },
-        "/fornecedores/{url_id}/produtos": {
+        "/fornecedores/{fornecedor_id}": {
             "get": {
                 "tags": [
                     "fornecedores : Dados relativos a Fornecedores"
                 ],
-                "summary": "Dado o CGC, CPF ou CNPJ de um fornecedor, retorna informações relativas a todas os ítens ou serviços fornecidos por ele",
+                "summary": "Busca fornecedores dado uma combinação de valores diversos de pesquisa",
+                "operationId": "fornecedores_detail",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "fornecedor_id",
+                        "description": "id do fornecedor",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "$ref": "#/definitions/Fornecedor"
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Fornecedor com id fornecido não encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "id inválido",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/fornecedores/{fornecedor_id}/produtos": {
+            "get": {
+                "tags": [
+                    "fornecedores : Dados relativos a Fornecedores"
+                ],
+                "summary": "Dado o id de um fornecedor, retorna informações relativas a todas os ítens ou serviços fornecidos por ele",
                 "operationId": "supplier_products",
                 "parameters": [
                     {
                         "in": "path",
-                        "name": "url_id",
-                        "description": "id de identificação do fornecedor",
+                        "name": "fornecedor_id",
+                        "description": "id do fornecedor",
                         "required": true,
                         "type": "string"
                     }
@@ -903,13 +1047,13 @@
                         }
                     },
                     "404": {
-                        "description": "Nenhum item encontrado referente ao fornecedor com cgccpf fornecido",
+                        "description": "Nenhum item encontrado referente ao fornecedor com id fornecido",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
                     },
                     "405": {
-                        "description": "cgccpf inválido",
+                        "description": "id inválido",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -929,7 +1073,7 @@
                     "proponentes : Dados relativos a Proponentes"
                 ],
                 "summary": "Busca proponentes dado uma combinação de valores diversos de pesquisa",
-                "operationId": "proponente",
+                "operationId": "proponente_list",
                 "parameters": [
                     {
                         "in": "query",
@@ -953,7 +1097,7 @@
                     {
                         "in": "query",
                         "name": "nome",
-                        "description": "Nome do proponente",
+                        "description": "Nome do proponente (valor exato ou parcial)",
                         "required": false,
                         "type": "string"
                     },
@@ -967,7 +1111,7 @@
                     },
                     {
                         "in": "query",
-                        "name": "url_id",
+                        "name": "proponente_id",
                         "description": "id de identificacao do proponente",
                         "required": false,
                         "type": "string",
@@ -995,6 +1139,13 @@
                             "fisica",
                             "juridica"
                         ],
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort",
+                        "description": "Ordenar a busca por um dos campos : total_captado.Formato: sort=CAMPO ou sort=CAMPO:asc ou ainda sort=CAMPO:desc ",
                         "required": false,
                         "type": "string"
                     }
@@ -1033,6 +1184,68 @@
                     },
                     "404": {
                         "description": "Nenhum proponente com criterios fornecidos encontrados",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "405": {
+                        "description": "Parametros fornecidos inválidos",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/proponentes/{proponente_id}": {
+            "get": {
+                "tags": [
+                    "proponentes : Dados relativos a Proponentes"
+                ],
+                "summary": "Busca proponentes dado um id fornecido",
+                "operationId": "proponente_detail",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "proponente_id",
+                        "description": "id do proponente",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Operação bem-sucedida",
+                        "schema": {
+                            "$ref": "#/definitions/Proponente"
+                        },
+                        "headers": {
+                            "X-Rate-Limit-Limit": {
+                                "description": "Número de requisições permitidas no período",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Remaining": {
+                                "description": "Número de requisições restantes na janela de limite atual",
+                                "type": "integer"
+                            },
+                            "X-Rate-Limit-Reset": {
+                                "description": "Tempo para que a janela de limite resete em segundos UTC epoch",
+                                "type": "integer"
+                            },
+                            "Retry-After": {
+                                "description": "Segundos para tentar novamente ou a data http quando a janela de limite será resetada",
+                                "type": "integer"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nenhum proponente com id fornecido encontrado",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -1167,7 +1380,28 @@
         },
         "MarcaAnexada": {
             "type": "object",
-            "properties": {}
+            "properties": {
+                "id_documento": {
+                    "type": "integer"
+                },
+                "data_envio": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "link": {
+                    "type": "string",
+                    "format": "uri"
+                },
+                "id_arquivo": {
+                    "type": "integer"
+                },
+                "descricao": {
+                    "type": "string"
+                },
+                "nome_arquivo": {
+                    "type": "string"
+                }
+            }
         },
         "Pedido": {
             "type": "object",
@@ -1186,19 +1420,123 @@
         },
         "Prorrogacao": {
             "type": "object",
-            "properties": {}
+            "properties": {
+                "atendimento": {
+                    "type": "string"
+                },
+                "usuario": {
+                    "type": "string"
+                },
+                "data_final": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "data_pedido": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "observacao": {
+                    "type": "string"
+                },
+                "data_inicio": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "estado": {
+                    "type": "string"
+                }
+            }
         },
         "Distribuicao": {
             "type": "object",
-            "properties": {}
+            "properties": {
+                "qtd_patrocinador": {
+                    "type": "integer"
+                },
+                "qtd_proponente": {
+                    "type": "integer"
+                },
+                "area": {
+                    "type": "string"
+                },
+                "posicao_logo": {
+                    "type": "string"
+                },
+                "produto": {
+                    "type": "string"
+                },
+                "segmento": {
+                    "type": "string"
+                },
+                "localizacao": {
+                    "type": "string"
+                },
+                "qtd_venda_normal": {
+                    "type": "integer"
+                },
+                "qtd_outros": {
+                    "type": "integer"
+                },
+                "receita_pro": {
+                    "type": "integer"
+                },
+                "preco_unitario_normal": {
+                    "type": "integer"
+                },
+                "qtd_produzida": {
+                    "type": "integer"
+                },
+                "qtd_venda_promocional": {
+                    "type": "integer"
+                },
+                "preco_unitario_promocional": {
+                    "type": "integer"
+                },
+                "receita_prevista": {
+                    "type": "integer"
+                },
+                "receita_normal": {
+                    "type": "integer"
+                }
+            }
         },
         "DocumentoAnexado": {
             "type": "object",
-            "properties": {}
+            "properties": {
+                "nome": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "classificacao": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string",
+                    "format": "uri"
+                }
+            }
         },
         "CertidaoNegativa": {
             "type": "object",
-            "properties": {}
+            "properties": {
+                "data_emissao": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "data_validade": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "situacao": {
+                    "type": "string"
+                },
+                "descricao": {
+                    "type": "string"
+                }
+            }
         },
         "RelacaoPagamento": {
             "type": "object",
@@ -1482,6 +1820,10 @@
                 },
                 "municipio": {
                     "type": "string"
+                },
+                "total_captado": {
+                    "type": "number",
+                    "format": "double"
                 }
             }
         },
@@ -1530,12 +1872,23 @@
                 },
                 "nome_projeto": {
                     "type": "string"
+                },
+                "cgccpf": {
+                    "type": "string",
+                    "format": "int64"
+                },
+                "nome_doador": {
+                    "type": "string"
                 }
             }
         },
         "Captacao": {
             "type": "object",
             "properties": {
+                "PRONAC": {
+                    "type": "string",
+                    "format": "int64"
+                },
                 "valor": {
                     "type": "number",
                     "format": "double"
@@ -1544,12 +1897,15 @@
                     "type": "string",
                     "format": "date"
                 },
-                "nome_doador": {
+                "nome_projeto": {
                     "type": "string"
                 },
                 "cgccpf": {
                     "type": "string",
                     "format": "int64"
+                },
+                "nome_doador": {
+                    "type": "string"
                 }
             }
         },

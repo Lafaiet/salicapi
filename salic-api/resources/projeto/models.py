@@ -34,8 +34,8 @@ class ProjetoModelObject(ModelsBase):
     def attached_brands(self, idPronac):
 
         query = text("""
-                    SELECT a.idArquivo, a.nmArquivo, a.dtEnvio, a.nrTamanho, d.idDocumento, CAST(dsDocumento AS TEXT) AS dsDocumento,
-                        dp.stAtivoDocumentoProjeto, p.idPronac, p.AnoProjeto + p.Sequencial as Pronac, p.NomeProjeto
+                    SELECT a.idArquivo as id_arquivo, a.nmArquivo as nome_arquivo, a.dtEnvio as data_envio, d.idDocumento as id_documento, CAST(dsDocumento AS TEXT) AS descricao
+                           
                     FROM BDCORPORATIVO.scCorp.tbArquivoImagem AS ai
                     INNER JOIN BDCORPORATIVO.scCorp.tbArquivo AS a ON ai.idArquivo = a.idArquivo
                     INNER JOIN BDCORPORATIVO.scCorp.tbDocumento AS d ON a.idArquivo = d.idArquivo
@@ -47,7 +47,7 @@ class ProjetoModelObject(ModelsBase):
     def postpone_request(self, idPronac):
 
         query = text("""
-                    SELECT a.DtPedido, a.DtInicio, a.DtFinal, a.Observacao, a.Atendimento,
+                    SELECT a.DtPedido as data_pedido, a.DtInicio as data_inicio, a.DtFinal as data_final, a.Observacao as observacao, a.Atendimento as atendimento,
                         CASE
                             WHEN Atendimento = 'A'
                                 THEN 'Em analise'
@@ -57,8 +57,8 @@ class ProjetoModelObject(ModelsBase):
                                 THEN 'Indeferido'
                             WHEN Atendimento = 'S'
                                 THEN 'Processado'
-                            END as Estado
-                        , b.usu_nome AS Usuario FROM prorrogacao AS a
+                            END as estado
+                        , b.usu_nome AS usuario FROM prorrogacao AS a
                         LEFT JOIN TABELAS.dbo.Usuarios AS b ON a.Logon = b.usu_codigo WHERE (idPronac = :IdPRONAC)
         """)
 
@@ -233,8 +233,6 @@ class ProjetoModelObject(ModelsBase):
                           data_termino = None, data_termino_min = None,
                           data_termino_max = None, ano_projeto = None, sort_field = None, sort_order = None):
 
-        if sort_field == None:
-            sort_field = 'PRONAC'
 
 
         text_fields = (
@@ -269,6 +267,24 @@ class ProjetoModelObject(ModelsBase):
 
         ano_case = case([(ProjetoModel.Mecanismo =='2' or ProjetoModel.Mecanismo =='6', func.sac.dbo.fnValorAprovadoConvenio(ProjetoModel.AnoProjeto,ProjetoModel.Sequencial)),],
         else_ = func.sac.dbo.fnValorAprovado(ProjetoModel.AnoProjeto,ProjetoModel.Sequencial))
+
+        sort_mapping_fields = { 'valor_solicitado' : func.sac.dbo.fnValorSolicitado(ProjetoModel.AnoProjeto, ProjetoModel.Sequencial),
+                                'PRONAC' : ProjetoModel.PRONAC,
+                                'outras_fontes' : func.sac.dbo.fnOutrasFontes(ProjetoModel.IdPRONAC),
+                                'valor_captado' : func.sac.dbo.fnCustoProjeto (ProjetoModel.AnoProjeto, ProjetoModel.Sequencial),
+                                'valor_proposta' : valor_proposta_case,
+                                'valor_aprovado' : valor_aprovado_case,
+                                'valor_projeto' :  valor_projeto_case,
+                                'ano_projeto' : ProjetoModel.AnoProjeto,
+                                'data_inicio' : ProjetoModel.DtInicioExecucao,
+                                'data_termino' : ProjetoModel.DtFimExecucao,
+        }
+
+        if sort_field == None:
+            sort_field = 'ano_projeto'
+            sort_order = 'desc'
+
+        sort_field = sort_mapping_fields[sort_field]
 
         with Timer(action = 'Database query for get_projeto_list method', verbose = True):
           res = self.sql_connector.session.query(
@@ -361,9 +377,8 @@ class ProjetoModelObject(ModelsBase):
         else:
             res = res.order_by(sort_field)
 
-        #res = res.filter(ProjetoModel.IdPRONAC == '150465')
+        #res = res.order_by("AnoProjeto")
 
-        #with Timer(action = 'Projects count() fast ', verbose = True):
         total_records = self.count(res)
 
         # with Timer(action = 'Projects count() slow ', verbose = True):
@@ -573,7 +588,7 @@ class AdequacoesPedidoModelObject(ModelsBase):
                 a.stEstado,
                 e.idArquivo,
                 e.nmArquivo
-             FROM tbReadequacao AS a
+             FROM SAC.dbo.tbReadequacao AS a
              INNER JOIN SAC.dbo.tbTipoEncaminhamento AS b ON a.siEncaminhamento = b.idTipoEncaminhamento INNER JOIN SAC.dbo.tbTipoReadequacao AS c ON c.idTipoReadequacao = a.idTipoReadequacao
              LEFT JOIN BDCORPORATIVO.scCorp.tbDocumento AS d ON d.idDocumento = a.idDocumento
              LEFT JOIN BDCORPORATIVO.scCorp.tbArquivo AS e ON e.idArquivo = d.idArquivo WHERE (a.idPronac = :IdPRONAC) AND (a.siEncaminhamento <> 12)

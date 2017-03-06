@@ -1,5 +1,7 @@
 from sqlalchemy import case, func
 
+from sqlalchemy.sql.expression import asc, desc
+
 from ..ModelsBase import ModelsBase
 from ..SharedModels import InteressadoModel, ProjetoModel
 
@@ -13,24 +15,44 @@ class ProponenteModelObject(ModelsBase):
 
 
     def all(self,  limit, offset, nome = None, cgccpf = None, municipio = None,
-                       UF = None, tipo_pessoa = None, all_fields = False):
+                       UF = None, tipo_pessoa = None, sort_field = None, sort_order = None):
 
         start_row = offset
         end_row = offset+limit
+
+        sort_mapping_fields = {'cgccpf' : InteressadoModel.CgcCpf,
+         'total_captado' : func.sum(func.sac.dbo.fnCustoProjeto (ProjetoModel.AnoProjeto, ProjetoModel.Sequencial))}
+
+        if sort_field == None:
+            sort_field = 'cgccpf'
+
+        sort_field = sort_mapping_fields[sort_field]
 
 
         tipo_pessoa_case = case([(InteressadoModel.tipoPessoa=='1', 'fisica'),],
         else_ = 'juridica')
 
         res= self.sql_connector.session.query(
+                                               func.sum(func.sac.dbo.fnCustoProjeto (ProjetoModel.AnoProjeto, ProjetoModel.Sequencial)).label('total_captado'),
                                                InteressadoModel.Nome.label('nome'),
                                                InteressadoModel.Cidade.label('municipio'),
                                                InteressadoModel.Uf.label('UF'),
                                                InteressadoModel.Responsavel.label('responsavel'),
                                                InteressadoModel.CgcCpf.label('cgccpf'),
                                                tipo_pessoa_case.label('tipo_pessoa'),
-                                               ).order_by(InteressadoModel.CgcCpf)
+                                               ).join(InteressadoModel)
 
+
+        res = res.group_by(InteressadoModel.Nome,
+                  InteressadoModel.Cidade,
+                  InteressadoModel.Uf,
+                  InteressadoModel.Responsavel,
+                  InteressadoModel.CgcCpf,
+                  tipo_pessoa_case
+        )
+
+        
+        res = res.filter(ProjetoModel.idProjeto.isnot(None))
 
         if cgccpf is not None:
             res = res.filter(InteressadoModel.CgcCpf.like('%' + cgccpf + '%'))
@@ -52,7 +74,14 @@ class ProponenteModelObject(ModelsBase):
 
             res = res.filter(InteressadoModel.tipoPessoa == tipo_pessoa )
 
-        total_records = self.count(res)
+        # order by descending
+        if sort_order == 'desc':
+            res = res.order_by(desc(sort_field))
+        #order by ascending
+        else:
+            res = res.order_by(sort_field)
+
+        total_records = res.count()
 
         res = res.slice(start_row, end_row)
 

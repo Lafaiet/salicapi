@@ -66,12 +66,24 @@ class ResourceBase(Resource):
                 data = data
             else:
                 if self.to_hal is not None and status_code == 200:
-                    data = self.to_hal(data)
+                    if 'X-Total-Count' in headers:
+                        args = {'total' : headers['X-Total-Count']}
+                    else:
+                        args = {}
+                        
+                    data = self.to_hal(data, args = args)
 
                 data = serialize(data, 'json')
 
             response = Response(data, content_type='application/hal+json; charset=utf-8')
 
+
+        access_control_headers =  "Content-Length, Content-Type, "
+        access_control_headers += "Date, Server, "
+        access_control_headers += "X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After, "
+        access_control_headers += "X-Total-Count"
+
+        headers['Access-Control-Expose-Headers'] = access_control_headers
 
         response.headers.extend(headers)
         response.status_code = status_code

@@ -21,8 +21,12 @@ class IncentivadorModelObject(ModelsBase):
         tipo_pessoa_case = case([(InteressadoModel.tipoPessoa=='1', 'fisica'),],
         else_ = 'juridica')
 
+        sort_mapping_fields = {'cgccpf' : InteressadoModel.CgcCpf, 'total_doado' : func.sum(CaptacaoModel.CaptacaoReal)}
+
         if sort_field == None:
             sort_field = 'cgccpf'
+
+        sort_field = sort_mapping_fields[sort_field]
 
 
         res= self.sql_connector.session.query(

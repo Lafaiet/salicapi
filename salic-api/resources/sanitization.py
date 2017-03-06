@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from format_utils import truncate, remove_blanks, remove_html_tags, HTMLEntitiesToUnicode
 import re
 
@@ -14,6 +16,8 @@ def sanitize(value, truncated = True, keep_markup = False):
 
     if truncated:
         value = truncate(value)
+
+    value = value.replace('"', '')
 
     # Removing tabs, newlines and other "whitespace-like" characters.
     value  = re.sub( '\s+', ' ', value ).strip()

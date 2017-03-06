@@ -12,7 +12,7 @@ from ..security import encrypt, decrypt
 import pymssql, json
 
 
-class Fornecedor(ResourceBase):
+class FornecedorList(ResourceBase):
 
 
     def build_links(self, args = {}):
@@ -23,45 +23,48 @@ class Fornecedor(ResourceBase):
             if arg!= 'limit' and arg != 'offset':
                 query_args+=arg+'='+request.args[arg]+'&'
 
+        if args['offset']-args['limit'] >= 0:
+            self.links["prev"] = self.links["self"] + '?limit=%d&offset=%d'%(args['limit'], args['offset']-args['limit'])+query_args
+            
+
+        if args['offset']+args['limit'] <= args['last_offset']:
+            self.links["next"] = self.links["self"] + '?limit=%d&offset=%d'%(args['limit'], args['offset']+args['limit'])+query_args
+        
+        self.links["first"] = self.links["self"] + '?limit=%d&offset=0'%(args['limit'])+query_args
+        self.links["last"] = self.links["self"] + '?limit=%d&offset=%d'%(args['limit'], args['last_offset'])+query_args
         self.links["self"] += '?limit=%d&offset=%d'%(args['limit'], args['offset'])+query_args
-        self.links["next"] += '?limit=%d&offset=%d'%(args['limit'], args['offset']+args['limit'])+query_args
 
-        if args['offset']-args['limit'] < 0:
-            self.links["prev"] += '?limit=%d&offset=%d'%(args['limit'], 0)+query_args
-
-        else:
-            self.links["prev"] += '?limit=%d&offset=%d'%(args['limit'], args['offset']-args['limit'])+query_args
-
-        self.produtos_links = []
+        self.fornecedores_links = []
 
         for fornecedor_id in args['fornecedores_ids']:
-            url_id = encrypt(fornecedor_id)
-            link = app.config['API_ROOT_URL']+'fornecedores/%s/produtos/'%url_id
-            self.produtos_links.append(link)
+            links = {}
+            fornecedor_id_enc = encrypt(fornecedor_id)
+
+            links['self'] = app.config['API_ROOT_URL'] + 'fornecedores/%s'%fornecedor_id_enc
+            links['produtos'] = app.config['API_ROOT_URL']+'fornecedores/%s/produtos/'%fornecedor_id_enc
+
+            self.fornecedores_links.append(links)
 
 
     def __init__(self):
-        super (Fornecedor, self).__init__()
+        super (FornecedorList, self).__init__()
 
         self.links = {
                     "self" : app.config['API_ROOT_URL']+'fornecedores/',
-                    "prev" : app.config['API_ROOT_URL']+'fornecedores/',
-                    "next" : app.config['API_ROOT_URL']+'fornecedores/',
         }
 
         def hal_builder(data, args = {}):
-            
-            hal_data = {'_links' : self.links}
+            total = args['total']
+            count = len(data)
+
+            hal_data = {'_links' : self.links, 'total' : total, 'count' : count}
             
             for f_index in range(len(data)):
                 fornecedor = data[f_index]
 
-                self_link = app.config['API_ROOT_URL']+'fornecedores/'
-                produtos_links = self.produtos_links[f_index]
+                fornecedores_links = self.fornecedores_links[f_index]
 
-                fornecedor['_links'] = {}
-                fornecedor['_links']['self'] = self_link
-                fornecedor['_links']['produtos'] = produtos_links
+                fornecedor['_links'] = fornecedores_links
 
             hal_data['_embedded'] = {'fornecedores' : data}
             return hal_data
@@ -101,9 +104,9 @@ class Fornecedor(ResourceBase):
         if request.args.get('cgccpf') is not None:
             cgccpf = request.args.get('cgccpf')
 
-        if request.args.get('url_id') is not None:
-            url_id = request.args.get('url_id')
-            cgccpf = decrypt(url_id)
+        if request.args.get('fornecedor_id') is not None:
+            fornecedor_id = request.args.get('fornecedor_id')
+            cgccpf = decrypt(fornecedor_id)
 
         if request.args.get('PRONAC') is not None:
             PRONAC = request.args.get('PRONAC')
@@ -121,14 +124,19 @@ class Fornecedor(ResourceBase):
 
         results = listify_queryset(results)
 
-        if len(results) == 0:
+        n_records = FornecedordorModelObject().count(cgccpf = cgccpf, PRONAC =  PRONAC, nome  = nome)
+        n_records = listify_queryset(n_records)
+
+        n_records = n_records[0]['total']
+
+        if n_records == 0 or len(results) == 0:
 
             result = {'message' : 'No supplier was found with your criteria',
                                  'message_code' : 11}
 
             return self.render(result, status_code = 404)
 
-        headers = {'X-Total-Count' : len(results)}
+        headers = {'X-Total-Count' : n_records}
 
         data = results
         fornecedores_ids = []
@@ -141,7 +149,7 @@ class Fornecedor(ResourceBase):
         if cgccpf is not None:
             data = self.get_unique(cgccpf, data)
 
-        self.build_links(args = {'limit' : limit, 'offset' : offset, 'fornecedores_ids' : fornecedores_ids})
+        self.build_links(args = {'limit' : limit, 'offset' : offset, 'fornecedores_ids' : fornecedores_ids, 'last_offset' : n_records-1})
 
         for fornecedor in data:
             fornecedor["cgccpf"] = cgccpf_mask(fornecedor["cgccpf"])
